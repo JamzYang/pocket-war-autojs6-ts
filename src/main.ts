@@ -6,7 +6,7 @@ import {iconConfig} from "./config/iconConfig";
 import {ToCoinHarvester, ToWorld} from "./steps";
 import {CharacterState, CollectCoinsQuest, FunctionConfig} from "./types";
 import {characterState, functionConfig} from "./config/config";
-import {hasBackBtn} from "./iconFinder";
+import {hasBackBtn} from "./finder";
 // 加载配置文件
 // const config = loadConfig('src/config.json');
 //

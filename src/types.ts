@@ -1,4 +1,13 @@
-import {ClickCoinPoll, Step, ToCity, ToCoinHarvester} from "./steps";
+import {
+  AttackEnemy,
+  ClickCoinPoll, GatherResource, GoFight,
+  SelectCommanderSolider, SelectField,
+  SelectSoloEnemy,
+  Step,
+  ToCity,
+  ToCoinHarvester,
+  ToWorld
+} from "./steps";
 import * as console from "console";
 import {myLog} from "./autoHandler";
 
@@ -21,8 +30,15 @@ export interface FunctionConfig {
     enabled: boolean; // 单独打野开关
     type: HuntType; // 打普通怪或精英怪
     level: number; // 怪的等级. 最高级降低级数
-  };
-  rallyHunt: boolean; // 集结打野开关
+    formationNum: number
+  },
+  rallyHunt: {
+    enabled: boolean; // 集结打野开关
+    type: HuntType; // 打普通怪或精英怪
+    level: number; // 怪的等级. 最高级降低级数
+    formationNum: number
+  }
+
 }
 
 export type Rule = (characterState: CharacterState, functionConfig: FunctionConfig) => Quest | null;
@@ -65,11 +81,23 @@ export class NullQuest extends Quest {
 }
 
 export class SoloHuntQuest extends Quest {
-  protected steps = []
+  protected steps = [
+    new ToWorld(),
+    new SelectSoloEnemy(),
+    new AttackEnemy(),
+    new SelectCommanderSolider(),
+    new GoFight()
+  ]
 }
 
 export class GatherFoodQuest extends Quest {
-  protected steps = []
+  protected steps = [
+      new ToWorld(),
+      new SelectField(),
+      new GatherResource(),
+      new SelectCommanderSolider(),
+      new GoFight()
+  ]
 }
 
 /**

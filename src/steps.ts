@@ -3,7 +3,7 @@ import {captureScreen, findMultiColor, myClick, mySwipe} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {pointConfig} from "./config/pointConfig";
-import {hasBackBtn, hasCloseBtn} from "./iconFinder";
+import {hasBackBtn, hasCloseBtn} from "./finder";
 
 export interface Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult;
@@ -16,6 +16,50 @@ export class CheckIdleTeamsStep implements Step {
       return new FailureResult('没有空闲队伍');
     }
     return new SuccessResult('空闲队伍检查通过');
+  }
+}
+
+export class SelectSoloEnemy implements Step {
+    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+        throw new Error('Method not implemented.');
+    }
+}
+
+export class SelectField implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    throw new Error('Method not implemented.');
+  }
+}
+
+export class GatherResource implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    throw new Error('Method not implemented.');
+  }
+}
+
+/**
+ * 攻击几次, 集结. 对话框
+ */
+export class AttackEnemy implements Step {
+  //判断单刷还是集结可以在创建Step时传个变量. 或者根据配置文件也可以,但是 配置中的单刷和集结得互斥
+    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+      //根据配置文件,攻击几次或是集结
+        throw new Error('Method not implemented.');
+    }
+}
+
+export class SelectCommanderSolider implements Step {
+    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+      //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
+        throw new Error('Method not implemented.');
+    }
+}
+
+export class GoFight implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    //点击出征按钮
+    //确认出征成功
+    throw new Error('Method not implemented.');
   }
 }
 
