@@ -30,7 +30,8 @@
   "include": [
     "./src/**/*",
     "./lib/**/*",
-    "./tests/**/*"
+    "./tests/**/*",
+    "./build/**/*"
 
   ],
   "exclude": [

@@ -1,27 +1,30 @@
-function MyAnnotation(target: any) {
-    target.prototype.name = '哈哈哈';
+import {CharacterState, FunctionConfig, HuntType} from './types';
+import {loadConfig} from './configLoader';
+import {createRuleFunction, generateQuest} from './ruleEngine';
+import {findMultiColor, screenShot} from "./autoHandler";
+
+// 加载配置文件
+const config = loadConfig('src/config.json');
+
+// 根据配置文件创建规则函数
+const rules = config.rules.map(createRuleFunction);
+
+// 示例角色状态和功能配置
+
+function isWorldWindow(): boolean {
+    //todo
+    let result = findMultiColor(screenShot(), 'mainCityColor')
+    if(result == null || result[0] == null){
+        return false
+    }else {
+        return true;
+    }
 }
 
-@MyAnnotation
-class Person {
+console.log("开始执行")
+console.log(isWorldWindow)
 
-    public age: number;
 
-    public name!: string;
-
-    public constructor() {
-        this.age = 18;
-    }
-
-    public toObject(): object {
-        return {
-            name: this.name,
-            age: this.age,
-        };
-    }
-
-}
-
-const p = new Person();
-
-console.log('Person:', p.toObject());
+// 生成动作指令
+const action = generateQuest(rules);
+console.log(action); // 输出：打1级普通怪

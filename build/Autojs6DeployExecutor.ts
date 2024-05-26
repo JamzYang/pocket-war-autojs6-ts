@@ -23,13 +23,13 @@ export class Autojs6DeployExecutor {
         const req = nodeHttp.get(`http://127.0.0.1:10347/exec?cmd=${execCmd}&path=${encodeURI(sendPath)}`, (res) => {
             res.setEncoding('utf8');
             res.addListener('data', (data) => {
-                console.debug('部署执行器: %s -> 执行命令成功！- data: %s', deployName, data);
+                console.info('部署执行器: %s -> 执行命令成功！- data: %s', deployName, data);
             }).addListener('error', (error) => {
                 console.error('部署执行器: %s -> 执行命令失败！- error: %s', deployName, error);
             });
         });
         req.addListener('finish', () => {
-            console.debug('部署执行器: %s -> 发送命令成功! - cmd: %s ; path: %s', deployName, execCmd, sendPath);
+            console.info('部署执行器: %s -> 发送命令成功! - cmd: %s ; path: %s', deployName, execCmd, sendPath);
         });
         req.addListener('error', (error) => {
             console.error('部署执行器: %s -> 发送命令失败！- error: %s', deployName, error);
