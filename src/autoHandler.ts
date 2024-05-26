@@ -1,5 +1,4 @@
 
-import {parseParam} from "./colorParamParser"
 import {parseAjColorParam} from "./ParamParser";
 
 
@@ -28,6 +27,7 @@ export function findImage(image: ImageWrapper, template: ImageWrapper, options?:
 }
 
 export function myClick(x: number, y: number): boolean {
+  console.log(`点击坐标:${x},${y}`)
   let result = click(x,y)
   sleep(400)
   return result

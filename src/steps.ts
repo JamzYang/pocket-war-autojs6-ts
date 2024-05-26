@@ -69,7 +69,8 @@ function handleBackButton() {
   console.info("handleBackButton")
   let backBtn = hasBackBtn()
   if (backBtn) {
-    myClick(backBtn.x, backBtn.y);
+    //[25,8,84,70]
+    myClick(backBtn.x + 30, backBtn.y + 30);
     console.info("click backBtn")
     handleBackButton();
   }
@@ -79,7 +80,8 @@ function handleCloseBtn(){
   console.info("handleCloseBtn")
   let closeBtn = hasCloseBtn()
   if(closeBtn != null) {
-    myClick(closeBtn.x, closeBtn.y)
+    // [630,119,675,163]
+    myClick(closeBtn.x + 22, closeBtn.y + 22)
     console.info("click closeBtn")
     handleCloseBtn()
   }

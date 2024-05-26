@@ -3,7 +3,9 @@ import {createRuleFunction, generateQuest} from './ruleEngine';
 import {findMultiColor, captureScreen, fromBase64, findImage} from "./autoHandler";
 import {colorConfig} from "./colorConfig";
 import {iconConfig} from "./iconConfig";
-
+import {ToWorld} from "./steps";
+import {CharacterState, FunctionConfig} from "./types";
+import {characterState, functionConfig} from "./config";
 // 加载配置文件
 // const config = loadConfig('src/config.json');
 //
@@ -32,6 +34,9 @@ function hasBackBtn(): OpenCV.Point | null {
     let icon = fromBase64(iconConfig.backBtn)
     return findImage(captureScreen(), icon)
 }
+
+let toWorld = new ToWorld();
+toWorld.execute(characterState, functionConfig)
 
 // 生成动作指令
 // const action = generateQuest(rules);
