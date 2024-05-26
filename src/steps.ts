@@ -1,5 +1,5 @@
 import {CharacterState, ExecuteResult, FailureResult, FunctionConfig, SuccessResult} from './types'
-import {captureScreen, findMultiColor, myClick, mySwipe} from "./autoHandler";
+import {captureScreen, findMultiColor, myClick, mySwipe, myLog} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {pointConfig} from "./config/pointConfig";
@@ -114,8 +114,7 @@ export class ClickCoinPoll implements Step {
       if (checkWindowResult) {
         let checkFree = findMultiColor(captureScreen(), colorConfig.coin.freeFastHarvest)
         if (checkFree) {
-          // myClick(checkFree.x, checkFree.y) todo
-          toast("假装点击 收割:" + checkFree)
+          myClick(checkFree.x, checkFree.y)
           closeDialog()
           return new SuccessResult("fast harvest")
         }
@@ -132,23 +131,23 @@ export class ClickCoinPoll implements Step {
 
 
 function handleBackButton() {
-  console.info("handleBackButton")
+  myLog("handleBackButton")
   let backBtn = hasBackBtn()
   if (backBtn) {
     //[25,8,84,70]
     myClick(backBtn.x + iconConfig.backBtn.offSet.x, backBtn.y + iconConfig.backBtn.offSet.y);
-    console.info("click backBtn")
+    myLog("click backBtn")
     handleBackButton();
   }
 }
 
 function handleCloseBtn(){
-  console.info("handleCloseBtn")
+  myLog("handleCloseBtn")
   let closeBtn = hasCloseBtn()
   if(closeBtn != null) {
     // [630,119,675,163]
     myClick(closeBtn.x + 22, closeBtn.y + 22)
-    console.info("click closeBtn")
+    myLog("click closeBtn")
     handleCloseBtn()
   }
 }
@@ -176,7 +175,7 @@ function closeDialog(): ExecuteResult {
   if(closeBtn != null) {
     // [630,119,675,163]
     myClick(closeBtn.x + iconConfig.closeBtn.offSet.x, closeBtn.y + iconConfig.closeBtn.offSet.y)
-    console.info("click closeBtn")
+    myLog("click closeBtn")
     return new SuccessResult("closeDialog")
   }
   return new FailureResult("closeDialog")

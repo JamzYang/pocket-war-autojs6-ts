@@ -29,8 +29,14 @@ function loadFeatureConfig(filePath: string): FunctionConfig {
     soloHunt: {
       enabled: true,
       type: HuntType.Normal,
-      level: 1
+      level: 1,
+      formationNum: 1,
     },
-    rallyHunt: false
+    rallyHunt: {
+      enabled: false,
+      type: HuntType.Normal,
+      level: 1,
+      formationNum: 1,
+    }
   };
 }
