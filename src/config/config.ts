@@ -1,4 +1,4 @@
-import {CharacterState, FunctionConfig, HuntType} from "./types";
+import {CharacterState, FunctionConfig, HuntType} from "../types";
 
 export const characterState: CharacterState = {
   stamina: 0,

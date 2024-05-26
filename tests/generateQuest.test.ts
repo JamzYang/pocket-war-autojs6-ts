@@ -10,7 +10,7 @@ import {
 import {loadConfig} from '../src/configLoader';
 import {ruleConfig} from '../src/condition';
 
-import {characterState, functionConfig} from "../src/config";
+import {characterState, functionConfig} from "../src/config/config";
 
 const configPath = 'src/config.json';
 const rules = ruleConfig.rules.map(createRuleFunction);

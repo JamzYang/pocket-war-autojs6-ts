@@ -1,4 +1,6 @@
-import {ClickCoinPoll, Step, ToCity} from "./steps";
+import {ClickCoinPoll, Step, ToCity, ToCoinHarvester} from "./steps";
+import * as console from "console";
+import {myLog} from "./autoHandler";
 
 export enum HuntType {
   Normal = 'normal',
@@ -45,12 +47,13 @@ export type ExecuteResult = SuccessResult | FailureResult;
 export  class Quest {
   protected steps: Step[] = [];
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    console.log(`Executing Quest ${this.constructor.name}`);
+    myLog(`Executing Quest ${this.constructor.name}`);
     let actionResult: ExecuteResult
     for (const step of this.steps) {
-      console.log(`Executing step: ${step.constructor.name}`);
+      myLog(`Executing step: ${step.constructor.name}`);
       actionResult = step.execute(characterState, functionConfig);
       if (actionResult instanceof FailureResult) {
+        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.error}`)
         return actionResult;
       }
     }
@@ -69,8 +72,11 @@ export class GatherFoodQuest extends Quest {
   protected steps = []
 }
 
+/**
+ * 注意: 点收割机时 有可能弹出未达到最佳领取状态的提示窗
+ */
 export class CollectCoinsQuest extends Quest {
-  protected steps = [new ToCity(), new ClickCoinPoll()]
+  protected steps = [new ToCity(),new ToCoinHarvester(), new ClickCoinPoll()]
 
 }
 

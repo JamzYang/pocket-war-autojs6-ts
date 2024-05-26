@@ -1,5 +1,6 @@
 // import * as fs from 'fs';
-import {colorConfig}  from "./colorConfig";
+import {colorConfig}  from "./config/colorConfig";
+import {myLog} from "./autoHandler";
 
 // 定义函数的参数类型接口
 interface Params {
@@ -15,7 +16,7 @@ interface Params {
 const configPath = './src/colorConfig.json';
 
 // function readConfig(filePath: string): any {
-//   console.log("Current working directory:", process.cwd());
+//   myLog("Current working directory:", process.cwd());
 //
 //   const data = fs.readFileSync(filePath, 'utf-8');
 //   // const config = JSON.parse(data);
@@ -27,7 +28,7 @@ const configPath = './src/colorConfig.json';
 // 将参数字符串解析为实际的参数
 export function parseParam(key: string): [string, string[], number, number, number[], number] {
   // let paramStr =  getConfigValue(key)
-  let paramStr =  colorConfig.mainCityColor
+  let paramStr =  colorConfig.mainWindow.mainCityColor
   // 创建一个新的函数解析参数字符串
   // 去除参数中的 "mat," 前缀
   const paramsWithoutMat = paramStr.replace(/^mat,/, '');
@@ -66,8 +67,8 @@ function findMultiColor(
     similarity: number
 ): any[] {  // 替换 'any[]' 为正确的返回类型
   // 方法实现
-  console.log("Called findMultiColor with parameters:", {
-    baseColor, colors, offset1, offset2, rect, similarity
-  });
+  // myLog("Called findMultiColor with parameters:", {
+  //   baseColor, colors, offset1, offset2, rect, similarity
+  // });
   return [];  // 占位返回
 }

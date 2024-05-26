@@ -28,8 +28,8 @@ class AjsParamParser implements ParamParser {
         .replace(/("threshold":\[)(\d+)(\])/g, '"threshold":'+'$2')
     );
 
-    // console.log("解析后的多点参数: baseColor ===>",JSON.stringify(baseColor));
-    // console.log("colors ===>", JSON.stringify(colors));
+    // myLog("解析后的多点参数: baseColor ===>",JSON.stringify(baseColor));
+    // myLog("colors ===>", JSON.stringify(colors));
     return [baseColor, colors, options]
   }
 }

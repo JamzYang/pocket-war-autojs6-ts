@@ -1,5 +1,5 @@
 import {parseAjColorParam} from "../src/ParamParser";
-import {colorConfig} from "../src/colorConfig";
+import {colorConfig} from "../src/config/colorConfig";
 
 // "autojs/626/1208",
 // "#949ca9",

@@ -1,6 +1,6 @@
 import {CharacterState, FunctionConfig, Quest, Rule, NullQuest, ActionClassMap} from './types';
 import { RuleConfig } from './configLoader';
-import { characterState, functionConfig } from "./config";
+import { characterState, functionConfig } from "./config/config";
 
 function getNestedValue(obj: any, path: string): any {
   return path.split('.').reduce((o, p) => o ? o[p] : undefined, obj);

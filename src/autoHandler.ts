@@ -26,9 +26,20 @@ export function findImage(image: ImageWrapper, template: ImageWrapper, options?:
   return images.findImage(image,template,options)
 }
 
-export function myClick(x: number, y: number): boolean {
-  console.log(`点击坐标:${x},${y}`)
+export function myClick(x: number, y: number, time: number = 400): boolean {
+  myLog(`点击坐标:${x},${y}`)
   let result = click(x,y)
-  sleep(400)
+  sleep(time)
   return result
+}
+
+export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 300): boolean {
+  myLog(`滑动坐标:${sx},${sy}->${ex},${ey}`)
+  let result = swipe(sx,sy,ex,ey,duration)
+  sleep(duration)
+  return result
+}
+
+export function myLog(msg: string): void {
+  log(msg)
 }
