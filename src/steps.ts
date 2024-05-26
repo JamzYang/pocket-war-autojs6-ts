@@ -1,5 +1,8 @@
 import {CharacterState, FunctionConfig, ExecuteResult, FailureResult, SuccessResult} from './types'
-import {captureScreen, findMultiColor} from "./autoHandler";
+import {captureScreen, findImage, findMultiColor, fromBase64, myClick} from "./autoHandler";
+import {colorConfig} from "./colorConfig";
+import {iconConfig} from "./iconConfig";
+import {pointConfig} from "./pointConfig";
 
 export interface Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult;
@@ -17,8 +20,9 @@ export class CheckIdleTeamsStep implements Step {
 
 export class ToWorld implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    handleCloseBtn()
     handleBackButton();
-    if(isCityWindow()) {
+    if(!isWorldWindow()) {
       clickMainCityBtnOrWorldBtn()
     }
 
@@ -31,6 +35,7 @@ export class ToWorld implements Step {
 
 export class ToCity implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    handleCloseBtn()
     handleBackButton();
     if(isWorldWindow()) {
       clickMainCityBtnOrWorldBtn()
@@ -61,37 +66,46 @@ export class ClickCoinPoll implements Step {
 
 
 function handleBackButton() {
-  if (hasBackBtn()) {
-    clickBackBtn();
-    handleBackButton(); // 递归调用自己
+  console.info("handleBackButton")
+  let backBtn = hasBackBtn()
+  if (backBtn) {
+    myClick(backBtn.x, backBtn.y);
+    console.info("click backBtn")
+    handleBackButton();
   }
 }
 
-function hasBackBtn(): boolean {
-  //todo
-  let image = captureScreen()
-  return false;
-}
-
-function clickBackBtn() {
-  //todo
-}
-
-function isWorldWindow(): boolean {
-  //todo
-  let result = findMultiColor(captureScreen(), 'mainCityColor')
-  if(result == null || result[0] == null){
-    return false
-  }else {
-    return true;
+function handleCloseBtn(){
+  console.info("handleCloseBtn")
+  let closeBtn = hasCloseBtn()
+  if(closeBtn != null) {
+    myClick(closeBtn.x, closeBtn.y)
+    console.info("click closeBtn")
+    handleCloseBtn()
   }
 }
 
-function isCityWindow(): boolean {
-  //todo
-  return true;
+function hasBackBtn(): OpenCV.Point | null {
+  let icon = fromBase64(iconConfig.backBtn)
+  return findImage(captureScreen(), icon)
+}
+
+function hasCloseBtn(): OpenCV.Point | null {
+  let icon = fromBase64(iconConfig.closeBtn)
+  return findImage(captureScreen(), icon)
+}
+
+
+function isWorldWindow() {
+  let result = findMultiColor(captureScreen(), colorConfig.mainWindow.mainCityColor)
+  return result !=null
+}
+
+function isCityWindow(): OpenCV.Point | null {
+  let result = findMultiColor(captureScreen(), colorConfig.mainWindow.worldColor)
+  return result
 }
 
 function clickMainCityBtnOrWorldBtn() {
-
+  myClick(pointConfig.mainCityWorldBtn.x, pointConfig.mainCityWorldBtn.y)
 }
