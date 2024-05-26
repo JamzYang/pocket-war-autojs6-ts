@@ -20,6 +20,7 @@
     "paths": {},
     "types": [
       "node",
+      "jest",
       "@sm003/autojs6-dts/declarations/android.d.ts",
       "@sm003/autojs6-dts/declarations/collections.d.ts",
       "@sm003/autojs6-dts/declarations/libraries.d.ts",
@@ -28,7 +29,9 @@
   },
   "include": [
     "./src/**/*",
-    "./lib/**/*"
+    "./lib/**/*",
+    "./tests/**/*"
+
   ],
   "exclude": [
     "./.vscode/",
