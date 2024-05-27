@@ -24,7 +24,8 @@
       "@sm003/autojs6-dts/declarations/android.d.ts",
       "@sm003/autojs6-dts/declarations/collections.d.ts",
       "@sm003/autojs6-dts/declarations/libraries.d.ts",
-      "@sm003/autojs6-dts/declarations/index.d.ts"
+      "@sm003/autojs6-dts/declarations/index.d.ts",
+      "./src/auto.d.ts"
     ]
   },
   "include": [

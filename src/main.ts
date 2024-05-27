@@ -7,6 +7,7 @@ import {ToCoinHarvester, ToWorld} from "./steps";
 import {CharacterState, CollectCoinsQuest, FunctionConfig, GatherFoodQuest} from "./types";
 import {characterState, functionConfig} from "./config/config";
 import {hasBackBtn} from "./finder";
+import * as autoHandler from "./autoHandler"
 // 加载配置文件
 // const config = loadConfig('src/config.json');
 //
@@ -32,8 +33,8 @@ toast("开始执行")
 // let coinQuest = new CollectCoinsQuest()
 // coinQuest.execute(characterState, functionConfig)
 
-let gatherFood = new GatherFoodQuest();
-gatherFood.execute(characterState, functionConfig);
+// let gatherFood = new GatherFoodQuest();
+// gatherFood.execute(characterState, functionConfig);
 
 
 function isWorldWindow(): boolean {
@@ -41,10 +42,14 @@ function isWorldWindow(): boolean {
     return result != null
 }
 
+//[1,485,243,541]
+let text = autoHandler.ocrText([1,485,243,56])
+for (const textKey in text) {
+    myLog(textKey + " ==>" + text[textKey])
+}
 
-
-
-
+toast("ocr text ==>" + text)
+myLog("ocr text ==>" + text)
 // 生成动作指令
 // const action = generateQuest(rules);
 // myLog(action); // 输出：打1级普通怪

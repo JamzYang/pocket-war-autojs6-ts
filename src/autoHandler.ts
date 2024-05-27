@@ -43,3 +43,7 @@ export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration
 export function myLog(msg: string): void {
   log(msg)
 }
+
+export function ocrText(region: OmniRegion): string[] {
+  return ocr.paddle.recognizeText(region)
+}
