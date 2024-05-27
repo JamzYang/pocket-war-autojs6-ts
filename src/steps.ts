@@ -25,7 +25,14 @@ export class SelectSoloEnemy implements Step {
     }
 }
 
-export class SelectField implements Step {
+export class ClickSearch implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y)
+    return new SuccessResult('点击搜索');
+  }
+}
+
+export class SelectResourceField implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     throw new Error('Method not implemented.');
   }

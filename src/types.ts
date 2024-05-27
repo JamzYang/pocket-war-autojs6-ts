@@ -1,7 +1,7 @@
 import {
   AttackEnemy,
-  ClickCoinPoll, GatherResource, GoFight,
-  SelectCommanderSolider, SelectField,
+  ClickCoinPoll, ClickSearch, GatherResource, GoFight,
+  SelectCommanderSolider, SelectResourceField,
   SelectSoloEnemy,
   Step,
   ToCity,
@@ -93,7 +93,8 @@ export class SoloHuntQuest extends Quest {
 export class GatherFoodQuest extends Quest {
   protected steps = [
       new ToWorld(),
-      new SelectField(),
+      new ClickSearch(),
+      new SelectResourceField(),
       new GatherResource(),
       new SelectCommanderSolider(),
       new GoFight()
