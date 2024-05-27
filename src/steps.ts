@@ -27,7 +27,7 @@ export class SelectSoloEnemy implements Step {
 
 export class ClickSearch implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y)
+    myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y, 400,"mainSearchBtn")
     return new SuccessResult('点击搜索');
   }
 }
@@ -102,9 +102,9 @@ export class ToCity implements Step {
 
 export class ToCoinHarvester implements Step{
     execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-        myClick(pointConfig.coinBar.x,pointConfig.coinBar.y)
+        myClick(pointConfig.coinBar.x,pointConfig.coinBar.y, 400, "coinBar")
         mySwipe(560,700,580,500)
-        myClick(pointConfig.coinHarvester.x, pointConfig.coinHarvester.y, 800)
+        myClick(pointConfig.coinHarvester.x, pointConfig.coinHarvester.y, 800, "coinHarvester")
       return new SuccessResult("coinHarvester")
     }
 }
@@ -121,7 +121,7 @@ export class ClickCoinPoll implements Step {
       if (checkWindowResult) {
         let checkFree = findMultiColor(captureScreen(), colorConfig.coin.freeFastHarvest)
         if (checkFree) {
-          myClick(checkFree.x, checkFree.y)
+          myClick(checkFree.x, checkFree.y,400, "fastHarvest checkFree")
           closeDialog()
           return new SuccessResult("fast harvest")
         }
@@ -131,7 +131,7 @@ export class ClickCoinPoll implements Step {
       return new FailureResult("fast harvest failure")
     }
     function clickCoinHarvesterIcon() {
-      myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y - 90)
+      myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y - 90, 400, "clickCoinHarvesterIcon")
     }
   }
 }
@@ -142,7 +142,7 @@ function handleBackButton() {
   let backBtn = hasBackBtn()
   if (backBtn) {
     //[25,8,84,70]
-    myClick(backBtn.x + iconConfig.backBtn.offSet.x, backBtn.y + iconConfig.backBtn.offSet.y);
+    myClick(backBtn.x + iconConfig.backBtn.offSet.x, backBtn.y + iconConfig.backBtn.offSet.y, 400, "backBtn");
     myLog("click backBtn")
     handleBackButton();
   }
@@ -153,7 +153,7 @@ function handleCloseBtn(){
   let closeBtn = hasCloseBtn()
   if(closeBtn != null) {
     // [630,119,675,163]
-    myClick(closeBtn.x + 22, closeBtn.y + 22)
+    myClick(closeBtn.x + 22, closeBtn.y + 22, 400, "closeBtn")
     myLog("click closeBtn")
     handleCloseBtn()
   }
@@ -174,14 +174,14 @@ function isCityWindow(): OpenCV.Point | null {
  * 主城和世界界面切换有点慢,多sleep一会儿
  */
 function clickMainCityBtnOrWorldBtn() {
-  myClick(pointConfig.mainCityWorldBtn.x, pointConfig.mainCityWorldBtn.y, 800)
+  myClick(pointConfig.mainCityWorldBtn.x, pointConfig.mainCityWorldBtn.y, 800, "clickMainCityBtnOrWorldBtn")
 }
 
 function closeDialog(): ExecuteResult {
   let closeBtn = hasCloseBtn()
   if(closeBtn != null) {
     // [630,119,675,163]
-    myClick(closeBtn.x + iconConfig.closeBtn.offSet.x, closeBtn.y + iconConfig.closeBtn.offSet.y)
+    myClick(closeBtn.x + iconConfig.closeBtn.offSet.x, closeBtn.y + iconConfig.closeBtn.offSet.y, 400, "closeBtn")
     myLog("click closeBtn")
     return new SuccessResult("closeDialog")
   }

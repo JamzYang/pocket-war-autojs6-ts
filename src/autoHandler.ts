@@ -26,8 +26,8 @@ export function findImage(image: ImageWrapper, template: ImageWrapper, options?:
   return images.findImage(image,template,options)
 }
 
-export function myClick(x: number, y: number, time: number = 400): boolean {
-  myLog(`点击坐标:${x},${y}`)
+export function myClick(x: number, y: number, time: number = 400, name?: string): boolean {
+  myLog(`点击 ${name}, 坐标:${x},${y}`)
   let result = click(x,y)
   sleep(time)
   return result
