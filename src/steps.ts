@@ -28,13 +28,72 @@ export class SelectSoloEnemy implements Step {
 export class ClickSearch implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y, 400,"mainSearchBtn")
-    return new SuccessResult('点击搜索');
+    return new SuccessResult('ClickSearch');
   }
 }
 
-export class SelectResourceField implements Step {
+/**
+ * 选中出征对像后, 目标信息界面一般出现在窗口上半部,有没有可能出现在下半部? //todo
+ */
+export class ClickConfirmGatherBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    throw new Error('Method not implemented.');
+    let result = findMultiColor(captureScreen(), colorConfig.confirmGatherBtn)
+    if(result == null) {
+      return new FailureResult('没有找到确认按钮')
+    }
+    myClick(result.x,result.y, 600,"ClickConfirmGatherBtn")
+    return new SuccessResult('ClickConfirmGatherBtn')
+  }
+}
+
+export class ClickConfirmBattleBtn implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.confirmBattleBtn.x,pointConfig.confirmBattleBtn.y, 200,"ClickConfirmBattleBtn")
+    return new SuccessResult('ClickConfirmBattleBtn')
+  }
+}
+
+export class ClickOneClickBattle implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.oneClickBattleBtn.x,pointConfig.oneClickBattleBtn.y, 200,"ClickOneClickBattle")
+    return new SuccessResult('ClickOneClickBattle')
+  }
+}
+
+export class SelectResourceFieldTab implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 400,"SelectResourceFieldTab")
+    return new SuccessResult('SelectResourceFieldTab')
+  }
+}
+
+export class ClickFarmlandPic implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.searchFarmLandPic.x, pointConfig.searchFarmLandPic.y, 400,"ClickFarmlandPic")
+    return new SuccessResult('ClickFarmlandPic');
+  }
+}
+
+export class SelectSearchLevel implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    for (let i = 0; i < 5; i++) {
+      myClick(pointConfig.searchLevelPlusIcon.x, pointConfig.searchLevelPlusIcon.y, 50,"SelectSearchLevel")
+    }
+    return new SuccessResult('SelectSearchLevel');
+  }
+}
+
+export class ClickFocusPoint implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y, 1000,"ClickFocusPoint")
+    return new SuccessResult('ClickFocusPoint');
+  }
+}
+
+export class ClickConfirmSearchBtn implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y, 500,"ClickConfirmSearchBtn")
+    return new SuccessResult('ClickConfirmSearchBtn');
   }
 }
 
@@ -62,13 +121,6 @@ export class SelectCommanderSolider implements Step {
     }
 }
 
-export class GoFight implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    //点击出征按钮
-    //确认出征成功
-    throw new Error('Method not implemented.');
-  }
-}
 
 export class ToWorld implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {

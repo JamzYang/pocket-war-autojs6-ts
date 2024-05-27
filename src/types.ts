@@ -1,7 +1,14 @@
 import {
   AttackEnemy,
-  ClickCoinPoll, ClickSearch, GatherResource, GoFight,
-  SelectCommanderSolider, SelectResourceField,
+  ClickCoinPoll, ClickConfirmBattleBtn,
+  ClickConfirmGatherBtn,
+  ClickConfirmSearchBtn,
+  ClickFarmlandPic,
+  ClickFocusPoint, ClickOneClickBattle,
+  ClickSearch,
+  SelectCommanderSolider,
+  SelectResourceFieldTab,
+  SelectSearchLevel,
   SelectSoloEnemy,
   Step,
   ToCity,
@@ -86,7 +93,7 @@ export class SoloHuntQuest extends Quest {
     new SelectSoloEnemy(),
     new AttackEnemy(),
     new SelectCommanderSolider(),
-    new GoFight()
+    // new GoFight()
   ]
 }
 
@@ -94,10 +101,16 @@ export class GatherFoodQuest extends Quest {
   protected steps = [
       new ToWorld(),
       new ClickSearch(),
-      new SelectResourceField(),
-      new GatherResource(),
-      new SelectCommanderSolider(),
-      new GoFight()
+      new SelectResourceFieldTab(),
+      new ClickFarmlandPic(),
+      new SelectSearchLevel(),
+      new ClickConfirmSearchBtn(),
+      new ClickFocusPoint(),
+      new ClickConfirmGatherBtn(),
+      new ClickOneClickBattle(),
+      // new GatherResource(),
+      // new SelectCommanderSolider(),
+      new ClickConfirmBattleBtn()
   ]
 }
 

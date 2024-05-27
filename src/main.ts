@@ -4,7 +4,7 @@ import {findMultiColor, captureScreen, fromBase64, findImage, myLog} from "./aut
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {ToCoinHarvester, ToWorld} from "./steps";
-import {CharacterState, CollectCoinsQuest, FunctionConfig} from "./types";
+import {CharacterState, CollectCoinsQuest, FunctionConfig, GatherFoodQuest} from "./types";
 import {characterState, functionConfig} from "./config/config";
 import {hasBackBtn} from "./finder";
 // 加载配置文件
@@ -13,26 +13,27 @@ import {hasBackBtn} from "./finder";
 // // 根据配置文件创建规则函数
 // const rules = config.rules.map(createRuleFunction);
 
-
+if(!requestScreenCapture()){
+    toast("请求截图失败");
+    exit();
+}
 sleep(2000)
 toast("开始执行")
-
 // toast("是否是世界主界面:" +isWorldWindow())
 // myLog("是否是世界主界面:" +isWorldWindow())
 // toast("检测关闭按钮:" + hasCloseBtn())
 // myLog("检测关闭按钮:" + hasCloseBtn())
-toast("检测返回按钮:" + hasBackBtn())
-myLog("检测返回按钮:" + hasBackBtn())
 // let toWorld = new ToWorld();
 // toWorld.execute(characterState, functionConfig)
 
 // let toCoinHarvester = new ToCoinHarvester();
 // toCoinHarvester.execute(characterState, functionConfig)
 
-let coinQuest = new CollectCoinsQuest()
-coinQuest.execute(characterState, functionConfig)
+// let coinQuest = new CollectCoinsQuest()
+// coinQuest.execute(characterState, functionConfig)
 
-
+let gatherFood = new GatherFoodQuest();
+gatherFood.execute(characterState, functionConfig);
 
 
 function isWorldWindow(): boolean {
