@@ -1,9 +1,19 @@
 import {CharacterState, ExecuteResult, FailureResult, FunctionConfig, SuccessResult} from './types'
-import {captureScreen, findMultiColor, myClick, mySwipe, myLog} from "./autoHandler";
+import {
+  captureScreen,
+  findMultiColor,
+  myClick,
+  mySwipe,
+  myLog,
+  findImage,
+  fromBase64,
+  matchTemplate, ocrText, ocrTextFromImg
+} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {pointConfig} from "./config/pointConfig";
 import {hasBackBtn, hasCloseBtn} from "./finder";
+import {orcRallyEnemyName} from "./ocr";
 
 export interface Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult;
@@ -45,6 +55,48 @@ export class ClickConfirmGatherBtn implements Step {
     return new SuccessResult('ClickConfirmGatherBtn')
   }
 }
+
+//跟车页 卡片之间垂直间隔610px,
+export class GetInBus implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    //怪物名字 [496,309,684,352] 中心点： 349 272  相比加号中心 x偏移 147， y偏移 37  名字框 高 43 宽 188
+    //这个方法有个问题。多点找色只能找到最上面一个
+    // let result = findMultiColor(img, colorConfig.rallyJoinInIcon)
+
+    //上车图标区域[318,242,383,309]  怪物文字栏 482,305  682, 345  x偏移164 y偏移 63 宽 131 高 113
+    //最后一列上车图标垂直区域 [311,236,389,943]
+    let img = captureScreen()
+    const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
+      region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
+    });
+
+    if(matchingResult.matches.length > 0) {
+      matchingResult.matches.forEach(match => {
+        let enemyName = orcRallyEnemyName(img,[match.point.x + 164, match.point.y +63, 131, 113])
+        myLog('怪物名字: ' + enemyName)
+        //todo 如果和quest中的目标一致就 上车
+        myClick(match.point.x + iconConfig.getInBusIcon.offSet.x ,match.point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
+        return new SuccessResult('GetInBus')
+      });
+    }
+    myClick(pointConfig.unionIcon.x,pointConfig.unionIcon.y, 400,"ClickUnionIcon")
+    return new SuccessResult('ClickUnionIcon')
+  }
+}
+export class ToRallyWindow implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.unionIcon.x,pointConfig.unionIcon.y, 400,"ClickUnionIcon")
+    myClick(pointConfig.warIcon.x,pointConfig.warIcon.y, 400,"ClickWarIcon")
+    let result = findMultiColor(captureScreen(), colorConfig.rallyNoBusWindow)
+    if(result != null) {
+      myClick(pointConfig.rallyNoBusWindowCloseBtn.x,pointConfig.rallyNoBusWindowCloseBtn.y, 200,"click rallyNoBusWindowCloseBtn")
+      new ToWorld().execute(characterState, functionConfig)
+      return new FailureResult('no bus found')
+    }
+    return new SuccessResult('ToRallyWindow')
+  }
+}
+
 
 export class ClickConfirmBattleBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {

@@ -1,9 +1,23 @@
 export const pointConfig = {
   focusPoint: {x: 360, y: 640},
+
+  //========================主界面========================
   mainCityWorldBtn: {x: 630, y: 1200},
   mainSearchBtn: {x: 80, y: 1200},
   coinBar: {x: 220, y: 25},
   coinHarvester: {x: 220, y: 1040},
+  unionIcon: {x: 660, y: 856},
+
+
+  //========================联盟窗口======================
+  warIcon: {x: 200, y: 1000},
+
+
+
+
+
+
+  //=======================搜索界面========================
   searchRallyTab: {x: 110, y: 575},
   /**
    *搜索界面资源田
@@ -29,4 +43,7 @@ export const pointConfig = {
   formationNum7: {x: 637, y: 1075},
   formationNum8: {x: 689, y: 1075},
   confirmBattleBtn: {x: 355, y: 510},
+
+  //无集结队伍 子窗口
+  rallyNoBusWindowCloseBtn: {x: 650, y: 140}
 }

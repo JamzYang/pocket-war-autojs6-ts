@@ -26,6 +26,18 @@ export function findImage(image: ImageWrapper, template: ImageWrapper, options?:
   return images.findImage(image,template,options)
 }
 
+export function matchTemplate(img: ImageWrapper, template: ImageWrapper, options?: {
+  threshold?: number;
+  weakThreshold?: number;
+  level?: number;
+  region?: OmniRegion;
+  max?: number;
+}): Images.MatchingResult {
+  return images.matchTemplate(img,template,options)
+}
+
+
+
 export function myClick(x: number, y: number, time: number = 400, name?: string): boolean {
   myLog(`点击 ${name}, 坐标:${x},${y}`)
   let result = click(x,y)
@@ -46,4 +58,16 @@ export function myLog(msg: string): void {
 
 export function ocrText(region: OmniRegion): string[] {
   return ocr.paddle.recognizeText(region)
+}
+
+// recognizeText(img: ImageWrapper | string, region: OmniRegion): string[];
+// export function ocrTextFromImg(img: ImageWrapper | string, region: OmniRegion): string[] {
+//   // return ocr.paddle.recognizeText(img,region)
+//   return ocr.paddle.recognizeText(img,region)
+// }
+
+
+export function ocrTextFromImg(img: ImageWrapper | string, region: OmniRegion): org.autojs.autojs.runtime.api.OcrResult[] {
+  // return ocr.paddle.recognizeText(img,region)
+  return ocr.paddle.detect(img,region)
 }
