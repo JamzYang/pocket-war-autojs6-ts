@@ -97,7 +97,7 @@ export class ToRallyWindow implements Step {
     if(result != null) {
       myClick(pointConfig.rallyNoBusWindowCloseBtn.x,pointConfig.rallyNoBusWindowCloseBtn.y, 200,"click rallyNoBusWindowCloseBtn")
       new ToWorld().execute(characterState, functionConfig)
-      return new FailureResult('no bus found')
+      return new NeedRepeatFailureResult('no bus found', 50)
     }
     return new SuccessResult('ToRallyWindow')
   }

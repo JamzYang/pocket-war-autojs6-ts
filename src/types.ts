@@ -65,7 +65,7 @@ export class FailureResult extends ExecuteResult{
 
 }
 
-export class NeedRepeatFailureResult extends ExecuteResult{
+export class NeedRepeatFailureResult extends FailureResult{
   repeatSeconds: number;
   constructor(error: string, repeatSeconds: number) {
     super(error);
