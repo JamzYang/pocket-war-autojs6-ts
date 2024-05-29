@@ -5,14 +5,14 @@ import {
   ClickConfirmSearchBtn,
   ClickFarmlandPic,
   ClickFocusPoint, ClickOneClickBattle,
-  ClickSearch,
+  ClickSearch, GetInBus,
   SelectCommanderSolider,
   SelectResourceFieldTab,
   SelectSearchLevel,
   SelectSoloEnemy,
   Step,
   ToCity,
-  ToCoinHarvester,
+  ToCoinHarvester, ToRallyWindow,
   ToWorld
 } from "./steps";
 import * as console from "console";
@@ -50,22 +50,30 @@ export interface FunctionConfig {
 
 export type Rule = (characterState: CharacterState, functionConfig: FunctionConfig) => Quest | null;
 
-
-export class SuccessResult {
+export class ExecuteResult {
   message: string;
-  constructor(message: string = '成功') {
-    this.message = message;
+  constructor(msg: string) {
+    this.message = msg;
+  }
+};
+
+export class SuccessResult extends ExecuteResult{
+
+}
+
+export class FailureResult extends ExecuteResult{
+
+}
+
+export class NeedRepeatFailureResult extends ExecuteResult{
+  repeatSeconds: number;
+  constructor(error: string, repeatSeconds: number) {
+    super(error);
+    this.repeatSeconds =repeatSeconds;
   }
 }
 
-export class FailureResult {
-  error: string;
-  constructor(error: string) {
-    this.error = error;
-  }
-}
 
-export type ExecuteResult = SuccessResult | FailureResult;
 
 export  class Quest {
   protected steps: Step[] = [];
@@ -76,7 +84,16 @@ export  class Quest {
       myLog(`Executing step: ${step.constructor.name}`);
       actionResult = step.execute(characterState, functionConfig);
       if (actionResult instanceof FailureResult) {
-        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.error}`)
+        //the current time in seconds
+        const repeatStartTime = new Date().getTime();
+        if(actionResult instanceof NeedRepeatFailureResult) {
+          actionResult = step.execute(characterState, functionConfig);
+          while (actionResult instanceof NeedRepeatFailureResult
+          && new Date().getTime() - repeatStartTime < actionResult.repeatSeconds * 1000) {
+            actionResult = step.execute(characterState, functionConfig);
+          }
+        }
+        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.message}`)
         return actionResult;
       }
     }
@@ -120,6 +137,16 @@ export class GatherFoodQuest extends Quest {
 export class CollectCoinsQuest extends Quest {
   protected steps = [new ToCity(),new ToCoinHarvester(), new ClickCoinPoll()]
 
+}
+
+export class GetInBusQuest extends Quest {
+  protected steps = [
+    new ToWorld(),
+    new ToRallyWindow(),
+    new GetInBus(),
+    new SelectCommanderSolider(),
+    new ClickConfirmBattleBtn()
+  ]
 }
 
 

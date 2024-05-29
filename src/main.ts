@@ -4,7 +4,14 @@ import {findMultiColor, captureScreen, fromBase64, findImage, myLog, matchTempla
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {GetInBus, ToCoinHarvester, ToWorld} from "./steps";
-import {CharacterState, CollectCoinsQuest, FunctionConfig, GatherFoodQuest, SuccessResult} from "./types";
+import {
+  CharacterState,
+  CollectCoinsQuest,
+  FunctionConfig,
+  GatherFoodQuest, GetInBusQuest,
+  SoloHuntQuest,
+  SuccessResult
+} from "./types";
 import {characterState, functionConfig} from "./config/config";
 import {hasBackBtn} from "./finder";
 import * as autoHandler from "./autoHandler"
@@ -58,17 +65,21 @@ sleep(2000)
 //     myLog("匹配到返回按钮")
 // }
 
-let img = captureScreen()
-const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
-  region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
-});
-//将matchingResult转成json 并打印
-myLog(JSON.stringify(matchingResult))
+// let img = captureScreen()
+// const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
+//   region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
+// });
+// //将matchingResult转成json 并打印
+// myLog(JSON.stringify(matchingResult))
+//
+// if(matchingResult.points.length > 0) {
+//   matchingResult.points.forEach(point => {
+//     let enemyName = orcRallyEnemyName(img,[point.x + 164, point.y +63, 131, 113])
+//     myLog('怪物名字: ' + enemyName)
+//     //todo 如果和quest中的目标一致就 上车
+//   });
+// }
 
-if(matchingResult.points.length > 0) {
-  matchingResult.points.forEach(point => {
-    let enemyName = orcRallyEnemyName(img,[point.x + 164, point.y +63, 131, 113])
-    myLog('怪物名字: ' + enemyName)
-    //todo 如果和quest中的目标一致就 上车
-  });
-}
+// let getInBus = new GetInBus();
+let getInBusQuest = new GetInBusQuest();
+getInBusQuest.execute(characterState, functionConfig)

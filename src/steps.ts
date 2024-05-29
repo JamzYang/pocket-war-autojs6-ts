@@ -1,4 +1,11 @@
-import {CharacterState, ExecuteResult, FailureResult, FunctionConfig, SuccessResult} from './types'
+import {
+  CharacterState,
+  ExecuteResult,
+  FailureResult,
+  FunctionConfig,
+  NeedRepeatFailureResult,
+  SuccessResult
+} from './types'
 import {
   captureScreen,
   findMultiColor,
@@ -79,8 +86,7 @@ export class GetInBus implements Step {
         return new SuccessResult('GetInBus')
       });
     }
-    myClick(pointConfig.unionIcon.x,pointConfig.unionIcon.y, 400,"ClickUnionIcon")
-    return new SuccessResult('ClickUnionIcon')
+    return new NeedRepeatFailureResult('没有找到空坐位',60)
   }
 }
 export class ToRallyWindow implements Step {
@@ -169,7 +175,8 @@ export class AttackEnemy implements Step {
 export class SelectCommanderSolider implements Step {
     execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
       //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
-        throw new Error('Method not implemented.');
+      myClick(pointConfig.formationNum2.x, pointConfig.formationNum2.y)
+      return new SuccessResult("SelectCommanderSolider")
     }
 }
 
