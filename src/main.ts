@@ -1,5 +1,3 @@
-import {loadConfig} from './configLoader';
-import {createRuleFunction, generateQuest} from './ruleEngine';
 import {findMultiColor, captureScreen, fromBase64, findImage, myLog, matchTemplate, myClick} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";

@@ -44,11 +44,25 @@ export interface FunctionConfig {
     type: HuntType; // 打普通怪或精英怪
     level: number; // 怪的等级. 最高级降低级数
     formationNum: number
+  },
+  getInBus: {
+    enabled: boolean,
+    chuizi: {
+      enabled: boolean,
+      times: number,
+    },
+    nanmin: {
+      enabled: boolean,
+      times: number,
+    },
+    heijun: {
+      enabled: boolean,
+      times: number,
+    },
+    formationNum: number
   }
 
 }
-
-export type Rule = (characterState: CharacterState, functionConfig: FunctionConfig) => Quest | null;
 
 export class ExecuteResult {
   message: string;
@@ -77,6 +91,7 @@ export class NeedRepeatFailureResult extends FailureResult{
 
 export  class Quest {
   protected steps: Step[] = [];
+  weight: number = 0;
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myLog(`Executing Quest ${this.constructor.name}`);
     let actionResult: ExecuteResult
@@ -105,6 +120,7 @@ export class NullQuest extends Quest {
 }
 
 export class SoloHuntQuest extends Quest {
+  weight = 6;
   protected steps = [
     new ToWorld(),
     new SelectSoloEnemy(),
@@ -140,6 +156,7 @@ export class CollectCoinsQuest extends Quest {
 }
 
 export class GetInBusQuest extends Quest {
+  weight = 5;
   protected steps = [
     new ToWorld(),
     new ToRallyWindow(),
@@ -155,4 +172,5 @@ export const ActionClassMap: { [key: string]: new (characterState: CharacterStat
   SoloHuntQuest: SoloHuntQuest,
   CollectCoinsQuest: CollectCoinsQuest,
   GatherFoodQuest: GatherFoodQuest,
+  GetInBusQuest: GetInBusQuest,
 };
