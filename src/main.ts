@@ -21,6 +21,9 @@ import {orcRallyEnemyName, orcTeamNum} from './ocr'
 //
 // // 根据配置文件创建规则函数
 // const rules = config.rules.map(createRuleFunction);
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 toastLog("开始执行")
 

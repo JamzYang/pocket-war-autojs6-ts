@@ -7,7 +7,9 @@ import {characterState, functionConfig} from "../src/config/config";
 import { myLogMock, myLogSpy } from './autoHandler.mock';
 import * as autoHandler from '../src/autoHandler';
 import {hasCloseBtn, hasBackBtn} from '../src/finder'
+import * as process from "process";
 
+jest.mock('dotenv', () => ({config: () => {}}))
 jest.mock('../src/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
   fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
@@ -54,7 +56,13 @@ describe('execute action', () =>{
   });
 
   it('some step should repeat when fail on repeatable error', () => {
+    process.env.REPEAT_SECONDS_MULTIPLE_OF_50 = '0.1';
     (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [] });
+    //前两次mock是 ToWorld step
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    //第三次是为  ToRallyWindow step
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
     // (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
     let getInBusQuest = new GetInBusQuest();
     getInBusQuest.execute(characterState, functionConfig);

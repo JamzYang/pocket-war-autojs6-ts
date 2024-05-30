@@ -1,3 +1,4 @@
+import dotenv from 'dotenv'
 import {
   CharacterState,
   ExecuteResult,
@@ -86,7 +87,7 @@ export class GetInBus implements Step {
         return new SuccessResult('GetInBus')
       });
     }
-    return new NeedRepeatFailureResult('没有找到空坐位',60)
+    return new NeedRepeatFailureResult('没有找到空坐位',3 * Number(process.env.REPEAT_SECONDS_MULTIPLE_OF_50?.toString() || '50'))
   }
 }
 export class ToRallyWindow implements Step {
@@ -97,7 +98,7 @@ export class ToRallyWindow implements Step {
     if(result != null) {
       myClick(pointConfig.rallyNoBusWindowCloseBtn.x,pointConfig.rallyNoBusWindowCloseBtn.y, 200,"click rallyNoBusWindowCloseBtn")
       new ToWorld().execute(characterState, functionConfig)
-      return new NeedRepeatFailureResult('no bus found', 50)
+      return new NeedRepeatFailureResult('no bus found', Number(process.env.REPEAT_SECONDS_MULTIPLE_OF_50?.toString() || '50'))
     }
     return new SuccessResult('ToRallyWindow')
   }
