@@ -32,44 +32,16 @@ export function orcRallyEnemyName(img: ImageWrapper, region: OmniRegion): string
     return '难民'
   }
 
+  if(ocrResults.map(o => o.label).some(item => item.includes('难民'))){
+    return '砰砰'
+  }
 
-  /*
-   let zhanchui = ocrResults.filter(result => result?.label?.includes('战锤'))
-   if(zhanchui.length >= 1){
-     return '战锤'
-   }
+  if(ocrResults.map(o => o.label).some(item => item.includes('精卫'))){
+    return '精卫'
+  }
 
-
-
-   let juxing = ocrResults.filter(result => result.label.includes('惧星'))
-   if(juxing.length >= 1){
-     return '惧星'
-   }
-
-   let nanmin = ocrResults.filter(result => result.label.includes('难民'))
-   if(nanmin.length >= 1){
-     return '难民'
-   }
-
-   let pengpeng = ocrResults.filter(result => result.label.includes('砰砰'))
-   if(pengpeng.length >= 1){
-     return '砰砰'
-   }
-
-   let jingwei = ocrResults.filter(result => result.label.includes('精卫'))
-   if(jingwei.length >= 1){
-     return '精卫'
-   }
-
-   let shouwei = ocrResults.filter(result => result.label.includes('守卫'))
-   if(shouwei.length >= 1){
-     return '守卫'
-   }
-  */
-  // let juxing = text.filter(text => text.includes('惧星'))
-  // if(juxing.length >= 1){
-  //   return '惧星'
-  // }
-  //todo
+  if(ocrResults.map(o => o.label).some(item => item.includes('守卫'))){
+    return '守卫'
+  }
   return null;
 }
