@@ -1,5 +1,6 @@
 // import * as fs from 'fs';
 import {Quest, FunctionConfig, HuntType} from "./types";
+import {functionConfig} from "./config/config";
 
 export interface RuleConfig {
   conditions: { [key: string]: any };
@@ -23,20 +24,8 @@ function loadFeatureConfig(filePath: string): FunctionConfig {
   // const data = fs.readFileSync(filePath, 'utf-8');
   // return JSON.parse(data) as FunctionConfig;
   //todo 暂时写死,后面从文件中读取
-  return  {
-    collectCoins: true,
-    gatherFood: true,
-    soloHunt: {
-      enabled: true,
-      type: HuntType.Normal,
-      level: 1,
-      formationNum: 1,
-    },
-    rallyHunt: {
-      enabled: false,
-      type: HuntType.Normal,
-      level: 1,
-      formationNum: 1,
-    }
-  };
+  //返回一个空的配置
+  console.log("loadFeatureConfig");
+
+  return functionConfig;
 }

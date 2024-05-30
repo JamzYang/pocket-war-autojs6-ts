@@ -44,6 +44,22 @@ export interface FunctionConfig {
     type: HuntType; // 打普通怪或精英怪
     level: number; // 怪的等级. 最高级降低级数
     formationNum: number
+  },
+  getInBus: {
+    enabled: boolean,
+    chuizi: {
+      enabled: boolean,
+      times: number,
+    },
+    nanmin: {
+      enabled: boolean,
+      times: number,
+    },
+    heijun: {
+      enabled: boolean,
+      times: number,
+    },
+    formationNum: number
   }
 
 }
@@ -155,4 +171,5 @@ export const ActionClassMap: { [key: string]: new (characterState: CharacterStat
   SoloHuntQuest: SoloHuntQuest,
   CollectCoinsQuest: CollectCoinsQuest,
   GatherFoodQuest: GatherFoodQuest,
+  GetInBusQuest: GetInBusQuest,
 };

@@ -13,7 +13,6 @@ import {ruleConfig} from '../src/condition';
 import {characterState, functionConfig} from "../src/config/config";
 
 const configPath = 'src/config.json';
-const rules = ruleConfig.rules.map(createRuleFunction);
 // 测试角色状态和功能配置
 
 
@@ -23,6 +22,7 @@ describe('generate Quest', () => {
     characterState.idleTeams = 1;
     characterState.stamina = 60;
     functionConfig.soloHunt.enabled = true;
+    const rules = ruleConfig.rules.map(createRuleFunction);
 
     // 检查是否生成了正确的指令
     const action = generateQuest(rules);
@@ -33,6 +33,9 @@ describe('generate Quest', () => {
     characterState.stamina = 5;
     characterState.idleTeams = 1;
     functionConfig.gatherFood = true;
+    functionConfig.getInBus.enabled = false;
+
+    const rules = ruleConfig.rules.map(createRuleFunction);
     const action = generateQuest(rules);
     expect(action[0]).toBeInstanceOf(GatherFoodQuest);
   });
@@ -40,6 +43,7 @@ describe('generate Quest', () => {
   it('should generate collect coins action when idle teams are zero and time since last coin collection is more than 1 hour', () => {
     characterState.idleTeams = 0;
     functionConfig.collectCoins = true;
+    const rules = ruleConfig.rules.map(createRuleFunction);
     const action = generateQuest(rules);
     expect(action[0]).toBeInstanceOf(CollectCoinsQuest);
   });
@@ -47,7 +51,7 @@ describe('generate Quest', () => {
   it('should return null if no conditions match', () => {
     characterState.idleTeams = 0;
     functionConfig.collectCoins = false;
-
+    const rules = ruleConfig.rules.map(createRuleFunction);
     const action = generateQuest(rules);
     expect(action.length).toBe(0);
   });

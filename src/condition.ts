@@ -1,4 +1,4 @@
-import {Quest, CollectCoinsQuest, FunctionConfig, GatherFoodQuest, SoloHuntQuest} from "./types";
+import {Quest, CollectCoinsQuest, FunctionConfig, GatherFoodQuest, SoloHuntQuest, GetInBusQuest} from "./types";
 import {featureConfig} from  "./configLoader"
 interface Condition {
   gt?: number;
@@ -42,7 +42,14 @@ export const ruleConfig: RuleConfig = {
         lastCoinCollectionTime: { gtHoursAgo: 1 }
       },
       action: CollectCoinsQuest.name
-    }
+    },
+    {
+      conditions: {
+        idleTeams: { gt: 0 },
+        getInBus: {enable: featureConfig.getInBus.enabled},
+      },
+      action: GetInBusQuest.name
+    },
   ]
 };
 

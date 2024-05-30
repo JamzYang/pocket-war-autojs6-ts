@@ -21,5 +21,21 @@ export const functionConfig: FunctionConfig = {
     type: HuntType.Normal,
     level: 1,
     formationNum: 1
+  },
+  getInBus: {
+    enabled: false,
+    chuizi: {
+      enabled: true,
+      times: 50,
+    },
+    nanmin: {
+      enabled: true,
+      times: 10,
+    },
+    heijun: {
+      enabled: true,
+      times: 50,
+    },
+    formationNum: 1
   }
 };
