@@ -1,49 +1,88 @@
 import {loadConfig} from './configLoader';
 import {createRuleFunction, generateQuest} from './ruleEngine';
-import {findMultiColor, captureScreen, fromBase64, findImage, myLog} from "./autoHandler";
+import {findMultiColor, captureScreen, fromBase64, findImage, myLog, matchTemplate, myClick} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
-import {ToCoinHarvester, ToWorld} from "./steps";
-import {CharacterState, CollectCoinsQuest, FunctionConfig} from "./types";
+import {GetInBus, ToCoinHarvester, ToWorld} from "./steps";
+import {
+  CharacterState,
+  CollectCoinsQuest,
+  FunctionConfig,
+  GatherFoodQuest, GetInBusQuest,
+  SoloHuntQuest,
+  SuccessResult
+} from "./types";
 import {characterState, functionConfig} from "./config/config";
 import {hasBackBtn} from "./finder";
+import * as autoHandler from "./autoHandler"
+import {orcRallyEnemyName, orcTeamNum} from './ocr'
 // 加载配置文件
 // const config = loadConfig('src/config.json');
 //
 // // 根据配置文件创建规则函数
 // const rules = config.rules.map(createRuleFunction);
+import dotenv from 'dotenv';
+dotenv.config();
 
 
+toastLog("开始执行")
+
+// threads.start(() => {
+//     if(!requestScreenCapture()){
+//         toast("请求截图失败");
+//         exit();
+//     }
+// })
+captureScreen()
 sleep(2000)
-toast("开始执行")
-
 // toast("是否是世界主界面:" +isWorldWindow())
 // myLog("是否是世界主界面:" +isWorldWindow())
 // toast("检测关闭按钮:" + hasCloseBtn())
 // myLog("检测关闭按钮:" + hasCloseBtn())
-toast("检测返回按钮:" + hasBackBtn())
-myLog("检测返回按钮:" + hasBackBtn())
 // let toWorld = new ToWorld();
 // toWorld.execute(characterState, functionConfig)
 
 // let toCoinHarvester = new ToCoinHarvester();
 // toCoinHarvester.execute(characterState, functionConfig)
 
-let coinQuest = new CollectCoinsQuest()
-coinQuest.execute(characterState, functionConfig)
+// let coinQuest = new CollectCoinsQuest()
+// coinQuest.execute(characterState, functionConfig)
 
+// let gatherFood = new GatherFoodQuest();
+// gatherFood.execute(characterState, functionConfig);
 
-
-
-function isWorldWindow(): boolean {
-    let result = findMultiColor(captureScreen(), colorConfig.mainWindow.mainCityColor)
-    return result != null
-}
-
-
-
-
-
+//[1,485,243,541]
+// let text = orcTeamNum()
+//
+// toast("ocr text ==>" + text)
+// myLog("ocr text ==>" + text?.idle + "===" + text?.total)
 // 生成动作指令
 // const action = generateQuest(rules);
 // myLog(action); // 输出：打1级普通怪
+// let getInBus = new GetInBus();
+// getInBus.execute(characterState, functionConfig)
+// let matchResult = autoHandler.matchTemplate(captureScreen(), fromBase64(iconConfig.backBtn.base64))
+//
+// if(matchResult.matches.length >= 1){
+//     toast("匹配到返回按钮")
+//     myLog("匹配到返回按钮")
+// }
+
+// let img = captureScreen()
+// const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
+//   region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
+// });
+// //将matchingResult转成json 并打印
+// myLog(JSON.stringify(matchingResult))
+//
+// if(matchingResult.points.length > 0) {
+//   matchingResult.points.forEach(point => {
+//     let enemyName = orcRallyEnemyName(img,[point.x + 164, point.y +63, 131, 113])
+//     myLog('怪物名字: ' + enemyName)
+//     //todo 如果和quest中的目标一致就 上车
+//   });
+// }
+
+// let getInBus = new GetInBus();
+let getInBusQuest = new GetInBusQuest();
+getInBusQuest.execute(characterState, functionConfig)

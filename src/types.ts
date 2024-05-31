@@ -1,11 +1,18 @@
 import {
   AttackEnemy,
-  ClickCoinPoll, GatherResource, GoFight,
-  SelectCommanderSolider, SelectField,
+  ClickCoinPoll, ClickConfirmBattleBtn,
+  ClickConfirmGatherBtn,
+  ClickConfirmSearchBtn,
+  ClickFarmlandPic,
+  ClickFocusPoint, ClickOneClickBattle,
+  ClickSearch, GetInBus,
+  SelectCommanderSolider,
+  SelectResourceFieldTab,
+  SelectSearchLevel,
   SelectSoloEnemy,
   Step,
   ToCity,
-  ToCoinHarvester,
+  ToCoinHarvester, ToRallyWindow,
   ToWorld
 } from "./steps";
 import * as console from "console";
@@ -37,28 +44,52 @@ export interface FunctionConfig {
     type: HuntType; // 打普通怪或精英怪
     level: number; // 怪的等级. 最高级降低级数
     formationNum: number
+  },
+  getInBus: {
+    enabled: boolean,
+    chuizi: {
+      enabled: boolean,
+      times: number,
+    },
+    nanmin: {
+      enabled: boolean,
+      times: number,
+    },
+    heijun: {
+      enabled: boolean,
+      times: number,
+    },
+    formationNum: number
   }
 
 }
 
 export type Rule = (characterState: CharacterState, functionConfig: FunctionConfig) => Quest | null;
 
-
-export class SuccessResult {
+export class ExecuteResult {
   message: string;
-  constructor(message: string = '成功') {
-    this.message = message;
+  constructor(msg: string) {
+    this.message = msg;
+  }
+};
+
+export class SuccessResult extends ExecuteResult{
+
+}
+
+export class FailureResult extends ExecuteResult{
+
+}
+
+export class NeedRepeatFailureResult extends FailureResult{
+  repeatSeconds: number;
+  constructor(error: string, repeatSeconds: number) {
+    super(error);
+    this.repeatSeconds =repeatSeconds;
   }
 }
 
-export class FailureResult {
-  error: string;
-  constructor(error: string) {
-    this.error = error;
-  }
-}
 
-export type ExecuteResult = SuccessResult | FailureResult;
 
 export  class Quest {
   protected steps: Step[] = [];
@@ -69,7 +100,16 @@ export  class Quest {
       myLog(`Executing step: ${step.constructor.name}`);
       actionResult = step.execute(characterState, functionConfig);
       if (actionResult instanceof FailureResult) {
-        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.error}`)
+        //the current time in seconds
+        const repeatStartTime = new Date().getTime();
+        if(actionResult instanceof NeedRepeatFailureResult) {
+          actionResult = step.execute(characterState, functionConfig);
+          while (actionResult instanceof NeedRepeatFailureResult
+          && new Date().getTime() - repeatStartTime < actionResult.repeatSeconds * 1000) {
+            actionResult = step.execute(characterState, functionConfig);
+          }
+        }
+        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.message}`)
         return actionResult;
       }
     }
@@ -86,17 +126,24 @@ export class SoloHuntQuest extends Quest {
     new SelectSoloEnemy(),
     new AttackEnemy(),
     new SelectCommanderSolider(),
-    new GoFight()
+    // new GoFight()
   ]
 }
 
 export class GatherFoodQuest extends Quest {
   protected steps = [
       new ToWorld(),
-      new SelectField(),
-      new GatherResource(),
-      new SelectCommanderSolider(),
-      new GoFight()
+      new ClickSearch(),
+      new SelectResourceFieldTab(),
+      new ClickFarmlandPic(),
+      new SelectSearchLevel(),
+      new ClickConfirmSearchBtn(),
+      new ClickFocusPoint(),
+      new ClickConfirmGatherBtn(),
+      new ClickOneClickBattle(),
+      // new GatherResource(),
+      // new SelectCommanderSolider(),
+      new ClickConfirmBattleBtn()
   ]
 }
 
@@ -108,10 +155,21 @@ export class CollectCoinsQuest extends Quest {
 
 }
 
+export class GetInBusQuest extends Quest {
+  protected steps = [
+    new ToWorld(),
+    new ToRallyWindow(),
+    new GetInBus(),
+    new SelectCommanderSolider(),
+    new ClickConfirmBattleBtn()
+  ]
+}
+
 
 export const ActionClassMap: { [key: string]: new (characterState: CharacterState, functionConfig: FunctionConfig) => Quest } = {
   NullQuest: NullQuest,
   SoloHuntQuest: SoloHuntQuest,
   CollectCoinsQuest: CollectCoinsQuest,
   GatherFoodQuest: GatherFoodQuest,
+  GetInBusQuest: GetInBusQuest,
 };
