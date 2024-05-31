@@ -1,6 +1,15 @@
 import {loadConfig} from './configLoader';
 import {createRuleFunction, generateQuest} from './ruleEngine';
-import {findMultiColor, captureScreen, fromBase64, findImage, myLog, matchTemplate, myClick} from "./autoHandler";
+import {
+  findMultiColor,
+  captureScreen,
+  fromBase64,
+  findImage,
+  myLog,
+  matchTemplate,
+  myClick,
+  mySwipe
+} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {GetInBus, ToCoinHarvester, ToWorld} from "./steps";
@@ -21,8 +30,11 @@ import {orcRallyEnemyName, orcTeamNum} from './ocr'
 //
 // // 根据配置文件创建规则函数
 // const rules = config.rules.map(createRuleFunction);
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+import {dianaIsBack} from "./helper";
+import {pointConfig} from "./config/pointConfig";
+import {startJushouzhinuCampaign} from "./campaign";
+// dotenv.config();
 
 
 toastLog("开始执行")
@@ -84,5 +96,12 @@ sleep(2000)
 // }
 
 // let getInBus = new GetInBus();
-let getInBusQuest = new GetInBusQuest();
-getInBusQuest.execute(characterState, functionConfig)
+// let getInBusQuest = new GetInBusQuest();
+// getInBusQuest.execute(characterState, functionConfig)
+
+// mySwipe(600, 125, 15, 125, 2500)
+
+while (true){
+  startJushouzhinuCampaign();
+}
+

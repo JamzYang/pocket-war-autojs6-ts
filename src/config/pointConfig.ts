@@ -7,7 +7,7 @@ export const pointConfig = {
   coinBar: {x: 220, y: 25},
   coinHarvester: {x: 220, y: 1040},
   unionIcon: {x: 660, y: 856},
-
+  commonCampaignBtn: {x: 655, y: 160},
 
   //========================联盟窗口======================
   warIcon: {x: 200, y: 1000},
@@ -45,5 +45,9 @@ export const pointConfig = {
   confirmBattleBtn: {x: 355, y: 510},
 
   //无集结队伍 子窗口
-  rallyNoBusWindowCloseBtn: {x: 650, y: 140}
+  rallyNoBusWindowCloseBtn: {x: 650, y: 140},
+
+  //============================限时活动===========================
+  //巨兽之怒
+  angerOfBeastResistBtn: {x: 590, y: 1211}
 }
