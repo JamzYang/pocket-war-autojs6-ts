@@ -139,7 +139,7 @@ export class TsupConfigBuilder {
             entryFiles = [
                 './src/main.ts',
                 './src/test.ts',
-                './src/ui.ts',
+                './src/ui.js',
             ];
             watchSrcDir = './src/';
             assetsDir = './src/assets/';
@@ -148,7 +148,7 @@ export class TsupConfigBuilder {
             entryFiles = [
                 `./src/${projectName}/main.ts`,
                 `./src/${projectName}/test.ts`,
-                `./src/${projectName}/ui.ts`,
+                `./src/${projectName}/ui.js`,
             ];
             watchSrcDir = `./src/${projectName}/`;
             assetsDir = `./src/${projectName}/assets/`;

@@ -19,9 +19,12 @@ import {orcRallyEnemyName, orcTeamNum} from './ocr'
 //
 // // 根据配置文件创建规则函数
 // const rules = config.rules.map(createRuleFunction);
-import dotenv from 'dotenv';
-dotenv.config();
-
+let customizedConfig = functionConfig;
+let storedConfig = storages.create("FunctionConfig").get("config");
+console.log("main从本地存储读取配置："+storedConfig)
+if (storedConfig) {
+  customizedConfig = JSON.parse(storedConfig);
+}
 
 toastLog("开始执行")
 
@@ -83,4 +86,4 @@ sleep(2000)
 
 // let getInBus = new GetInBus();
 let getInBusQuest = new GetInBusQuest();
-getInBusQuest.execute(characterState, functionConfig)
+getInBusQuest.execute(characterState, customizedConfig)
