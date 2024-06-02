@@ -23,6 +23,24 @@ export enum HuntType {
   Elite = 'elite'
 }
 
+export enum EnemyName {
+  Chuizi = '战锤',
+  Heijun = '黑暗军团',
+  Nanmin = '难民',
+  Juxing = '惧星',
+  Pengpeng = '砰砰',
+  Jingwei = '黑暗精卫',
+  Shouwei = '守卫',
+  Null = '无',
+}
+
+
+export interface Context {
+  state: CharacterState; // 体力
+  config: FunctionConfig; // 队伍总数量
+  currentQuest: Quest; // 空闲队伍
+}
+
 export interface CharacterState {
   stamina: number; // 体力
   totalTeams: number; // 队伍总数量
@@ -59,6 +77,10 @@ export interface FunctionConfig {
       enabled: boolean,
       times: number,
     },
+    juxing: {
+      enabled: boolean,
+      times: number,
+    },
     formationNum: number
   }
 
@@ -92,6 +114,14 @@ export class NeedRepeatFailureResult extends FailureResult{
 export  class Quest {
   protected steps: Step[] = [];
   weight: number = 0;
+  postExecute (characterState: CharacterState, functionConfig: FunctionConfig):ExecuteResult {
+   return  new SuccessResult('success')
+  }
+
+  configMatched(characterState: CharacterState, functionConfig: FunctionConfig): boolean {
+    return true;
+  }
+
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myLog(`Executing Quest ${this.constructor.name}`);
     let actionResult: ExecuteResult
@@ -155,15 +185,67 @@ export class CollectCoinsQuest extends Quest {
 
 }
 
+
+interface EnemyObject {
+  name: EnemyName;
+  times: number;
+}
+
 export class GetInBusQuest extends Quest {
+
+  public expectObject(characterState: CharacterState, functionConfig: FunctionConfig): {name: EnemyName, times: number}[] {
+    let enemyNames:{name: EnemyName, times: number}[]  = [];
+    if(functionConfig.getInBus.chuizi.enabled && functionConfig.getInBus.chuizi.times >= 0){
+      enemyNames.push({name: EnemyName.Chuizi, times: functionConfig.getInBus.chuizi.times})
+    }
+    if(functionConfig.getInBus.heijun.enabled && functionConfig.getInBus.heijun.times >= 0){
+      enemyNames.push({name: EnemyName.Heijun, times: functionConfig.getInBus.heijun.times})
+    }
+    if(functionConfig.getInBus.nanmin.enabled && functionConfig.getInBus.nanmin.times >= 0){
+      enemyNames.push({name: EnemyName.Nanmin, times: functionConfig.getInBus.nanmin.times})
+    }
+    if(functionConfig.getInBus.juxing.enabled && functionConfig.getInBus.juxing.times >= 0){
+      enemyNames.push({name: EnemyName.Juxing, times: functionConfig.getInBus.juxing.times})
+    }
+    return enemyNames
+  }
+  public configMatched(characterState: CharacterState, functionConfig: FunctionConfig): boolean {
+    return this.expectObject(characterState, functionConfig).length > 0;
+  }
+
   weight = 5;
   protected steps = [
     new ToWorld(),
     new ToRallyWindow(),
-    new GetInBus(),
+    new GetInBus(this),
     new SelectCommanderSolider(),
     new ClickConfirmBattleBtn()
   ]
+
+  /**
+   * times字段暂时好像没啥用 //todo
+   */
+  actualObject: {name: EnemyName, times: number} |null = null
+
+  //重写postExecute方法
+  postExecute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    if(this.actualObject == null) {
+      return new SuccessResult("postExecute GetInBusQuest actualObject is null");
+    }
+    switch (this.actualObject.name) {
+      case EnemyName.Chuizi:
+        functionConfig.getInBus.chuizi.times -= 1;
+        break;
+      case EnemyName.Heijun:
+        functionConfig.getInBus.heijun.times -= 1;
+        break;
+      case EnemyName.Nanmin:
+        functionConfig.getInBus.nanmin.times -= 1;
+      case EnemyName.Juxing:
+        functionConfig.getInBus.juxing.times -= 1;
+    }
+    return new SuccessResult("postExecute GetInBusQuest");
+  }
 }
 
 

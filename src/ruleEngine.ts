@@ -5,7 +5,7 @@ import {Condition, loadRuleConfig } from "./condition";
 
 export interface Rule {
   conditions: { [key: string]: Condition };
-  action: string;
+  quest: Quest;
 }
 
 export interface RuleConfig {
@@ -38,8 +38,8 @@ function evalQuest(actionName: string): Quest {
 
 function createRuleFunction(rule: Rule): RuleFunction {
   return (characterState, functionConfig) => {
-    if( conditionAllMatched(rule) ){
-      return  evalQuest(rule.action)
+    if( conditionAllMatched(rule) && rule.quest.configMatched(characterState, functionConfig) ){
+      return rule.quest
     }
     return null;
   };

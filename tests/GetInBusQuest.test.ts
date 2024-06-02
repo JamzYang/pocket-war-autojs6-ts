@@ -17,12 +17,46 @@ const configPath = 'src/config.json';
 // 测试用例
 describe('rally quest', () => {
 
-  it('should generate rally food action when stamina is less than 10', () => {
+  it('should generate gather food action when no enemy is enabled', () => {
     characterState.stamina = 5;
     characterState.idleTeams = 1;
     functionConfig.gatherFood = true;
     // functionConfig.rallyHunt.enabled = true;
     functionConfig.getInBus.enabled = true;
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+  });
+
+  it('should generate gather food action when no enemy times greater than 0', () => {
+    characterState.stamina = 5;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    // functionConfig.rallyHunt.enabled = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled = true;
+    functionConfig.getInBus.chuizi.times = -1;
+    functionConfig.getInBus.heijun.enabled = true;
+    functionConfig.getInBus.heijun.times = -1;
+    functionConfig.getInBus.nanmin.enabled = true;
+    functionConfig.getInBus.nanmin.times = -1;
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+
+  });
+
+
+  it('should generate gather food action when some enemy times greater than 0', () => {
+    characterState.stamina = 5;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    // functionConfig.rallyHunt.enabled = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled = true;
+    functionConfig.getInBus.chuizi.times = 1;
+    functionConfig.getInBus.heijun.enabled = true;
+    functionConfig.getInBus.heijun.times = -1;
+    functionConfig.getInBus.nanmin.enabled = true;
+    functionConfig.getInBus.nanmin.times = -1;
     let quests = run()
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
   });

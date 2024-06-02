@@ -1,15 +1,17 @@
-import {CollectCoinsQuest, GetInBusQuest} from "../src/types";
+import {CollectCoinsQuest, EnemyName, GetInBusQuest} from "../src/types";
 import {characterState, functionConfig} from "../src/config/config";
-// import {
-//   myLog, fromBase64, captureScreen, findImage,
-//   findMultiColor, myClick, mySwipe, matchTemplate
-// } from '../src/autoHandler';
-import { myLogMock, myLogSpy } from './autoHandler.mock';
 import * as autoHandler from '../src/autoHandler';
+import * as ocr from '../src/ocr';
 import {hasCloseBtn, hasBackBtn} from '../src/finder'
-import * as process from "process";
+import {repeatSeconds} from "../src/config/env.conf";
+import {matchTemplate} from "../src/autoHandler";
+import {orcRallyEnemyName} from "../src/ocr";
 
-jest.mock('dotenv', () => ({config: () => {}}))
+jest.mock('../src/config/env.conf', () => ({
+  repeatSeconds: jest.fn().mockReturnValue(0.1)
+}))
+
+
 jest.mock('../src/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
   fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
@@ -18,7 +20,8 @@ jest.mock('../src/autoHandler', () => ({
   findMultiColor: jest.fn().mockReturnValue({ x: 100, y: 100 }),
   myClick: jest.fn().mockReturnValue(true),
   mySwipe: jest.fn().mockReturnValue(true),
-  matchTemplate: jest.fn() // 默认 mock 函数
+  matchTemplate: jest.fn(), // 默认 mock 函数
+  ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}])
 }));
 
 jest.mock('../src/finder', () => ({
@@ -28,7 +31,17 @@ jest.mock('../src/finder', () => ({
     .mockReturnValueOnce(null),
 }));
 
+
 describe('execute action', () =>{
+  beforeAll(() => {
+    jest.doMock('../src/ocr', () => {
+      return {
+        orcRallyEnemyName: jest.fn().mockReturnValue(EnemyName.Chuizi)
+      };
+    });
+  });
+
+
   beforeEach(() => {
     // Clear all instances and calls to constructor and all methods:
     // (myLog as jest.Mock).mockClear();
@@ -56,20 +69,44 @@ describe('execute action', () =>{
   });
 
   it('some step should repeat when fail on repeatable error', () => {
-    process.env.REPEAT_SECONDS_MULTIPLE_OF_50 = '0.1';
     (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [] });
     //前两次mock是 ToWorld step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     //第三次是为  ToRallyWindow step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
-    // (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
     let getInBusQuest = new GetInBusQuest();
     getInBusQuest.execute(characterState, functionConfig);
     // expect(autoHandler.matchTemplate).toHaveBeenCalledTimes(100);
     const callCount = (autoHandler.matchTemplate as jest.Mock).mock.calls.length;
     expect(callCount).toBeGreaterThan(100);
+  })
 
+
+  it('some step should repeat when fail on repeatable error', () => {
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled = true;
+    functionConfig.getInBus.chuizi.times = 1;
+
+    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [] });
+    //前两次mock是 ToWorld step
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    //第三次是为  ToRallyWindow step
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
+    //mock 上车 `+` 号的识别
+    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({matches: [{point:{x: 100, y: 100}}]});
+    // `+`号 卡片栏对应的怪名称
+    // (ocr.orcRallyEnemyName as jest.Mock).mockReturnValue(EnemyName.Chuizi)
+    // (autoHandler.ocrTextFromImg as jest.Mock).mockReturnValue();
+
+    let getInBusQuest = new GetInBusQuest();
+    getInBusQuest.execute(characterState, functionConfig);
+    getInBusQuest.postExecute(characterState, functionConfig)
+    // expect(autoHandler.matchTemplate).toHaveBeenCalledTimes(100);
+    const callCount = (autoHandler.matchTemplate as jest.Mock).mock.calls.length;
+    expect(callCount).toBe(1);
+    expect(functionConfig.getInBus.chuizi.times).toBe(0);
   })
 
 })

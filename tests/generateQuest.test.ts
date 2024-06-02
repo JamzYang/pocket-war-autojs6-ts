@@ -14,7 +14,6 @@ import {run} from "../src/ruleEngine";
 const configPath = 'src/config.json';
 
 
-
 describe('generate Quest', () => {
   it('should generate correct Quest based on character state and function config', () => {
     characterState.idleTeams = 1;
@@ -53,6 +52,8 @@ describe('generate Quest', () => {
     characterState.idleTeams = 1;
     functionConfig.gatherFood = true;
     functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled= true;
+    functionConfig.getInBus.chuizi.times = 1;
     let quests = run()
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
     expect(quests[1]).toBeInstanceOf(GatherFoodQuest);

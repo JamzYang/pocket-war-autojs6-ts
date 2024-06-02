@@ -36,6 +36,10 @@ export const functionConfig: FunctionConfig = {
       enabled: false,
       times: 50,
     },
+    juxing: {
+      enabled: false,
+      times: 10,
+    },
     formationNum: 1
   }
 };

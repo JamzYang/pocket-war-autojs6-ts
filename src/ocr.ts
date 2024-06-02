@@ -1,4 +1,5 @@
 import * as autoHandler from "./autoHandler";
+import {EnemyName} from "./types";
 
 //行军队列数量bar 区域 [1,485,243,541]
 export function orcTeamNum(): {idle: number, total: number} | null {
@@ -12,36 +13,36 @@ export function orcTeamNum(): {idle: number, total: number} | null {
   return null;
 }
 
-export function orcRallyEnemyName(img: ImageWrapper, region: OmniRegion): string | null {
+export function orcRallyEnemyName(img: ImageWrapper, region: OmniRegion): EnemyName | null {
   let ocrResults = autoHandler.ocrTextFromImg(img, region)
 
   //将text打印成json
   if(ocrResults.map(o => o.label).some(item => item.includes('战锤'))) {
-    return '战锤'
+    return EnemyName.Chuizi
   }
 
   if(ocrResults.map(o => o.label).some(item => item.includes('惧星'))){
-    return '惧星'
+    return EnemyName.Juxing
   }
 
   if(ocrResults.map(o => o.label).some(item => item.includes('黑暗军团'))){
-    return '黑暗军团'
+    return EnemyName.Heijun
   }
 
   if(ocrResults.map(o => o.label).some(item => item.includes('难民'))){
-    return '难民'
+    return EnemyName.Nanmin
   }
 
-  if(ocrResults.map(o => o.label).some(item => item.includes('难民'))){
-    return '砰砰'
+  if(ocrResults.map(o => o.label).some(item => item.includes('砰砰'))){
+    return EnemyName.Pengpeng
   }
 
   if(ocrResults.map(o => o.label).some(item => item.includes('精卫'))){
-    return '精卫'
+    return EnemyName.Jingwei
   }
 
   if(ocrResults.map(o => o.label).some(item => item.includes('守卫'))){
-    return '守卫'
+    return EnemyName.Shouwei
   }
   return null;
 }
