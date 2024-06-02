@@ -21,15 +21,19 @@ var FunctionConfig = {
     enabled: true,
     chuizi: {
       enabled: false,
-      times: "0"
+      times: "50"
     },
     nanmin: {
       enabled: false,
-      times: "0"
+      times: "10"
     },
     heijun: {
       enabled: false,
-      times: "0"
+      times: "50"
+    },
+    juxing: {
+      enabled: false,
+      times: "10"
     },
     formationNum: "1"
   }
@@ -56,11 +60,12 @@ function updateConfig() {
   FunctionConfig.getInBus.heijun.times = ui.heiJunTimes.getText();
   FunctionConfig.getInBus.nanmin.enabled = ui.enableNanmin.isChecked();
   FunctionConfig.getInBus.nanmin.times = ui.nanminTimes.getText();
+  FunctionConfig.getInBus.juxing.enabled = ui.enableJuxing.isChecked();
+  FunctionConfig.getInBus.juxing.times = ui.juxingTimes.getText();
   console.log("更新配置：")
   console.log(JSON.stringify(FunctionConfig))
   updateStorage();
 }
-
 
 ui.layout(
     <drawer id="drawer">
@@ -81,11 +86,12 @@ ui.layout(
                     <checkbox id="enableFollowCar" text="开启跟车"
                               checked="{{FunctionConfig.getInBus.enabled}}"></checkbox>
                     <text marginLeft="40">跟车编队</text>
-                    <spinner id="getInBusFormationNum" entries="{{formationOptionsStr}}"  >
+                    <spinner id="getInBusFormationNum"
+                             entries="{{formationOptionsStr}}">
                     </spinner>
                   </linear>
                   <linear>
-                    <checkbox id="enableChuizi" text="锤   子"
+                    <checkbox id="enableChuizi" text="锤子"
                               checked="{{FunctionConfig.getInBus.chuizi.enabled}}"/>
                     <text marginLeft={"10"} text="次数"/>
                     <input id="chuiziTimes" inputType="number"
@@ -95,30 +101,40 @@ ui.layout(
                     <checkbox id="enableHeiJun" text="黑暗军团"
                               checked="{{FunctionConfig.getInBus.heijun.enabled}}"/>
                     <text marginLeft={"10"} text="次数"/>
-                    <input id="heiJunTimes" inputType="number" text="{{FunctionConfig.getInBus.heijun.times}}"/>
+                    <input id="heiJunTimes" inputType="number"
+                           text="{{FunctionConfig.getInBus.heijun.times}}"/>
                   </linear>
                   <linear>
-                    <checkbox id="enableNanmin" text="难   民"
+                    <checkbox id="enableNanmin" text="难民"
                               checked="{{FunctionConfig.getInBus.nanmin.enabled}}"/>
                     <text marginLeft={"10"} text="次数"/>
-                    <input id="nanminTimes" inputType="number" text="{{FunctionConfig.getInBus.nanmin.times}}"/>
+                    <input id="nanminTimes" inputType="number"
+                           text="{{FunctionConfig.getInBus.nanmin.times}}"/>
+                  </linear>
+
+                  <linear>
+                    <checkbox id="enableJuxing" text="惧星"
+                              checked="{{FunctionConfig.getInBus.juxing.enabled}}"/>
+                    <text marginLeft={"10"} text="次数"/>
+                    <input id="juxingTimes" inputType="number"
+                           text="{{FunctionConfig.getInBus.juxing.times}}"/>
                   </linear>
 
                 </vertical>
               </frame>
             <frame>
-              <text text="待实现"  textSize="16sp"/>
+              <text text="待实现" textSize="16sp"/>
             </frame>
             <frame>
-              <text text="待实现"  textSize="16sp"/>
+              <text text="待实现" textSize="16sp"/>
             </frame>
             <frame>
               <text>第4页</text>
             </frame>
-              <frame>
-                  <text>第5页</text>
-              </frame>
-              <frame>
+            <frame>
+              <text>第5页</text>
+            </frame>
+            <frame>
                   <text>第6页</text>
               </frame>
             </viewpager>
@@ -205,6 +221,13 @@ ui.nanminTimes.addTextChangedListener({
   }
 });
 
+ui.juxingTimes.addTextChangedListener({
+  onTextChanged: function(text) {
+    FunctionConfig.getInBus.juxing.times = text.toString();
+    updateStorage();
+  }
+});
+
 ui.getInBusFormationNum.setOnItemSelectedListener({
   onItemSelected: function(parent, view, position, id) {
     // 更新 FunctionConfig 中的相应字段
@@ -224,6 +247,7 @@ ui.enableChuizi.on("check", updateConfig);
 // ui.chuiziTimes.on("change", updateConfig);
 ui.enableHeiJun.on("check", updateConfig);
 ui.enableNanmin.on("check", updateConfig);
+ui.enableJuxing.on("check", updateConfig);
 
 events.on("key", function (keyCode, event){
   if(keyCode === keys.back ) {
