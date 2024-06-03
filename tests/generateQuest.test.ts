@@ -1,32 +1,27 @@
-import {createRuleFunction, generateQuest} from '../src/ruleEngine';
 import {
   CharacterState,
   CollectCoinsQuest,
   FunctionConfig,
-  GatherFoodQuest,
+  GatherFoodQuest, GetInBusQuest,
   HuntType, NullQuest,
   SoloHuntQuest
 } from '../src/types';
-import {loadConfig} from '../src/configLoader';
-import {ruleConfig} from '../src/condition';
+
 
 import {characterState, functionConfig} from "../src/config/config";
+import {run} from "../src/ruleEngine";
 
 const configPath = 'src/config.json';
-// 测试角色状态和功能配置
 
 
-// 测试用例
 describe('generate Quest', () => {
   it('should generate correct Quest based on character state and function config', () => {
     characterState.idleTeams = 1;
     characterState.stamina = 60;
     functionConfig.soloHunt.enabled = true;
-    const rules = ruleConfig.rules.map(createRuleFunction);
 
-    // 检查是否生成了正确的指令
-    const action = generateQuest(rules);
-    expect(action[0]).toBeInstanceOf(SoloHuntQuest);
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(SoloHuntQuest);
   });
 
   it('should generate gather food action when stamina is less than 10', () => {
@@ -34,25 +29,33 @@ describe('generate Quest', () => {
     characterState.idleTeams = 1;
     functionConfig.gatherFood = true;
     functionConfig.getInBus.enabled = false;
-
-    const rules = ruleConfig.rules.map(createRuleFunction);
-    const action = generateQuest(rules);
-    expect(action[0]).toBeInstanceOf(GatherFoodQuest);
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
   });
 
   it('should generate collect coins action when idle teams are zero and time since last coin collection is more than 1 hour', () => {
     characterState.idleTeams = 0;
     functionConfig.collectCoins = true;
-    const rules = ruleConfig.rules.map(createRuleFunction);
-    const action = generateQuest(rules);
-    expect(action[0]).toBeInstanceOf(CollectCoinsQuest);
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(CollectCoinsQuest);
   });
 
   it('should return null if no conditions match', () => {
     characterState.idleTeams = 0;
     functionConfig.collectCoins = false;
-    const rules = ruleConfig.rules.map(createRuleFunction);
-    const action = generateQuest(rules);
-    expect(action.length).toBe(0);
+    let quests = run()
+    expect(quests.length).toBe(0);
+  });
+
+  it('should gen GetInBus, GatherFood when stamina > 20 and idleTeams > 0', () => {
+    characterState.stamina =30;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled= true;
+    functionConfig.getInBus.chuizi.times = 1;
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GetInBusQuest);
+    expect(quests[1]).toBeInstanceOf(GatherFoodQuest);
   });
 });

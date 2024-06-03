@@ -1,32 +1,63 @@
-import {createRuleFunction, generateQuest} from '../src/ruleEngine';
+import {run} from '../src/ruleEngine';
 import {
   CharacterState,
   CollectCoinsQuest,
   FunctionConfig,
   GatherFoodQuest, GetInBusQuest,
-  HuntType, NullQuest,
+  HuntType, NullQuest, Quest,
   SoloHuntQuest
 } from '../src/types';
-import {loadConfig} from '../src/configLoader';
-import {ruleConfig} from '../src/condition';
 
 import {characterState, functionConfig} from "../src/config/config";
 
 const configPath = 'src/config.json';
-const rules = ruleConfig.rules.map(createRuleFunction);
 // 测试角色状态和功能配置
 
 
 // 测试用例
 describe('rally quest', () => {
 
-  it('should generate rally food action when stamina is less than 10', () => {
+  it('should generate gather food action when no enemy is enabled', () => {
     characterState.stamina = 5;
     characterState.idleTeams = 1;
     functionConfig.gatherFood = true;
     // functionConfig.rallyHunt.enabled = true;
     functionConfig.getInBus.enabled = true;
-    const quest = generateQuest(rules);
-    expect(quest[0]).toBeInstanceOf(GetInBusQuest);
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+  });
+
+  it('should generate gather food action when no enemy times greater than 0', () => {
+    characterState.stamina = 5;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    // functionConfig.rallyHunt.enabled = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled = true;
+    functionConfig.getInBus.chuizi.times = -1;
+    functionConfig.getInBus.heijun.enabled = true;
+    functionConfig.getInBus.heijun.times = -1;
+    functionConfig.getInBus.nanmin.enabled = true;
+    functionConfig.getInBus.nanmin.times = -1;
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+
+  });
+
+
+  it('should generate gather food action when some enemy times greater than 0', () => {
+    characterState.stamina = 5;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    // functionConfig.rallyHunt.enabled = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled = true;
+    functionConfig.getInBus.chuizi.times = 1;
+    functionConfig.getInBus.heijun.enabled = true;
+    functionConfig.getInBus.heijun.times = -1;
+    functionConfig.getInBus.nanmin.enabled = true;
+    functionConfig.getInBus.nanmin.times = -1;
+    let quests = run()
+    expect(quests[0]).toBeInstanceOf(GetInBusQuest);
   });
 });

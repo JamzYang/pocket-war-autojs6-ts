@@ -1,6 +1,19 @@
-import {CharacterState, FunctionConfig, Quest, Rule, NullQuest, ActionClassMap} from './types';
-import { RuleConfig } from './configLoader';
+import {CharacterState, FunctionConfig, Quest, NullQuest, ActionClassMap} from './types';
 import { characterState, functionConfig } from "./config/config";
+import {Condition, loadRuleConfig } from "./condition";
+
+
+export interface Rule {
+  conditions: { [key: string]: Condition };
+  quest: Quest;
+}
+
+export interface RuleConfig {
+  rules: Rule[];
+}
+
+type RuleFunction = (characterState: CharacterState, functionConfig: FunctionConfig) => Quest | null;
+
 
 function getNestedValue(obj: any, path: string): any {
   // return path.split('.').reduce((o, p) => o ? o[p] : undefined, obj);
@@ -23,12 +36,10 @@ function evalQuest(actionName: string): Quest {
   return new questClass(characterState, functionConfig);
 }
 
-export function createRuleFunction(ruleConfig: RuleConfig): Rule {
+function createRuleFunction(rule: Rule): RuleFunction {
   return (characterState, functionConfig) => {
-    let allMatched = conditionAllMatched(ruleConfig);
-
-    if( allMatched ){
-      return  evalQuest(ruleConfig.action)
+    if( conditionAllMatched(rule) && rule.quest.configMatched(characterState, functionConfig) ){
+      return rule.quest
     }
     return null;
   };
@@ -36,9 +47,14 @@ export function createRuleFunction(ruleConfig: RuleConfig): Rule {
 
 
 
-function conditionAllMatched(ruleConfig: RuleConfig) {
-  let entries = Object.entries(ruleConfig.conditions);
-  for (const [key, condition] of Object.entries(ruleConfig.conditions)) {
+function conditionAllMatched(rule: Rule) {
+  for (const [key, condition] of Object.entries(rule.conditions)) {
+    //没定义 默认为true
+    //定义了， 且条件成立 继续
+
+    //condition中已定义的条件都成立，则返回true。 未定义的条件默认为成立
+
+
     const value = getNestedValue({...characterState, ...functionConfig}, key);
     if (condition.gt !== undefined && !(value > condition.gt)) return false;
     if (condition.lt !== undefined && !(value < condition.lt)) return false;
@@ -53,13 +69,26 @@ function conditionAllMatched(ruleConfig: RuleConfig) {
   return true;
 }
 
-export function generateQuest(rules: Rule[]): Quest[] {
+function generateQuest(rules: RuleFunction[]): Quest[] {
   let quests: Quest[] = [];
   for (const rule of rules) {
-    const action = rule(characterState, functionConfig);
-    if (action) {
-      quests.push(action)
+    const quest = rule(characterState, functionConfig);
+    if (quest) {
+      quests.push(quest)
     }
   }
+  //根据 quest的权重排序
+  quests.sort((a, b) => {
+    if (a.weight === b.weight) {
+      return 0;
+    }
+    return a.weight > b.weight ? -1 : 1;
+  });
   return quests;
+}
+
+export function run(): Quest[] {
+  let ruleConfig = loadRuleConfig()
+  const ruleFunctions = ruleConfig.rules.map(createRuleFunction);
+  return  generateQuest(ruleFunctions)
 }

@@ -1,27 +1,18 @@
-import dotenv from 'dotenv'
 import {
   CharacterState,
   ExecuteResult,
   FailureResult,
-  FunctionConfig,
+  FunctionConfig, GetInBusQuest,
   NeedRepeatFailureResult,
   SuccessResult
 } from './types'
-import {
-  captureScreen,
-  findMultiColor,
-  myClick,
-  mySwipe,
-  myLog,
-  findImage,
-  fromBase64,
-  matchTemplate, ocrText, ocrTextFromImg
-} from "./autoHandler";
+import {captureScreen, findMultiColor, fromBase64, matchTemplate, myClick, myLog, mySwipe} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {pointConfig} from "./config/pointConfig";
 import {hasBackBtn, hasCloseBtn} from "./finder";
 import {orcRallyEnemyName} from "./ocr";
+import {repeatSeconds} from "./config/env.conf";
 
 export interface Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult;
@@ -66,6 +57,10 @@ export class ClickConfirmGatherBtn implements Step {
 
 //跟车页 卡片之间垂直间隔610px,
 export class GetInBus implements Step {
+  private quest: GetInBusQuest;
+  constructor(quest: GetInBusQuest) {
+    this.quest = quest
+  }
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     //怪物名字 [496,309,684,352] 中心点： 349 272  相比加号中心 x偏移 147， y偏移 37  名字框 高 43 宽 188
     //这个方法有个问题。多点找色只能找到最上面一个
@@ -73,22 +68,28 @@ export class GetInBus implements Step {
 
     //上车图标区域[318,242,383,309]  怪物文字栏 482,305  682, 345  x偏移164 y偏移 63 宽 131 高 113
     //最后一列上车图标垂直区域 [311,236,389,943]
+    myLog("开始搜索车位....")
     let img = captureScreen()
     const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
       region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
     });
-
     if(matchingResult.matches.length > 0) {
-      matchingResult.matches.forEach(match => {
+      for (const match of matchingResult.matches) {
         let enemyName = orcRallyEnemyName(img,[match.point.x + 164, match.point.y +63, 131, 113])
         myLog('怪物名字: ' + enemyName)
-        //todo 如果和quest中的目标一致就 上车
-        myClick(match.point.x + iconConfig.getInBusIcon.offSet.x ,match.point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
-        return new SuccessResult('GetInBus')
-      });
+        let expectObject = this.quest.expectObject(characterState, functionConfig);
+        myLog("集结目标: "+ JSON.stringify(expectObject))
+        if(enemyName && expectObject.find(item => item.name == enemyName)) {
+          myClick(match.point.x + iconConfig.getInBusIcon.offSet.x ,match.point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
+          this.quest.actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
+          return new SuccessResult('GetInBus success. enemyName='+enemyName)
+        }
+      }
     }
-    return new NeedRepeatFailureResult('没有找到空坐位',3 * Number(process.env.REPEAT_SECONDS_MULTIPLE_OF_50?.toString() || '50'))
+    myLog("没有找到空坐位....")
+    return new NeedRepeatFailureResult('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
   }
+
 }
 export class ToRallyWindow implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
@@ -98,7 +99,7 @@ export class ToRallyWindow implements Step {
     if(result != null) {
       myClick(pointConfig.rallyNoBusWindowCloseBtn.x,pointConfig.rallyNoBusWindowCloseBtn.y, 200,"click rallyNoBusWindowCloseBtn")
       new ToWorld().execute(characterState, functionConfig)
-      return new NeedRepeatFailureResult('no bus found', Number(process.env.REPEAT_SECONDS_MULTIPLE_OF_50?.toString() || '50'))
+      return new NeedRepeatFailureResult('no bus found', Number(repeatSeconds().toString() || '50'))
     }
     return new SuccessResult('ToRallyWindow')
   }

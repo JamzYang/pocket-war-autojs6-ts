@@ -23,18 +23,22 @@ export const functionConfig: FunctionConfig = {
     formationNum: 1
   },
   getInBus: {
-    enabled: false,
+    enabled: true,
     chuizi: {
       enabled: true,
       times: 50,
     },
     nanmin: {
-      enabled: true,
+      enabled: false,
       times: 10,
     },
     heijun: {
       enabled: true,
       times: 50,
+    },
+    juxing: {
+      enabled: true,
+      times: 10,
     },
     formationNum: 1
   }
