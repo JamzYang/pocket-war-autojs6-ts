@@ -68,23 +68,25 @@ export class GetInBus implements Step {
 
     //上车图标区域[318,242,383,309]  怪物文字栏 482,305  682, 345  x偏移164 y偏移 63 宽 131 高 113
     //最后一列上车图标垂直区域 [311,236,389,943]
+    myLog("开始搜索车位....")
     let img = captureScreen()
     const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
       region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
     });
-
     if(matchingResult.matches.length > 0) {
       for (const match of matchingResult.matches) {
         let enemyName = orcRallyEnemyName(img,[match.point.x + 164, match.point.y +63, 131, 113])
         myLog('怪物名字: ' + enemyName)
         let expectObject = this.quest.expectObject(characterState, functionConfig);
+        myLog("集结目标: "+ JSON.stringify(expectObject))
         if(enemyName && expectObject.find(item => item.name == enemyName)) {
           myClick(match.point.x + iconConfig.getInBusIcon.offSet.x ,match.point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
           this.quest.actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
-          return new SuccessResult('GetInBus. enemyName='+enemyName)
+          return new SuccessResult('GetInBus success. enemyName='+enemyName)
         }
       }
     }
+    myLog("没有找到空坐位....")
     return new NeedRepeatFailureResult('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
   }
 

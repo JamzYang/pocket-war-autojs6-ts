@@ -39,7 +39,9 @@ var FunctionConfig = {
   }
 };
 
+
 // 从本地存储中读取数据
+// storages.remove("FunctionConfig");
 var storedConfig = storages.create("FunctionConfig").get("config");
 console.log("从本地存储读取配置："+storedConfig)
 if (storedConfig) {

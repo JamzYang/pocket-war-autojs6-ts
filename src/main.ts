@@ -14,6 +14,7 @@ import {characterState, functionConfig} from "./config/config";
 import {hasBackBtn} from "./finder";
 import * as autoHandler from "./autoHandler"
 import {orcRallyEnemyName, orcTeamNum} from './ocr'
+import {run} from "./ruleEngine";
 // 加载配置文件
 // const config = loadConfig('src/config.json');
 //
@@ -85,5 +86,17 @@ sleep(2000)
 // }
 
 // let getInBus = new GetInBus();
-let getInBusQuest = new GetInBusQuest();
-getInBusQuest.execute(characterState, customizedConfig)
+// let getInBusQuest = new GetInBusQuest();
+// getInBusQuest.execute(characterState, customizedConfig);
+// getInBusQuest.postExecute(characterState, customizedConfig)
+while (true) {
+  let quests = run()
+  if(quests.length == 0){
+    myLog("没有任务")
+    sleep(2000)
+    continue
+  }
+  let quest = quests[0]
+  quest.execute(characterState, customizedConfig)
+  quest.postExecute(characterState, customizedConfig)
+}
