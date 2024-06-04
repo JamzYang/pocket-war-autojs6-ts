@@ -139,22 +139,26 @@ export  class Quest {
     for (const step of this.steps) {
       myLog(`Executing step: ${step.constructor.name}`);
       const stepFirstStartTime = new Date().getTime();
-      try {
-        actionResult = step.execute(this.characterState, this.functionConfig);
-      }catch (e){
-        if(e instanceof NeedRepeatFailure){
-          if(new Date().getTime() - stepFirstStartTime < repeatSeconds() * 1000) {
-            actionResult = step.execute(this.characterState, this.functionConfig);
-          }else {
-            myLog(`Executing step: ${step.constructor.name} repeat time out. ${e}`)
-          }
-        }else {
-          myLog(`Executing step: ${step.constructor.name} error.  ${e}`)
-          throw e
-        }
-      }
+      executeWithRetry(step, this.characterState, this.functionConfig)
     }
     return new SuccessResult(`action: ${this.constructor.name} success`);
+  }
+}
+
+function executeWithRetry(step:Step, characterState: CharacterState, functionConfig: FunctionConfig):ExecuteResult {
+  const startTime = new Date().getTime();
+  while(true){
+    try {
+      return  step.execute(characterState, functionConfig)
+    }catch (e){
+      if (!(e instanceof NeedRepeatFailure)) {
+        myLog(`Executing step: ${step.constructor.name} error.  ${e}`)
+        throw e;
+      }
+      if (new Date().getTime() - startTime > repeatSeconds() * 1000) {
+        return  new SuccessResult(`repeat execute step: ${step.constructor.name} time out.`)
+      }
+    }
   }
 }
 
