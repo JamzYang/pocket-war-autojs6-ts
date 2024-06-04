@@ -15,7 +15,7 @@ import {orcRallyEnemyName} from "./ocr";
 import {repeatSeconds} from "./config/env.conf";
 
 export interface Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult;
+  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult;
 }
 
 
@@ -97,8 +97,20 @@ export class GetInBus implements Step {
     sleep(2000)
     throw new NeedRepeatFailure('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
   }
-
 }
+
+export class CheckGetInBusSuccess implements Step {
+  private quest: GetInBusQuest;
+  constructor(quest: GetInBusQuest) {
+    this.quest = quest
+  }
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    // this.quest.actualObject?.name
+
+    return new SuccessResult('CheckGetInBusSuccess')
+  }
+}
+
 export class ToRallyWindow implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myClick(pointConfig.unionIcon.x,pointConfig.unionIcon.y, 400,"ClickUnionIcon")
@@ -192,7 +204,7 @@ export class SelectCommanderSolider implements Step {
 
 
 export class ToWorld implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
     handleCloseBtn()
     handleBackButton();
     if(!isWorldWindow()) {

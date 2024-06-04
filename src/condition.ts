@@ -20,14 +20,14 @@ export function loadRuleConfig(): RuleConfig {
           stamina: { gt: 50 },
           idleTeams: { gt: 0 },
         },
-        quest: new SoloHuntQuest()
+        quest: "SoloHuntQuest"
       },
       {
         conditions: {
           idleTeams: { gt: 0 },
           gatherFood: {enable: featureConfig.gatherFood},
         },
-        quest: new GatherFoodQuest()
+        quest: "GatherFoodQuest"
       },
       {
         conditions: {
@@ -35,14 +35,14 @@ export function loadRuleConfig(): RuleConfig {
           collectCoins: {enable: featureConfig.collectCoins},
           lastCoinCollectionTime: { gtHoursAgo: 1 }
         },
-        quest: new CollectCoinsQuest()
+        quest: "CollectCoinsQuest"
       },
       {
         conditions: {
           idleTeams: { gt: 0 },
           getInBus: {enable: featureConfig.getInBus.enabled},
         },
-        quest: new GetInBusQuest()
+        quest: "GetInBusQuest"
       },
     ]
   };
