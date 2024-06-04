@@ -6,7 +6,16 @@ import {
   NeedRepeatFailure,
   SuccessResult
 } from './types'
-import {captureScreen, findMultiColor, fromBase64, matchTemplate, myClick, myLog, mySwipe} from "./autoHandler";
+import {
+  captureScreen,
+  findMultiColor,
+  fromBase64,
+  matchTemplate,
+  myClick,
+  myLog,
+  mySleep,
+  mySwipe
+} from "./autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {iconConfig} from "./config/iconConfig";
 import {pointConfig} from "./config/pointConfig";
@@ -74,7 +83,7 @@ export class GetInBus implements Step {
     const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
       region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
     });
-    img.recycle();
+    // img.recycle(); todo
     myLog("匹配结束：" + JSON.stringify(matchingResult.points))
     if(matchingResult.points.length > 0) {
       //matchingResult.points 去重
@@ -84,7 +93,7 @@ export class GetInBus implements Step {
         myLog("开始识别怪物名字")
         let enemyName = orcRallyEnemyName([point.x + 164, point.y +63, 131, 113])
         myLog('怪物名字: ' + enemyName)
-        let expectObject = this.quest.expectObject(characterState, functionConfig);
+        let expectObject = this.quest.expectObject();
         myLog("集结目标: "+ JSON.stringify(expectObject))
         if(enemyName && expectObject.find(item => item.name == enemyName)) {
           myClick(point.x + iconConfig.getInBusIcon.offSet.x ,point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
@@ -94,7 +103,7 @@ export class GetInBus implements Step {
       }
     }
     myLog("没有找到空坐位....")
-    sleep(2000)
+    mySleep(2000)
     throw new NeedRepeatFailure('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
   }
 }
@@ -318,5 +327,5 @@ function closeDialog(): ExecuteResult {
     myLog("click closeBtn")
     return new SuccessResult("closeDialog")
   }
-  throw new Failure("closeDialog")
+  throw new SuccessResult("no dialog close btn found")
 }

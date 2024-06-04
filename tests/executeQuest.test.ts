@@ -11,6 +11,9 @@ jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
 }))
 
+jest.mock('../src/configLoader', () => ({
+  loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
+}))
 
 jest.mock('../src/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
@@ -21,7 +24,8 @@ jest.mock('../src/autoHandler', () => ({
   myClick: jest.fn().mockReturnValue(true),
   mySwipe: jest.fn().mockReturnValue(true),
   matchTemplate: jest.fn(), // 默认 mock 函数
-  ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}])
+  ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),
+  mySleep: jest.fn(),
 }));
 
 jest.mock('../src/finder', () => ({
@@ -63,20 +67,20 @@ describe('execute action', () =>{
     .mockReturnValueOnce({ x: 100, y: 100 } as OpenCV.Point)
     .mockReturnValueOnce(null);
 
-    let collectCoinsAction = new CollectCoinsQuest();
-    collectCoinsAction.execute(characterState, functionConfig);
+    let collectCoinsAction = new CollectCoinsQuest(characterState, functionConfig);
+    collectCoinsAction.execute();
 
   });
 
   it('some step should repeat when fail on repeatable error', () => {
-    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [] });
+    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [], points: [] });
     //前两次mock是 ToWorld step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     //第三次是为  ToRallyWindow step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
-    let getInBusQuest = new GetInBusQuest();
-    getInBusQuest.execute(characterState, functionConfig);
+    let getInBusQuest = new GetInBusQuest(characterState, functionConfig);
+    getInBusQuest.execute();
     // expect(autoHandler.matchTemplate).toHaveBeenCalledTimes(100);
     const callCount = (autoHandler.matchTemplate as jest.Mock).mock.calls.length;
     expect(callCount).toBeGreaterThan(100);
@@ -96,13 +100,14 @@ describe('execute action', () =>{
     (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
     //mock 上车 `+` 号的识别
     (autoHandler.matchTemplate as jest.Mock).mockReturnValue({matches: [{point:{x: 100, y: 100}}]});
+
     // `+`号 卡片栏对应的怪名称
     // (ocr.orcRallyEnemyName as jest.Mock).mockReturnValue(EnemyName.Chuizi)
     // (autoHandler.ocrTextFromImg as jest.Mock).mockReturnValue();
 
-    let getInBusQuest = new GetInBusQuest();
-    getInBusQuest.execute(characterState, functionConfig);
-    getInBusQuest.postExecute(characterState, functionConfig)
+    let getInBusQuest = new GetInBusQuest(characterState, functionConfig);
+    getInBusQuest.execute();
+    getInBusQuest.postExecute()
     // expect(autoHandler.matchTemplate).toHaveBeenCalledTimes(100);
     const callCount = (autoHandler.matchTemplate as jest.Mock).mock.calls.length;
     expect(callCount).toBe(1);

@@ -56,6 +56,10 @@ export function myLog(msg: string): void {
   log(msg)
 }
 
+export function  mySleep(time: number): void {
+  sleep(time)
+}
+
 export function ocrText(region: OmniRegion): string[] {
   return ocr.paddle.recognizeText(region)
 }

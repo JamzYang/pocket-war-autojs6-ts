@@ -1,5 +1,5 @@
 import {Quest, CollectCoinsQuest, FunctionConfig, GatherFoodQuest, SoloHuntQuest, GetInBusQuest} from "./types";
-import {featureConfig} from  "./configLoader"
+import {loadFeatureConfig} from  "./configLoader"
 import {RuleConfig, Rule} from "./ruleEngine";
 export interface Condition {
   gt?: number;
@@ -25,14 +25,14 @@ export function loadRuleConfig(): RuleConfig {
       {
         conditions: {
           idleTeams: { gt: 0 },
-          gatherFood: {enable: featureConfig.gatherFood},
+          gatherFood: {enable: loadFeatureConfig().gatherFood},
         },
         quest: "GatherFoodQuest"
       },
       {
         conditions: {
           idleTeams: { lte: 0 },
-          collectCoins: {enable: featureConfig.collectCoins},
+          collectCoins: {enable: loadFeatureConfig().collectCoins},
           lastCoinCollectionTime: { gtHoursAgo: 1 }
         },
         quest: "CollectCoinsQuest"
@@ -40,7 +40,7 @@ export function loadRuleConfig(): RuleConfig {
       {
         conditions: {
           idleTeams: { gt: 0 },
-          getInBus: {enable: featureConfig.getInBus.enabled},
+          getInBus: {enable: loadFeatureConfig().getInBus.enabled},
         },
         quest: "GetInBusQuest"
       },

@@ -6,7 +6,13 @@ import {characterState, functionConfig} from "./config/config";
 
 import {orcRallyEnemyName, orcTeamNum} from './ocr'
 import {run} from "./ruleEngine";
+import {loadFeatureConfig} from "./configLoader";
+import {loadRuleConfig} from "./condition";
 // 加载配置文件
+
+
+let featureConfig = loadFeatureConfig()
+let ruleConfig = loadRuleConfig()
 
 captureScreen()
 sleep(2000)
@@ -21,7 +27,7 @@ while (true) {
     }else {
       myLog("没有空闲队伍")
     }
-    let quests = run()
+    let quests = run(ruleConfig, characterState, featureConfig)
     if(quests.length == 0){
       myLog("没有任务")
       sleep(2000)

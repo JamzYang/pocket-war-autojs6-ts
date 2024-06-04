@@ -10,17 +10,21 @@ import {
 
 import {characterState, functionConfig} from "../src/config/config";
 import {run} from "../src/ruleEngine";
+import {loadRuleConfig} from "../src/condition";
+import {loadFeatureConfig} from "../src/configLoader";
 
-const configPath = 'src/config.json';
 
+jest.mock('../src/configLoader', () => ({
+  loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
+}))
 
 describe('generate Quest', () => {
   it('should generate correct Quest based on character state and function config', () => {
     characterState.idleTeams = 1;
     characterState.stamina = 60;
     functionConfig.soloHunt.enabled = true;
-
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(SoloHuntQuest);
   });
 
@@ -29,21 +33,24 @@ describe('generate Quest', () => {
     characterState.idleTeams = 1;
     functionConfig.gatherFood = true;
     functionConfig.getInBus.enabled = false;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
   });
 
   it('should generate collect coins action when idle teams are zero and time since last coin collection is more than 1 hour', () => {
     characterState.idleTeams = 0;
     functionConfig.collectCoins = true;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(CollectCoinsQuest);
   });
 
   it('should return null if no conditions match', () => {
     characterState.idleTeams = 0;
     functionConfig.collectCoins = false;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests.length).toBe(0);
   });
 
@@ -54,7 +61,8 @@ describe('generate Quest', () => {
     functionConfig.getInBus.enabled = true;
     functionConfig.getInBus.chuizi.enabled= true;
     functionConfig.getInBus.chuizi.times = 1;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
     expect(quests[1]).toBeInstanceOf(GatherFoodQuest);
   });

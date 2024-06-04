@@ -9,10 +9,15 @@ import {
 } from '../src/types';
 
 import {characterState, functionConfig} from "../src/config/config";
+import {loadRuleConfig} from "../src/condition";
 
 const configPath = 'src/config.json';
 // 测试角色状态和功能配置
 
+
+jest.mock('../src/configLoader', () => ({
+  loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
+}))
 
 // 测试用例
 describe('rally quest', () => {
@@ -23,7 +28,8 @@ describe('rally quest', () => {
     functionConfig.gatherFood = true;
     // functionConfig.rallyHunt.enabled = true;
     functionConfig.getInBus.enabled = true;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig, characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
   });
 
@@ -39,7 +45,8 @@ describe('rally quest', () => {
     functionConfig.getInBus.heijun.times = -1;
     functionConfig.getInBus.nanmin.enabled = true;
     functionConfig.getInBus.nanmin.times = -1;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig, characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
 
   });
@@ -57,7 +64,8 @@ describe('rally quest', () => {
     functionConfig.getInBus.heijun.times = -1;
     functionConfig.getInBus.nanmin.enabled = true;
     functionConfig.getInBus.nanmin.times = -1;
-    let quests = run()
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig, characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
   });
 });
