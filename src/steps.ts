@@ -1,9 +1,9 @@
 import {
   CharacterState,
   ExecuteResult,
-  FailureResult,
+  Failure,
   FunctionConfig, GetInBusQuest,
-  NeedRepeatFailureResult,
+  NeedRepeatFailure,
   SuccessResult
 } from './types'
 import {captureScreen, findMultiColor, fromBase64, matchTemplate, myClick, myLog, mySwipe} from "./autoHandler";
@@ -22,7 +22,7 @@ export interface Step {
 export class CheckIdleTeamsStep implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     if (characterState.idleTeams < 1) {
-      return new FailureResult('没有空闲队伍');
+      throw new Failure('没有空闲队伍');
     }
     return new SuccessResult('空闲队伍检查通过');
   }
@@ -48,7 +48,7 @@ export class ClickConfirmGatherBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     let result = findMultiColor(captureScreen(), colorConfig.confirmGatherBtn)
     if(result == null) {
-      return new FailureResult('没有找到确认按钮')
+      throw new Failure('没有找到确认按钮')
     }
     myClick(result.x,result.y, 600,"ClickConfirmGatherBtn")
     return new SuccessResult('ClickConfirmGatherBtn')
@@ -70,24 +70,32 @@ export class GetInBus implements Step {
     //最后一列上车图标垂直区域 [311,236,389,943]
     myLog("开始搜索车位....")
     let img = captureScreen()
+    myLog("截图结束，开始找车位")
     const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
       region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
     });
-    if(matchingResult.matches.length > 0) {
-      for (const match of matchingResult.matches) {
-        let enemyName = orcRallyEnemyName(img,[match.point.x + 164, match.point.y +63, 131, 113])
+    img.recycle();
+    myLog("匹配结束：" + JSON.stringify(matchingResult.points))
+    if(matchingResult.points.length > 0) {
+      //matchingResult.points 去重
+      let points = Array.from(new Set(matchingResult.points));
+      myLog("去重后：" + JSON.stringify(points))
+      for (const point of points) {
+        myLog("开始识别怪物名字")
+        let enemyName = orcRallyEnemyName([point.x + 164, point.y +63, 131, 113])
         myLog('怪物名字: ' + enemyName)
         let expectObject = this.quest.expectObject(characterState, functionConfig);
         myLog("集结目标: "+ JSON.stringify(expectObject))
         if(enemyName && expectObject.find(item => item.name == enemyName)) {
-          myClick(match.point.x + iconConfig.getInBusIcon.offSet.x ,match.point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
+          myClick(point.x + iconConfig.getInBusIcon.offSet.x ,point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
           this.quest.actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
           return new SuccessResult('GetInBus success. enemyName='+enemyName)
         }
       }
     }
     myLog("没有找到空坐位....")
-    return new NeedRepeatFailureResult('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
+    sleep(2000)
+    throw new NeedRepeatFailure('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
   }
 
 }
@@ -99,7 +107,7 @@ export class ToRallyWindow implements Step {
     if(result != null) {
       myClick(pointConfig.rallyNoBusWindowCloseBtn.x,pointConfig.rallyNoBusWindowCloseBtn.y, 200,"click rallyNoBusWindowCloseBtn")
       new ToWorld().execute(characterState, functionConfig)
-      return new NeedRepeatFailureResult('no bus found', Number(repeatSeconds().toString() || '50'))
+      throw new NeedRepeatFailure('no bus found', Number(repeatSeconds().toString() || '50'))
     }
     return new SuccessResult('ToRallyWindow')
   }
@@ -108,7 +116,7 @@ export class ToRallyWindow implements Step {
 
 export class ClickConfirmBattleBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.confirmBattleBtn.x,pointConfig.confirmBattleBtn.y, 200,"ClickConfirmBattleBtn")
+    myClick(pointConfig.confirmBattleBtn.x,pointConfig.confirmBattleBtn.y, 800,"ClickConfirmBattleBtn")
     return new SuccessResult('ClickConfirmBattleBtn')
   }
 }
@@ -192,7 +200,7 @@ export class ToWorld implements Step {
     }
 
     if(!isWorldWindow()){
-      return new FailureResult('回到世界失败');
+      throw new Failure('回到世界失败');
     }
     return new SuccessResult('已到世界');
   }
@@ -207,7 +215,7 @@ export class ToCity implements Step {
     }
 
     if(!isCityWindow()){
-      return new FailureResult('回到主城失败');
+      throw new Failure('回到主城失败');
     }
     return new SuccessResult('已到主城');
   }
@@ -241,7 +249,7 @@ export class ClickCoinPoll implements Step {
       }
       //关闭窗口
       closeDialog()
-      return new FailureResult("fast harvest failure")
+      throw new Failure("fast harvest failure")
     }
     function clickCoinHarvesterIcon() {
       myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y - 90, 400, "clickCoinHarvesterIcon")
@@ -298,5 +306,5 @@ function closeDialog(): ExecuteResult {
     myLog("click closeBtn")
     return new SuccessResult("closeDialog")
   }
-  return new FailureResult("closeDialog")
+  throw new Failure("closeDialog")
 }

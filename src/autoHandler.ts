@@ -38,7 +38,7 @@ export function matchTemplate(img: ImageWrapper, template: ImageWrapper, options
 
 
 
-export function myClick(x: number, y: number, time: number = 400, name?: string): boolean {
+export function myClick(x: number, y: number, time: number = 600, name?: string): boolean {
   myLog(`点击 ${name}, 坐标:${x},${y}`)
   let result = click(x,y)
   sleep(time)
@@ -69,5 +69,11 @@ export function ocrText(region: OmniRegion): string[] {
 
 export function ocrTextFromImg(img: ImageWrapper | string, region: OmniRegion): org.autojs.autojs.runtime.api.OcrResult[] {
   // return ocr.paddle.recognizeText(img,region)
-  return ocr.paddle.detect(img,region)
+  return ocr.paddle.detect(img,{region:region,useSlim:true});
+}
+//recognizeText
+
+export function ocrTextFromImgMlkit(img: ImageWrapper | string, region: OmniRegion): org.autojs.autojs.runtime.api.OcrResult[] {
+  // return ocr.paddle.recognizeText(img,region)
+  return ocr.mlkit.detect(img,{region:region});
 }

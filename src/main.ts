@@ -90,13 +90,29 @@ sleep(2000)
 // getInBusQuest.execute(characterState, customizedConfig);
 // getInBusQuest.postExecute(characterState, customizedConfig)
 while (true) {
-  let quests = run()
-  if(quests.length == 0){
-    myLog("没有任务")
-    sleep(2000)
-    continue
+  try {
+    new ToWorld().execute(characterState, customizedConfig)
+    let idle = orcTeamNum()?.idle
+    if(idle && idle > 0){
+      myLog("有空闲队伍")
+      characterState.idleTeams = idle
+    }else {
+      myLog("没有空闲队伍")
+    }
+    let quests = run()
+    if(quests.length == 0){
+      myLog("没有任务")
+      sleep(2000)
+      continue
+    }
+    let quest = quests[0]
+    quest.execute(characterState, customizedConfig)
+    quest.postExecute(characterState, customizedConfig)
+  }catch (e){
+    console.error('An error occurred:', e);
   }
-  let quest = quests[0]
-  quest.execute(characterState, customizedConfig)
-  quest.postExecute(characterState, customizedConfig)
 }
+
+// new GetInBus(new GetInBusQuest()).execute(characterState, customizedConfig)
+// myLog("开始识别")
+// orcRallyEnemyName([0,0,720,1280])

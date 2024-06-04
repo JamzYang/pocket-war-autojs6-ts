@@ -17,6 +17,7 @@ import {
 } from "./steps";
 import * as console from "console";
 import {myLog} from "./autoHandler";
+import {repeatSeconds} from "./config/env.conf";
 
 export enum HuntType {
   Normal = 'normal',
@@ -97,11 +98,11 @@ export class SuccessResult extends ExecuteResult{
 
 }
 
-export class FailureResult extends ExecuteResult{
+export class Failure extends Error{
 
 }
 
-export class NeedRepeatFailureResult extends FailureResult{
+export class NeedRepeatFailure extends Failure{
   repeatSeconds: number;
   constructor(error: string, repeatSeconds: number) {
     super(error);
@@ -127,19 +128,20 @@ export  class Quest {
     let actionResult: ExecuteResult
     for (const step of this.steps) {
       myLog(`Executing step: ${step.constructor.name}`);
-      actionResult = step.execute(characterState, functionConfig);
-      if (actionResult instanceof FailureResult) {
-        //the current time in seconds
-        const repeatStartTime = new Date().getTime();
-        if(actionResult instanceof NeedRepeatFailureResult) {
-          actionResult = step.execute(characterState, functionConfig);
-          while (actionResult instanceof NeedRepeatFailureResult
-          && new Date().getTime() - repeatStartTime < actionResult.repeatSeconds * 1000) {
+      const stepFirstStartTime = new Date().getTime();
+      try {
+        actionResult = step.execute(characterState, functionConfig);
+      }catch (e){
+        if(e instanceof NeedRepeatFailure){
+          if(new Date().getTime() - stepFirstStartTime < repeatSeconds() * 1000) {
             actionResult = step.execute(characterState, functionConfig);
+          }else {
+            myLog(`Executing step: ${step.constructor.name} repeat time out. ${e}`)
           }
+        }else {
+          myLog(`Executing step: ${step.constructor.name} error.  ${e}`)
+          throw e
         }
-        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.message}`)
-        return actionResult;
       }
     }
     return new SuccessResult(`action: ${this.constructor.name} success`);
