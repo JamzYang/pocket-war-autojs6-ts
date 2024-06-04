@@ -77,6 +77,7 @@ describe('execute action', () =>{
     //前两次mock是 ToWorld step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    // (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     //第三次是为  ToRallyWindow step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
     let getInBusQuest = new GetInBusQuest(characterState, functionConfig);
