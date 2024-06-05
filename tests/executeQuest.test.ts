@@ -25,6 +25,7 @@ jest.mock('../src/autoHandler', () => ({
   mySwipe: jest.fn().mockReturnValue(true),
   matchTemplate: jest.fn(), // 默认 mock 函数
   ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),
+  ocrText: jest.fn().mockReturnValue(['战锤']),
   mySleep: jest.fn(),
 }));
 
@@ -100,7 +101,7 @@ describe('execute action', () =>{
     //第三次是为  ToRallyWindow step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValue(null);
     //mock 上车 `+` 号的识别
-    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({matches: [{point:{x: 100, y: 100}}]});
+    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({matches: [{point:{x: 100, y: 100}}], points: [{x: 100, y: 100}]});
 
     // `+`号 卡片栏对应的怪名称
     // (ocr.orcRallyEnemyName as jest.Mock).mockReturnValue(EnemyName.Chuizi)

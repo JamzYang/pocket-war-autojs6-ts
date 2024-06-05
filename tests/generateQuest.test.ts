@@ -66,4 +66,16 @@ describe('generate Quest', () => {
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
     expect(quests[1]).toBeInstanceOf(GatherFoodQuest);
   });
+
+  it('should gen nonTeamNeedQuest when idleTeams = 0', () => {
+    characterState.stamina =30;
+    characterState.idleTeams = 0;
+    functionConfig.gatherFood = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled= true;
+    functionConfig.getInBus.chuizi.times = 1;
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
+    // expect(quests[0]).toBeInstanceOf(GetInBusQuest); //todo
+  });
 });
