@@ -3,7 +3,7 @@ import {CharacterState, FunctionConfig, HuntType} from "../types";
 export const characterState: CharacterState = {
   stamina: 0,
   totalTeams: 0,
-  idleTeams: 0,
+  idleTeams: 1,
   lastCoinCollectionTime: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
 };
 
@@ -25,20 +25,20 @@ export const functionConfig: FunctionConfig = {
   getInBus: {
     enabled: true,
     chuizi: {
-      enabled: true,
-      times: 50,
+      enabled: false,
+      times: 0,
     },
     nanmin: {
       enabled: false,
-      times: 10,
+      times: 0,
     },
     heijun: {
-      enabled: true,
-      times: 50,
+      enabled: false,
+      times: 0,
     },
     juxing: {
-      enabled: true,
-      times: 10,
+      enabled: false,
+      times: 0,
     },
     formationNum: 1
   }

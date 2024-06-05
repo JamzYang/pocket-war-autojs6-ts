@@ -1,11 +1,11 @@
 import {CharacterState, FunctionConfig, Quest, NullQuest, ActionClassMap} from './types';
-import { characterState, functionConfig } from "./config/config";
+// import { characterState, functionConfig } from "./config/config";
 import {Condition, loadRuleConfig } from "./condition";
 
 
 export interface Rule {
   conditions: { [key: string]: Condition };
-  quest: Quest;
+  quest: string;
 }
 
 export interface RuleConfig {
@@ -28,7 +28,7 @@ function getNestedValue(obj: any, path: string): any {
   return current;
 }
 
-function evalQuest(actionName: string): Quest {
+function evalQuest(actionName: string, characterState: CharacterState, functionConfig: FunctionConfig): Quest {
   let questClass = ActionClassMap[actionName];
   if(!questClass) {
     throw new Error(`Unknown action name: ${actionName}`);
@@ -38,8 +38,11 @@ function evalQuest(actionName: string): Quest {
 
 function createRuleFunction(rule: Rule): RuleFunction {
   return (characterState, functionConfig) => {
-    if( conditionAllMatched(rule) && rule.quest.configMatched(characterState, functionConfig) ){
-      return rule.quest
+    if( conditionAllMatched(rule, characterState, functionConfig)){
+      let quest = evalQuest(rule.quest, characterState, functionConfig)
+      if(quest.configMatched()){
+        return quest
+      }
     }
     return null;
   };
@@ -47,14 +50,11 @@ function createRuleFunction(rule: Rule): RuleFunction {
 
 
 
-function conditionAllMatched(rule: Rule) {
+function conditionAllMatched(rule: Rule, characterState: CharacterState, functionConfig: FunctionConfig) {
   for (const [key, condition] of Object.entries(rule.conditions)) {
     //没定义 默认为true
     //定义了， 且条件成立 继续
-
     //condition中已定义的条件都成立，则返回true。 未定义的条件默认为成立
-
-
     const value = getNestedValue({...characterState, ...functionConfig}, key);
     if (condition.gt !== undefined && !(value > condition.gt)) return false;
     if (condition.lt !== undefined && !(value < condition.lt)) return false;
@@ -69,7 +69,7 @@ function conditionAllMatched(rule: Rule) {
   return true;
 }
 
-function generateQuest(rules: RuleFunction[]): Quest[] {
+function generateQuest(rules: RuleFunction[], characterState: CharacterState, functionConfig: FunctionConfig): Quest[] {
   let quests: Quest[] = [];
   for (const rule of rules) {
     const quest = rule(characterState, functionConfig);
@@ -87,8 +87,7 @@ function generateQuest(rules: RuleFunction[]): Quest[] {
   return quests;
 }
 
-export function run(): Quest[] {
-  let ruleConfig = loadRuleConfig()
+export function run(ruleConfig: RuleConfig, characterState: CharacterState, featureConfig: FunctionConfig): Quest[] {
   const ruleFunctions = ruleConfig.rules.map(createRuleFunction);
-  return  generateQuest(ruleFunctions)
+  return  generateQuest(ruleFunctions, characterState, featureConfig)
 }

@@ -1,5 +1,5 @@
 import {
-  AttackEnemy,
+  AttackEnemy, CheckGetInBusSuccess,
   ClickCoinPoll, ClickConfirmBattleBtn,
   ClickConfirmGatherBtn,
   ClickConfirmSearchBtn,
@@ -17,6 +17,8 @@ import {
 } from "./steps";
 import * as console from "console";
 import {myLog} from "./autoHandler";
+import {repeatSeconds} from "./config/env.conf";
+
 
 export enum HuntType {
   Normal = 'normal',
@@ -97,11 +99,11 @@ export class SuccessResult extends ExecuteResult{
 
 }
 
-export class FailureResult extends ExecuteResult{
+export class Failure extends Error{
 
 }
 
-export class NeedRepeatFailureResult extends FailureResult{
+export class NeedRepeatFailure extends Failure{
   repeatSeconds: number;
   constructor(error: string, repeatSeconds: number) {
     super(error);
@@ -112,37 +114,51 @@ export class NeedRepeatFailureResult extends FailureResult{
 
 
 export  class Quest {
+  protected characterState: CharacterState;
+  protected functionConfig: FunctionConfig;
+
+  constructor(characterState: CharacterState, functionConfig: FunctionConfig) {
+    this.characterState = characterState;
+    this.functionConfig = functionConfig;
+  }
+
+
   protected steps: Step[] = [];
   weight: number = 0;
-  postExecute (characterState: CharacterState, functionConfig: FunctionConfig):ExecuteResult {
+  postExecute ():ExecuteResult {
    return  new SuccessResult('success')
   }
 
-  configMatched(characterState: CharacterState, functionConfig: FunctionConfig): boolean {
+  configMatched(): boolean {
     return true;
   }
 
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+  execute(): ExecuteResult {
     myLog(`Executing Quest ${this.constructor.name}`);
     let actionResult: ExecuteResult
     for (const step of this.steps) {
       myLog(`Executing step: ${step.constructor.name}`);
-      actionResult = step.execute(characterState, functionConfig);
-      if (actionResult instanceof FailureResult) {
-        //the current time in seconds
-        const repeatStartTime = new Date().getTime();
-        if(actionResult instanceof NeedRepeatFailureResult) {
-          actionResult = step.execute(characterState, functionConfig);
-          while (actionResult instanceof NeedRepeatFailureResult
-          && new Date().getTime() - repeatStartTime < actionResult.repeatSeconds * 1000) {
-            actionResult = step.execute(characterState, functionConfig);
-          }
-        }
-        myLog(`Executing step: ${step.constructor.name} failed. reason: ${actionResult.message}`)
-        return actionResult;
-      }
+      const stepFirstStartTime = new Date().getTime();
+      executeWithRetry(step, this.characterState, this.functionConfig)
     }
     return new SuccessResult(`action: ${this.constructor.name} success`);
+  }
+}
+
+function executeWithRetry(step:Step, characterState: CharacterState, functionConfig: FunctionConfig):ExecuteResult {
+  const startTime = new Date().getTime();
+  while(true){
+    try {
+      return  step.execute(characterState, functionConfig)
+    }catch (e){
+      if (!(e instanceof NeedRepeatFailure)) {
+        myLog(`Executing step: ${step.constructor.name} error.  ${e}`)
+        throw e;
+      }
+      if (new Date().getTime() - startTime > repeatSeconds() * 1000) {
+        return  new SuccessResult(`repeat execute step: ${step.constructor.name} time out.`)
+      }
+    }
   }
 }
 
@@ -193,24 +209,24 @@ interface EnemyObject {
 
 export class GetInBusQuest extends Quest {
 
-  public expectObject(characterState: CharacterState, functionConfig: FunctionConfig): {name: EnemyName, times: number}[] {
+  public expectObject(): {name: EnemyName, times: number}[] {
     let enemyNames:{name: EnemyName, times: number}[]  = [];
-    if(functionConfig.getInBus.chuizi.enabled && functionConfig.getInBus.chuizi.times >= 0){
-      enemyNames.push({name: EnemyName.Chuizi, times: functionConfig.getInBus.chuizi.times})
+    if(this.functionConfig.getInBus.chuizi.enabled && this.functionConfig.getInBus.chuizi.times >= 0){
+      enemyNames.push({name: EnemyName.Chuizi, times: this.functionConfig.getInBus.chuizi.times})
     }
-    if(functionConfig.getInBus.heijun.enabled && functionConfig.getInBus.heijun.times >= 0){
-      enemyNames.push({name: EnemyName.Heijun, times: functionConfig.getInBus.heijun.times})
+    if(this.functionConfig.getInBus.heijun.enabled && this.functionConfig.getInBus.heijun.times >= 0){
+      enemyNames.push({name: EnemyName.Heijun, times: this.functionConfig.getInBus.heijun.times})
     }
-    if(functionConfig.getInBus.nanmin.enabled && functionConfig.getInBus.nanmin.times >= 0){
-      enemyNames.push({name: EnemyName.Nanmin, times: functionConfig.getInBus.nanmin.times})
+    if(this.functionConfig.getInBus.nanmin.enabled && this.functionConfig.getInBus.nanmin.times >= 0){
+      enemyNames.push({name: EnemyName.Nanmin, times: this.functionConfig.getInBus.nanmin.times})
     }
-    if(functionConfig.getInBus.juxing.enabled && functionConfig.getInBus.juxing.times >= 0){
-      enemyNames.push({name: EnemyName.Juxing, times: functionConfig.getInBus.juxing.times})
+    if(this.functionConfig.getInBus.juxing.enabled && this.functionConfig.getInBus.juxing.times >= 0){
+      enemyNames.push({name: EnemyName.Juxing, times: this.functionConfig.getInBus.juxing.times})
     }
     return enemyNames
   }
-  public configMatched(characterState: CharacterState, functionConfig: FunctionConfig): boolean {
-    return this.expectObject(characterState, functionConfig).length > 0;
+  public configMatched(): boolean {
+    return this.expectObject().length > 0;
   }
 
   weight = 5;
@@ -219,7 +235,8 @@ export class GetInBusQuest extends Quest {
     new ToRallyWindow(),
     new GetInBus(this),
     new SelectCommanderSolider(),
-    new ClickConfirmBattleBtn()
+    new ClickConfirmBattleBtn(),
+    new CheckGetInBusSuccess(this),
   ]
 
   /**
@@ -228,21 +245,21 @@ export class GetInBusQuest extends Quest {
   actualObject: {name: EnemyName, times: number} |null = null
 
   //重写postExecute方法
-  postExecute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+  postExecute(): ExecuteResult {
     if(this.actualObject == null) {
       return new SuccessResult("postExecute GetInBusQuest actualObject is null");
     }
     switch (this.actualObject.name) {
       case EnemyName.Chuizi:
-        functionConfig.getInBus.chuizi.times -= 1;
+        this.functionConfig.getInBus.chuizi.times -= 1;
         break;
       case EnemyName.Heijun:
-        functionConfig.getInBus.heijun.times -= 1;
+        this.functionConfig.getInBus.heijun.times -= 1;
         break;
       case EnemyName.Nanmin:
-        functionConfig.getInBus.nanmin.times -= 1;
+        this.functionConfig.getInBus.nanmin.times -= 1;
       case EnemyName.Juxing:
-        functionConfig.getInBus.juxing.times -= 1;
+        this.functionConfig.getInBus.juxing.times -= 1;
     }
     return new SuccessResult("postExecute GetInBusQuest");
   }
