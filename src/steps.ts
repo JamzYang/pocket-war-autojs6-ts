@@ -7,7 +7,7 @@ import {
   SuccessResult
 } from './types'
 import {
-  captureScreen,
+  captureScreen, findImage,
   findMultiColor,
   fromBase64,
   matchTemplate,
@@ -38,14 +38,14 @@ export class CheckIdleTeamsStep implements Step {
 }
 
 export class SelectSoloEnemy implements Step {
-    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-        throw new Error('Method not implemented.');
-    }
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export class ClickSearch implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y, 400,"mainSearchBtn")
+    myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y, 400, "mainSearchBtn")
     return new SuccessResult('ClickSearch');
   }
 }
@@ -56,10 +56,10 @@ export class ClickSearch implements Step {
 export class ClickConfirmGatherBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     let result = findMultiColor(captureScreen(), colorConfig.confirmGatherBtn)
-    if(result == null) {
+    if (result == null) {
       throw new Failure('没有找到确认按钮')
     }
-    myClick(result.x,result.y, 600,"ClickConfirmGatherBtn")
+    myClick(result.x, result.y, 600, "ClickConfirmGatherBtn")
     return new SuccessResult('ClickConfirmGatherBtn')
   }
 }
@@ -67,9 +67,11 @@ export class ClickConfirmGatherBtn implements Step {
 //跟车页 卡片之间垂直间隔610px,
 export class GetInBus implements Step {
   private quest: GetInBusQuest;
+
   constructor(quest: GetInBusQuest) {
     this.quest = quest
   }
+
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     //怪物名字 [496,309,684,352] 中心点： 349 272  相比加号中心 x偏移 147， y偏移 37  名字框 高 43 宽 188
     //这个方法有个问题。多点找色只能找到最上面一个
@@ -81,38 +83,40 @@ export class GetInBus implements Step {
     let img = captureScreen()
     myLog("截图结束，开始找车位")
     const matchingResult = matchTemplate(img, fromBase64(iconConfig.getInBusIcon.base64), {
-      region: [311,236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
+      region: [311, 236, 78, 710], // 或者 org.opencv.core.Rect 或 android.graphics.Rect 对象
     });
     // img.recycle(); todo
     myLog("匹配结束：" + JSON.stringify(matchingResult.points))
-    if(matchingResult.points.length > 0) {
+    if (matchingResult.points.length > 0) {
       //matchingResult.points 去重
       let points = Array.from(new Set(matchingResult.points));
       myLog("去重后：" + JSON.stringify(points))
       for (const point of points) {
         myLog("开始识别怪物名字")
-        let enemyName = orcRallyEnemyName([point.x + 164, point.y +63, 131, 113])
+        let enemyName = orcRallyEnemyName([point.x + 164, point.y + 63, 131, 113])
         myLog('怪物名字: ' + enemyName)
         let expectObject = this.quest.expectObject();
-        myLog("集结目标: "+ JSON.stringify(expectObject))
-        if(enemyName && expectObject.find(item => item.name == enemyName)) {
-          myClick(point.x + iconConfig.getInBusIcon.offSet.x ,point.y + iconConfig.getInBusIcon.offSet.y, 300,"click get in bus icon")
+        myLog("集结目标: " + JSON.stringify(expectObject))
+        if (enemyName && expectObject.find(item => item.name == enemyName)) {
+          myClick(point.x + iconConfig.getInBusIcon.offSet.x, point.y + iconConfig.getInBusIcon.offSet.y, 300, "click get in bus icon")
           this.quest.actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
-          return new SuccessResult('GetInBus success. enemyName='+enemyName)
+          return new SuccessResult('GetInBus success. enemyName=' + enemyName)
         }
       }
     }
     myLog("没有找到空坐位....")
     mySleep(2000)
-    throw new NeedRepeatFailure('没有找到空坐位',3 * Number(repeatSeconds().toString() || '50'))
+    throw new NeedRepeatFailure('没有找到空坐位',  Number(repeatSeconds().toString() || '50'))
   }
 }
 
 export class CheckGetInBusSuccess implements Step {
   private quest: GetInBusQuest;
+
   constructor(quest: GetInBusQuest) {
     this.quest = quest
   }
+
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     // this.quest.actualObject?.name
 
@@ -122,11 +126,11 @@ export class CheckGetInBusSuccess implements Step {
 
 export class ToRallyWindow implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.unionIcon.x,pointConfig.unionIcon.y, 400,"ClickUnionIcon")
-    myClick(pointConfig.warIcon.x,pointConfig.warIcon.y, 400,"ClickWarIcon")
+    myClick(pointConfig.unionIcon.x, pointConfig.unionIcon.y, 400, "ClickUnionIcon")
+    myClick(pointConfig.warIcon.x, pointConfig.warIcon.y, 400, "ClickWarIcon")
     let result = findMultiColor(captureScreen(), colorConfig.rallyNoBusWindow)
-    if(result != null) {
-      myClick(pointConfig.rallyNoBusWindowCloseBtn.x,pointConfig.rallyNoBusWindowCloseBtn.y, 200,"click rallyNoBusWindowCloseBtn")
+    if (result != null) {
+      myClick(pointConfig.rallyNoBusWindowCloseBtn.x, pointConfig.rallyNoBusWindowCloseBtn.y, 200, "click rallyNoBusWindowCloseBtn")
       new ToWorld().execute(characterState, functionConfig)
       throw new NeedRepeatFailure('no bus found', Number(repeatSeconds().toString() || '50'))
     }
@@ -137,28 +141,28 @@ export class ToRallyWindow implements Step {
 
 export class ClickConfirmBattleBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.confirmBattleBtn.x,pointConfig.confirmBattleBtn.y, 800,"ClickConfirmBattleBtn")
+    myClick(pointConfig.confirmBattleBtn.x, pointConfig.confirmBattleBtn.y, 800, "ClickConfirmBattleBtn")
     return new SuccessResult('ClickConfirmBattleBtn')
   }
 }
 
 export class ClickOneClickBattle implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.oneClickBattleBtn.x,pointConfig.oneClickBattleBtn.y, 200,"ClickOneClickBattle")
+    myClick(pointConfig.oneClickBattleBtn.x, pointConfig.oneClickBattleBtn.y, 200, "ClickOneClickBattle")
     return new SuccessResult('ClickOneClickBattle')
   }
 }
 
 export class SelectResourceFieldTab implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 400,"SelectResourceFieldTab")
+    myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 400, "SelectResourceFieldTab")
     return new SuccessResult('SelectResourceFieldTab')
   }
 }
 
 export class ClickFarmlandPic implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.searchFarmLandPic.x, pointConfig.searchFarmLandPic.y, 400,"ClickFarmlandPic")
+    myClick(pointConfig.searchFarmLandPic.x, pointConfig.searchFarmLandPic.y, 400, "ClickFarmlandPic")
     return new SuccessResult('ClickFarmlandPic');
   }
 }
@@ -166,7 +170,7 @@ export class ClickFarmlandPic implements Step {
 export class SelectSearchLevel implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     for (let i = 0; i < 5; i++) {
-      myClick(pointConfig.searchLevelPlusIcon.x, pointConfig.searchLevelPlusIcon.y, 50,"SelectSearchLevel")
+      myClick(pointConfig.searchLevelPlusIcon.x, pointConfig.searchLevelPlusIcon.y, 50, "SelectSearchLevel")
     }
     return new SuccessResult('SelectSearchLevel');
   }
@@ -174,14 +178,14 @@ export class SelectSearchLevel implements Step {
 
 export class ClickFocusPoint implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y, 1000,"ClickFocusPoint")
+    myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y, 1000, "ClickFocusPoint")
     return new SuccessResult('ClickFocusPoint');
   }
 }
 
 export class ClickConfirmSearchBtn implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y, 500,"ClickConfirmSearchBtn")
+    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y, 500, "ClickConfirmSearchBtn")
     return new SuccessResult('ClickConfirmSearchBtn');
   }
 }
@@ -197,18 +201,18 @@ export class GatherResource implements Step {
  */
 export class AttackEnemy implements Step {
   //判断单刷还是集结可以在创建Step时传个变量. 或者根据配置文件也可以,但是 配置中的单刷和集结得互斥
-    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-      //根据配置文件,攻击几次或是集结
-        throw new Error('Method not implemented.');
-    }
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    //根据配置文件,攻击几次或是集结
+    throw new Error('Method not implemented.');
+  }
 }
 
 export class SelectCommanderSolider implements Step {
-    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-      //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
-      myClick(pointConfig.formationNum2.x, pointConfig.formationNum2.y)
-      return new SuccessResult("SelectCommanderSolider")
-    }
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
+    myClick(pointConfig.formationNum2.x, pointConfig.formationNum2.y)
+    return new SuccessResult("SelectCommanderSolider")
+  }
 }
 
 
@@ -216,11 +220,11 @@ export class ToWorld implements Step {
   execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
     handleCloseBtn()
     handleBackButton();
-    if(!isWorldWindow()) {
+    if (!isWorldWindow()) {
       clickMainCityBtnOrWorldBtn()
     }
 
-    if(!isWorldWindow()){
+    if (!isWorldWindow()) {
       throw new Failure('回到世界失败');
     }
     return new SuccessResult('已到世界');
@@ -231,24 +235,24 @@ export class ToCity implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     handleCloseBtn()
     handleBackButton();
-    if(isWorldWindow()) {
+    if (isWorldWindow()) {
       clickMainCityBtnOrWorldBtn()
     }
 
-    if(!isCityWindow()){
+    if (!isCityWindow()) {
       throw new Failure('回到主城失败');
     }
     return new SuccessResult('已到主城');
   }
 }
 
-export class ToCoinHarvester implements Step{
-    execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-        myClick(pointConfig.coinBar.x,pointConfig.coinBar.y, 400, "coinBar")
-        mySwipe(560,700,580,500)
-        myClick(pointConfig.coinHarvester.x, pointConfig.coinHarvester.y, 800, "coinHarvester")
-      return new SuccessResult("coinHarvester")
-    }
+export class ToCoinHarvester implements Step {
+  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.coinBar.x, pointConfig.coinBar.y, 400, "coinBar")
+    mySwipe(560, 700, 580, 500)
+    myClick(pointConfig.coinHarvester.x, pointConfig.coinHarvester.y, 800, "coinHarvester")
+    return new SuccessResult("coinHarvester")
+  }
 }
 
 
@@ -263,7 +267,7 @@ export class ClickCoinPoll implements Step {
       if (checkWindowResult) {
         let checkFree = findMultiColor(captureScreen(), colorConfig.coin.freeFastHarvest)
         if (checkFree) {
-          myClick(checkFree.x, checkFree.y,400, "fastHarvest checkFree")
+          myClick(checkFree.x, checkFree.y, 400, "fastHarvest checkFree")
           closeDialog()
           return new SuccessResult("fast harvest")
         }
@@ -272,6 +276,7 @@ export class ClickCoinPoll implements Step {
       closeDialog()
       throw new Failure("fast harvest failure")
     }
+
     function clickCoinHarvesterIcon() {
       myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y - 90, 400, "clickCoinHarvesterIcon")
     }
@@ -290,10 +295,10 @@ function handleBackButton() {
   }
 }
 
-function handleCloseBtn(){
+function handleCloseBtn() {
   myLog("handleCloseBtn")
   let closeBtn = hasCloseBtn()
-  if(closeBtn != null) {
+  if (closeBtn != null) {
     // [630,119,675,163]
     myClick(closeBtn.x + 22, closeBtn.y + 22, 400, "closeBtn")
     myLog("click closeBtn")
@@ -304,7 +309,7 @@ function handleCloseBtn(){
 
 function isWorldWindow() {
   let result = findMultiColor(captureScreen(), colorConfig.mainWindow.mainCityColor)
-  return result !=null
+  return result != null
 }
 
 function isCityWindow(): OpenCV.Point | null {
@@ -321,7 +326,7 @@ function clickMainCityBtnOrWorldBtn() {
 
 function closeDialog(): ExecuteResult {
   let closeBtn = hasCloseBtn()
-  if(closeBtn != null) {
+  if (closeBtn != null) {
     // [630,119,675,163]
     myClick(closeBtn.x + iconConfig.closeBtn.offSet.x, closeBtn.y + iconConfig.closeBtn.offSet.y, 400, "closeBtn")
     myLog("click closeBtn")

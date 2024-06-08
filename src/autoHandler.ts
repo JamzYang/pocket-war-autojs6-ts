@@ -41,14 +41,14 @@ export function matchTemplate(img: ImageWrapper, template: ImageWrapper, options
 export function myClick(x: number, y: number, time: number = 600, name?: string): boolean {
   myLog(`点击 ${name}, 坐标:${x},${y}`)
   let result = click(x,y)
-  sleep(time)
+  sleep(1000)
   return result
 }
 
-export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 300): boolean {
+export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 1000): boolean {
   myLog(`滑动坐标:${sx},${sy}->${ex},${ey}`)
   let result = swipe(sx,sy,ex,ey,duration)
-  sleep(duration)
+  sleep(2000)
   return result
 }
 

@@ -16,7 +16,7 @@ import {
   ToWorld
 } from "./steps";
 import * as console from "console";
-import {myLog} from "./autoHandler";
+import {myLog, mySleep} from "./autoHandler";
 import {repeatSeconds} from "./config/env.conf";
 
 
@@ -107,6 +107,10 @@ export class SuccessResult extends ExecuteResult{
 }
 
 export class Failure extends Error{
+
+}
+
+export class TextParseError extends  Error{
 
 }
 
@@ -207,7 +211,6 @@ export class CollectCoinsQuest extends Quest {
   protected steps = [new ToCity(),new ToCoinHarvester(), new ClickCoinPoll()]
 
 }
-
 
 interface EnemyObject {
   name: EnemyName;

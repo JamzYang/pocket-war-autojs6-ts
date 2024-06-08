@@ -41,5 +41,11 @@ export const functionConfig: FunctionConfig = {
       times: 0,
     },
     formationNum: 1
+  },
+  events: {
+    oceanTreasure: {
+      enabled: false,
+      detectorNum: 1
+    },
   }
 };

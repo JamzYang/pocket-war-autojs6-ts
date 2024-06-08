@@ -7,7 +7,7 @@ export const pointConfig = {
   coinBar: {x: 220, y: 25},
   coinHarvester: {x: 220, y: 1040},
   unionIcon: {x: 660, y: 856},
-
+  valueEventsIcon: {x: 656, y:254},
 
   //========================联盟窗口======================
   warIcon: {x: 200, y: 1000},
