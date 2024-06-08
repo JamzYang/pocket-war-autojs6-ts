@@ -84,6 +84,13 @@ export interface FunctionConfig {
       times: number,
     },
     formationNum: number
+  },
+
+  events: {
+    oceanTreasure: {
+      enabled: boolean,
+      detectorNum: number
+    },
   }
 
 }

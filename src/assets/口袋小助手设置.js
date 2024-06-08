@@ -2,6 +2,7 @@
 
 var color = "#009688";
 let formationOptionsStr = "1|2|3|4|5|6|7|8"
+let detectorNumOptionsStr = "1|2|3"
 var FunctionConfig = {
   collectCoins: false,
   gatherFood: false,
@@ -36,6 +37,12 @@ var FunctionConfig = {
       times: "10"
     },
     formationNum: "1"
+  },
+  events: {
+    oceanTreasure: {
+      enabled: false,
+      detectorNum: "3"
+    },
   }
 };
 
@@ -45,13 +52,32 @@ var FunctionConfig = {
 var storedConfig = storages.create("FunctionConfig").get("config");
 console.log("从本地存储读取配置："+storedConfig)
 if (storedConfig) {
-  FunctionConfig = JSON.parse(storedConfig);
+  let storedConfigParsed = JSON.parse(storedConfig);
+  mergeConfig(FunctionConfig, storedConfigParsed);
+  FunctionConfig = storedConfigParsed;
 }
 
 function updateStorage(){
   console.log("更新本地存储配置："+JSON.stringify(FunctionConfig))
   storages.create("FunctionConfig").put("config", JSON.stringify(FunctionConfig));
+}
 
+// 合并存储的配置和默认配置
+function mergeConfig(defaultConfig, storedConfig) {
+  for (let key in defaultConfig) {
+    if (defaultConfig.hasOwnProperty(key)) {
+      if (typeof defaultConfig[key] === 'object' && !Array.isArray(defaultConfig[key])) {
+        if (!storedConfig[key]) {
+          storedConfig[key] = {};
+        }
+        mergeConfig(defaultConfig[key], storedConfig[key]);
+      } else {
+        if (storedConfig[key] === undefined) {
+          storedConfig[key] = defaultConfig[key];
+        }
+      }
+    }
+  }
 }
 
 function updateConfig() {
@@ -64,6 +90,7 @@ function updateConfig() {
   FunctionConfig.getInBus.nanmin.times = ui.nanminTimes.getText();
   FunctionConfig.getInBus.juxing.enabled = ui.enableJuxing.isChecked();
   FunctionConfig.getInBus.juxing.times = ui.juxingTimes.getText();
+  FunctionConfig.events.oceanTreasure.enabled = ui.oceanTreasure.isChecked();
   console.log("更新配置：")
   console.log(JSON.stringify(FunctionConfig))
   updateStorage();
@@ -78,11 +105,11 @@ ui.layout(
           </appbar>
 
           <viewpager id="viewpager">
-              <frame>
+              <frame id="打野">
                 <text>待实现</text>
               </frame>
 
-              <frame>
+              <frame id="跟车">
                 <vertical>
                   <linear>
                     <checkbox id="enableFollowCar" text="开启跟车"
@@ -124,24 +151,35 @@ ui.layout(
 
                 </vertical>
               </frame>
-            <frame>
-              <text text="待实现" textSize="16sp"/>
-            </frame>
-            <frame>
-              <text text="待实现" textSize="16sp"/>
-            </frame>
+
+            {/*===================下田 宝藏===================*/}
             <frame>
               <text>第4页</text>
             </frame>
+
+            {/*===================热门活动===================*/}
+            <frame id="热门活动">
+              <vertical>
+                <linear>
+                  <checkbox id="oceanTreasure" text="深海寻宝"
+                            checked="{{FunctionConfig.events.oceanTreasure.enabled}}"></checkbox>
+                  <text marginLeft="40">探测器数量</text>
+                  <spinner id="detectorNum"
+                           entries="{{detectorNumOptionsStr}}">
+                  </spinner>
+                </linear>
+              </vertical>
+            </frame>
+
             <frame>
               <text>第5页</text>
             </frame>
             <frame>
-                  <text>第6页</text>
-              </frame>
-            </viewpager>
+              <text>第6页</text>
+            </frame>
+          </viewpager>
         </vertical>
-        <vertical layout_gravity="left" bg="#ffffff" w="280">
+      <vertical layout_gravity="left" bg="#ffffff" w="280">
             <img w="280" h="200" scaleType="fitXY" src="http://images.shejidaren.com/wp-content/uploads/2014/10/023746fki.jpg"/>
             <list id="menu">
                 <horizontal bg="?selectableItemBackground" w="*">
@@ -152,11 +190,12 @@ ui.layout(
         </vertical>
     </drawer>
 );
-
-//反展数据
+//反显数据
 ui.post(function() {
   let formationOptions = formationOptionsStr.split("|");
   ui.getInBusFormationNum.setSelection(formationOptions.indexOf(FunctionConfig.getInBus.formationNum));
+  let detectorNums = detectorNumOptionsStr.split("|");
+  ui.detectorNum.setSelection(detectorNums.indexOf(FunctionConfig.events.oceanTreasure.detectorNum));
 });
 
 
@@ -181,7 +220,7 @@ ui.emitter.on("options_item_selected", (e, item)=>{
 activity.setSupportActionBar(ui.toolbar);
 
 //设置滑动页面的标题
-ui.viewpager.setTitles(["打野","跟车", "下田宝藏", "热门活动","曙光","超值活动","限时活动","鸡肋活动","坑爹活动"]);
+ui.viewpager.setTitles(["打野","跟车", "下田", "热门\n活动","曙光","限时\n活动","坑爹\n活动"]);
 //让滑动页面和标签栏联动
 ui.tabs.setupWithViewPager(ui.viewpager);
 
@@ -238,10 +277,14 @@ ui.getInBusFormationNum.setOnItemSelectedListener({
   },
 })
 
-ui.getInBusFormationNum.on("item_select", function(index, text) {
-  FunctionConfig.getInBus.formationNum = index + 1;
-  updateStorage();
-});
+ui.detectorNum.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    // 更新 FunctionConfig 中的相应字段
+    FunctionConfig.events.oceanTreasure.detectorNum = parent.getItemAtPosition(position).toString(); // 或者根据需要更新字段
+    updateStorage();
+  },
+})
+
 
 // 监听表单元素变化
 ui.enableFollowCar.on("check", updateConfig);
@@ -250,6 +293,7 @@ ui.enableChuizi.on("check", updateConfig);
 ui.enableHeiJun.on("check", updateConfig);
 ui.enableNanmin.on("check", updateConfig);
 ui.enableJuxing.on("check", updateConfig);
+ui.oceanTreasure.on("check", updateConfig);
 
 events.on("key", function (keyCode, event){
   if(keyCode === keys.back ) {
