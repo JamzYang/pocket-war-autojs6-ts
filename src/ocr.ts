@@ -1,6 +1,6 @@
-import * as autoHandler from "./autoHandler";
-import {EnemyName, NeedRepeatFailure, TextParseError} from "./types";
-import {myLog, ocrTextFromImgMlkit} from "./autoHandler";
+import * as autoHandler from "./helper/autoHandler";
+import {myLog, ocrTextFromImgMlkit} from "./helper/autoHandler";
+import {EnemyName} from "./enum";
 
 //行军队列数量bar 区域 [1,275,243,541]
 export function orcTeamNum(): { idle: number, total: number } | null {

@@ -1,8 +1,13 @@
-import {AttackEnemy, ClickConfirmBattleBtn, Step, ToWorld} from "./steps";
-import {CharacterState, EnemyName, ExecuteResult, FunctionConfig, HuntType, Quest, SuccessResult} from "./types";
-import {myClick} from "./autoHandler";
+import {myClick} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation"
+import {ExecuteResult, SuccessResult} from "./core/executeResult";
+import {Quest} from "./core/quest";
+import {EnemyName, HuntType} from "./enum";
+import {ClickConfirmBattleBtn, Step, ToWorld} from "./core/step";
+import {AttackEnemy} from "./steps";
+import {CharacterState} from "./core/characterState";
+import {FunctionConfig} from "./core/functionConfig";
 
 export class SoloHuntQuest extends Quest {
   public actualObject: {name: HuntType, times: number} |null = null

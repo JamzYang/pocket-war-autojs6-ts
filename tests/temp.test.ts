@@ -7,10 +7,10 @@ import '@jest/globals';
 // })
 
 
-import { myLog } from '../src/autoHandler';
+import { myLog } from '../src/helper/autoHandler';
 
 // Mocking the entire module
-jest.mock('../src/autoHandler', () => ({
+jest.mock('../src/helper/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
 }));
 

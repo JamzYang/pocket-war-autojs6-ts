@@ -1,21 +1,18 @@
-import {CollectCoinsQuest, EnemyName, GetInBusQuest} from "../src/types";
 import {characterState, functionConfig} from "../src/config/config";
-import * as autoHandler from '../src/autoHandler';
-import * as ocr from '../src/ocr';
-import {hasCloseBtn, hasBackBtn} from '../src/finder'
-import {repeatSeconds} from "../src/config/env.conf";
-import {matchTemplate} from "../src/autoHandler";
-import {orcRallyEnemyName} from "../src/ocr";
+import * as autoHandler from '../src/helper/autoHandler';
+import {EnemyName} from "../src/enum";
+import {GetInBusQuest} from "../src/getInBus";
+import {CollectCoinsQuest} from "../src/collectCoins";
 
 jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
 }))
 
-jest.mock('../src/configLoader', () => ({
+jest.mock('../src/core/configLoader', () => ({
   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
 }))
 
-jest.mock('../src/autoHandler', () => ({
+jest.mock('../src/helper/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
   fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
   captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
@@ -29,7 +26,7 @@ jest.mock('../src/autoHandler', () => ({
   mySleep: jest.fn(),
 }));
 
-jest.mock('../src/finder', () => ({
+jest.mock('../src/helper/finder', () => ({
   hasCloseBtn: jest.fn().mockReturnValueOnce( { x: 100, y: 100 })
     .mockReturnValueOnce(null),
   hasBackBtn: jest.fn().mockReturnValueOnce({ x: 100, y: 100 })

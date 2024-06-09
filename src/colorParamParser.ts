@@ -1,6 +1,6 @@
 // import * as fs from 'fs';
 import {colorConfig}  from "./config/colorConfig";
-import {myLog} from "./autoHandler";
+import {myLog} from "./helper/autoHandler";
 
 // 定义函数的参数类型接口
 interface Params {

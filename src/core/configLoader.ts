@@ -1,6 +1,4 @@
-// import * as fs from 'fs';
-import {Quest, FunctionConfig, HuntType} from "./types";
-import {functionConfig} from "./config/config";
+import {FunctionConfig} from "../types";
 
  export function loadFeatureConfig(): FunctionConfig {
   console.log("loadFeatureConfig");

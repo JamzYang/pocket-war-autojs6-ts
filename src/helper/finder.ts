@@ -1,6 +1,6 @@
 import {captureScreen, captureScreenGray, findImage, findMultiColor, fromBase64, matchTemplate} from "./autoHandler";
-import {iconConfig} from "./config/iconConfig";
-import {colorConfig} from "./config/colorConfig";
+import {iconConfig} from "../config/iconConfig";
+import {colorConfig} from "../config/colorConfig";
 
 export function hasBackBtn(): OpenCV.Point | null {
   let icon = fromBase64(iconConfig.backBtn.base64)

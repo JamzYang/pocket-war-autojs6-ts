@@ -1,26 +1,13 @@
-import {
-  findMultiColor,
-  captureScreen,
-  fromBase64,
-  findImage,
-  myLog,
-  matchTemplate,
-  myClick,
-  captureScreenGray
-} from "./autoHandler";
+import {captureScreen, myClick, myLog} from "./helper/autoHandler";
+import {ToWorld} from "./core/step"
 
-import {GetInBus, ToCoinHarvester, ToWorld} from "./steps";
+import {characterState} from "./config/config";
 
-import {characterState, functionConfig} from "./config/config";
-
-import {orcRallyEnemyName, orcTeamNum} from './ocr'
-import {run} from "./ruleEngine";
-import {loadFeatureConfig} from "./configLoader";
-import {loadRuleConfig} from "./condition";
-import * as autoHandler from "./autoHandler";
-import {OceanTreasureQuest} from "./oceanTreasure";
-import {iconConfig} from "./config/iconConfig";
-import {hasDownwardTriangle} from "./finder";
+import {orcTeamNum} from './ocr'
+import {run} from "./core/ruleEngine";
+import {loadFeatureConfig} from "./core/configLoader";
+import {loadRuleConfig} from "./core/condition";
+import {hasDownwardTriangle} from "./helper/finder";
 // 加载配置文件
 let featureConfig = loadFeatureConfig()
 let ruleConfig = loadRuleConfig()

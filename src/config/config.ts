@@ -1,4 +1,7 @@
-import {CharacterState, FunctionConfig, HuntType, Quest} from "../types";
+import {CharacterState} from "../core/characterState";
+import {Quest} from "../core/quest";
+import {FunctionConfig} from "../core/functionConfig";
+import {HuntType} from "../enum";
 
 export const characterState: CharacterState = {
   stamina: 0,
@@ -12,15 +15,35 @@ export const functionConfig: FunctionConfig = {
   gatherFood: false,
   soloHunt: {
     enabled: false,
-    type: HuntType.Normal,
-    level: 1,
+    type: HuntType.byTurn,
+    attackType:"五连",
+    times: 1,
+    level: 0,
     formationNum: 1
   },
   rallyHunt: {
     enabled: false,
-    type: HuntType.Normal,
-    level: 1,
-    formationNum: 1
+    chuizi: {
+      enabled: false,
+      times: 1,
+      level: 0,
+      formationNum: 1
+    },
+    juxing: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
+    nanmin: {
+      enabled: false,
+      times: 10,
+      formationNum: 1
+    },
+    heijun: {
+      enabled: false,
+      formationNum: 1
+    },
   },
   getInBus: {
     enabled: true,

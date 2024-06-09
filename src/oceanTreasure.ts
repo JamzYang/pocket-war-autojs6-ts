@@ -1,18 +1,15 @@
-import {
-  CharacterState,
-  ExecuteResult,
-  FunctionConfig,
-  NeedRepeatFailure,
-  SuccessResult,
-  Quest
-} from "./types";
-import {captureScreen, findImage, fromBase64, myClick, myLog, mySleep, mySwipe} from "./autoHandler";
+
+import {captureScreen, findImage, fromBase64, myClick, myLog, mySleep, mySwipe} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {iconConfig} from "./config/iconConfig";
-import {Step, ToWorld} from "./steps";
-import * as autoHandler from "./autoHandler";
+import * as autoHandler from "./helper/autoHandler";
 import {repeatSeconds} from "./config/env.conf";
 import {intervalConfig} from "./config/intervalConfig";
+import {Quest} from "./core/quest";
+import {Step, ToWorld} from "./core/step";
+import {CharacterState} from "./core/characterState";
+import {FunctionConfig} from "./core/functionConfig";
+import {ExecuteResult, NeedRepeatFailure, SuccessResult} from "./core/executeResult";
 
 
 const points = {

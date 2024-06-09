@@ -1,9 +1,12 @@
-import {CharacterState, ExecuteResult, FunctionConfig, Quest, SuccessResult} from "./types";
-import {myClick} from "./autoHandler";
+import {myClick} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
-import {Step} from "./steps";
 import {RallyHuntQuest, SoloHuntQuest} from "./hunt"
-import {GetInBusQuest} from './types'
+import {Step} from "./core/step";
+import {Quest} from "./core/quest";
+import {CharacterState} from "./core/characterState";
+import {FunctionConfig} from "./core/functionConfig";
+import {ExecuteResult, SuccessResult} from "./core/executeResult";
+import {GetInBusQuest} from "./getInBus";
 export class SelectCommanderSolider implements Step {
   protected quest: Quest;
   constructor(quest: Quest) {
@@ -15,7 +18,7 @@ export class SelectCommanderSolider implements Step {
     if(this.quest instanceof SoloHuntQuest){
       this.selectFormation(functionConfig.soloHunt.formationNum);
     }else if(this.quest instanceof RallyHuntQuest){
-      this.selectFormation(functionConfig.rallyHunt.formationNum);
+      // this.selectFormation(functionConfig.rallyHunt.formationNum); //todo 这里要根据怪类型来选择编队
     }else if(this.quest instanceof GetInBusQuest) {
       this.selectFormation(functionConfig.getInBus.formationNum);
     }

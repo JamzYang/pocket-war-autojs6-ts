@@ -1,21 +1,20 @@
 import {characterState, functionConfig} from "../src/config/config";
 import {OceanTreasureQuest, RecognizeState, ToOceanTreasure} from "../src/oceanTreasure";
-import * as autoHandler from "../src/autoHandler";
-import {ClickCoinPoll, Step} from "../src/steps";
-import {CollectCoinsQuest, Quest} from "../src/types";
-import {loadRuleConfig} from "../src/condition";
-import {run} from "../src/ruleEngine";
-import {myLog} from "../src/autoHandler";
+import * as autoHandler from "../src/helper/autoHandler";
+import {loadRuleConfig} from "../src/core/condition";
+import {run} from "../src/core/ruleEngine";
+import {myLog} from "../src/helper/autoHandler";
+import {CollectCoinsQuest} from "../src/collectCoins";
 
 jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
 }))
 
-jest.mock('../src/configLoader', () => ({
+jest.mock('../src/core/configLoader', () => ({
   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
 }))
 
-jest.mock('../src/autoHandler', () => ({
+jest.mock('../src/helper/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
   fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
   captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),

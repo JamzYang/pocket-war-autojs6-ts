@@ -1,17 +1,17 @@
 import {characterState, functionConfig} from "../src/config/config";
 import {OceanTreasureQuest, RecognizeState, ToOceanTreasure} from "../src/oceanTreasure";
-import * as autoHandler from "../src/autoHandler";
-import {Step} from "../src/steps";
+import * as autoHandler from "../src/helper/autoHandler";
+import {Step} from "../src/core/step";
 
 jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
 }))
 
-jest.mock('../src/configLoader', () => ({
+jest.mock('../src/core/configLoader', () => ({
   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
 }))
 
-jest.mock('../src/autoHandler', () => ({
+jest.mock('../src/helper/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
   // fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
   // captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
@@ -31,7 +31,7 @@ describe('OceanTreasureQuest', () => {
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
 
-    new TestOceanTreasureQuest(characterState, functionConfig).execute()
+    new TestOceanTreasureQuest(characterState,functionConfig).execute()
     const callCount = (autoHandler.ocrText as jest.Mock).mock.calls.length;
     expect(callCount).toBeGreaterThan(10);
   })

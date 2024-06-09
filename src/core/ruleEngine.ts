@@ -1,7 +1,8 @@
-import {CharacterState, FunctionConfig, Quest, NullQuest} from './types';
-// import { characterState, functionConfig } from "./config/config";
 import {Condition } from "./condition";
-import {ActionClassMap} from "./ActionClassMap";
+import {ActionClassMap} from "../helper/ActionClassMap";
+import {CharacterState} from "./characterState";
+import {FunctionConfig} from "./functionConfig";
+import {Quest} from "./quest";
 
 
 export interface Rule {
@@ -62,7 +63,7 @@ function conditionAllMatched(rule: Rule, characterState: CharacterState, functio
     if (condition.gte !== undefined && !(value >= condition.gte)) return false;
     if (condition.lte !== undefined && !(value <= condition.lte)) return false;
     if (condition.equals !== undefined && value !== condition.equals) return false;
-    if (condition.enable !== undefined && true !== condition.enable) return false;
+    if (condition.enable !== undefined && !condition.enable) return false;
   }
   return true;
 }

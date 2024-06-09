@@ -1,21 +1,15 @@
-import {run} from '../src/ruleEngine';
-import {
-  CharacterState,
-  CollectCoinsQuest,
-  FunctionConfig,
-  GatherFoodQuest, GetInBusQuest,
-  HuntType, NullQuest, Quest,
-  SoloHuntQuest
-} from '../src/types';
+import {run} from '../src/core/ruleEngine';
 
 import {characterState, functionConfig} from "../src/config/config";
-import {loadRuleConfig} from "../src/condition";
+import {loadRuleConfig} from "../src/core/condition";
+import {GatherFoodQuest} from "../src/gather";
+import {GetInBusQuest} from "../src/getInBus";
 
 const configPath = 'src/config.json';
 // 测试角色状态和功能配置
 
 
-jest.mock('../src/configLoader', () => ({
+jest.mock('../src/core/configLoader', () => ({
   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
 }))
 

@@ -1,22 +1,18 @@
-import {
-  CollectCoinsQuest,
-  GatherFoodQuest, GetInBusQuest,
-  SoloHuntQuest
-} from '../src/types';
-
-
 import {characterState, functionConfig} from "../src/config/config";
-import {run} from "../src/ruleEngine";
-import {loadRuleConfig} from "../src/condition";
-import {loadFeatureConfig} from "../src/configLoader";
+import {run} from "../src/core/ruleEngine";
+import {loadRuleConfig} from "../src/core/condition";
 import {OceanTreasureQuest} from "../src/oceanTreasure";
+import {SoloHuntQuest} from "../src/hunt";
+import {GatherFoodQuest} from "../src/gather";
+import {CollectCoinsQuest} from "../src/collectCoins";
+import {GetInBusQuest} from "../src/getInBus";
+import {HuntType} from "../src/enum";
 
-
-jest.mock('../src/configLoader', () => ({
+jest.mock('../src/core/configLoader', () => ({
   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
 }))
 
-jest.mock('../src/autoHandler', () => ({
+jest.mock('../src/helper/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
   fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
   captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
@@ -103,5 +99,22 @@ describe('generate Quest', () => {
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(OceanTreasureQuest); //todo
+  });
+
+
+  it('should gen solo quest', () => {
+    characterState.stamina =30;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled= true;
+    functionConfig.getInBus.chuizi.times = 1;
+    functionConfig.soloHunt.enabled = true;
+    functionConfig.soloHunt.type = HuntType.navy;
+    functionConfig.soloHunt.attackType = "单次";
+    functionConfig.soloHunt.times = 2;
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, functionConfig)
+    expect(quests[0]).toBeInstanceOf(SoloHuntQuest); //todo
   });
 });

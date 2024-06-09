@@ -1,6 +1,5 @@
-import {Quest, CollectCoinsQuest, FunctionConfig, GatherFoodQuest, SoloHuntQuest, GetInBusQuest} from "./types";
-import {loadFeatureConfig} from  "./configLoader"
-import {RuleConfig, Rule} from "./ruleEngine";
+import {loadFeatureConfig} from "./configLoader"
+import {RuleConfig} from "./ruleEngine";
 export interface Condition {
   gt?: number;
   lt?: number;
@@ -16,7 +15,7 @@ export function loadRuleConfig(): RuleConfig {
     rules: [
       {
         conditions: {
-          stamina: { gt: 50 },
+          stamina: { gt: 30 },
           idleTeams: { gt: 0 },
         },
         quest: "SoloHuntQuest"
