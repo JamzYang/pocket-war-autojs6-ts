@@ -64,11 +64,11 @@ export interface FunctionConfig {
   collectCoins: boolean;
   gatherFood: boolean;
   soloHunt: {
-    enabled: boolean;
-    type: HuntType;
-    attackType: string; //5连, 单次
-    level: number;
-    times: number;
+    enabled: boolean,
+    type: HuntType,
+    attackType: string, //5连, 单次
+    level: number,
+    times: number,
     formationNum: number
   },
   rallyHunt: {
@@ -76,13 +76,13 @@ export interface FunctionConfig {
     chuizi: {
       enabled: boolean,
       times: number,
-      level: number;
+      level: number,
       formationNum: number
     },
     juxing: {
       enabled: boolean,
       times: number,
-      level: number;
+      level: number,
       formationNum: number
     },
     nanmin: {
@@ -237,7 +237,7 @@ export class GatherFoodQuest extends Quest {
       new ClickOneClickBattle(),
       // new GatherResource(),
       // new SelectCommanderSolider(),
-      new ClickConfirmBattleBtn()
+      new ClickConfirmBattleBtn(this)
   ]
 }
 
@@ -285,7 +285,7 @@ export class GetInBusQuest extends Quest {
     new ToRallyWindow(),
     new GetInBus(this),
     new SelectCommanderSolider(this),
-    new ClickConfirmBattleBtn(),
+    new ClickConfirmBattleBtn(this),
     new CheckGetInBusSuccess(this),
   ]
 

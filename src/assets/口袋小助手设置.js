@@ -1,22 +1,43 @@
 "ui";
 
 var color = "#009688";
-let formationOptionsStr = "1|2|3|4|5|6|7|8"
-let detectorNumOptionsStr = "1|2|3"
+const formationOptionsStr = "1|2|3|4|5|6|7|8"
+const detectorNumOptionsStr = "1|2|3"
+const soloHuntEnemyOptionsStr = "黑暗陆军|黑暗海军|黑暗海军|三军轮流|最右边"
+const soloHuntAttackTypeOptionsStr =  "五连|单次"
 var FunctionConfig = {
   collectCoins: false,
   gatherFood: false,
   soloHunt: {
     enabled: false,
-    type: "normal", // "normal" 表示普通怪，"elite" 表示精英怪
+    type: "normal",
+    attackType: "五连",
     level: "1",
     formationNum: "1"
   },
   rallyHunt: {
     enabled: false,
-    type: "normal",
-    level: "0",
-    formationNum: "0"
+    chuizi: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
+    juxing: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
+    nanmin: {
+      enabled: false,
+      times: 10,
+      formationNum: 1
+    },
+    heijun: {
+      enabled: false,
+      formationNum: 1
+    },
   },
   getInBus: {
     enabled: true,
@@ -61,7 +82,7 @@ if (storedConfig) {
 }
 
 function updateStorage(){
-  // console.log("更新本地存储配置："+JSON.stringify(FunctionConfig))
+  console.log("更新存储："+JSON.stringify(FunctionConfig))
   storages.create("FunctionConfig").put("config", JSON.stringify(FunctionConfig));
 }
 
@@ -95,8 +116,7 @@ function updateConfig() {
   FunctionConfig.getInBus.juxing.times = ui.juxingTimes.getText();
   FunctionConfig.events.oceanTreasure.enabled = ui.oceanTreasure.isChecked();
   FunctionConfig.collectCoins = ui.collectCoins.isChecked();
-  console.log("更新配置：")
-  console.log(JSON.stringify(FunctionConfig))
+  FunctionConfig.soloHunt.enabled = ui.soloHunt.isChecked();
   updateStorage();
 }
 
@@ -110,16 +130,40 @@ ui.layout(
 
           <viewpager id="viewpager">
               <frame id="打野">
-                <text>待实现</text>
-              </frame>
-
-              <frame id="跟车">
                 <vertical>
                   <linear>
-                    <checkbox id="enableFollowCar" desc="enableFollowCar" text="开启跟车"
-                              checked="{{FunctionConfig.getInBus.enabled}}"></checkbox>
-                    <text marginLeft="40">跟车编队</text>
-                    <spinner id="getInBusFormationNum"
+                    <checkbox id="soloHunt"
+                              text="单刷"
+                              checked="{{FunctionConfig.soloHunt.enabled}}"></checkbox>
+                    <text marginLeft="5">编队</text>
+                    <spinner id="soloHuntFormationNum"
+                             entries="{{formationOptionsStr}}">
+                    </spinner>
+                    <text marginLeft="2">敌军</text>
+                    <spinner id="soloHuntEnemyType"
+                             entries="{{soloHuntEnemyOptionsStr}}">
+                    </spinner>
+                  </linear>
+                  <linear>
+                    <text marginLeft="40">方式</text>
+                    <spinner id="soloHuntAttackType"
+                             entries="{{soloHuntAttackTypeOptionsStr}}">
+                    </spinner>
+                    <text marginLeft="10" text="次数"/>
+                    <input id="soloHuntTimes" inputType="number"
+                           text="{{FunctionConfig.soloHunt.times}}"/>
+                  </linear>
+                </vertical>
+              </frame>
+
+            <frame id="跟车">
+              <vertical>
+                <linear>
+                  <checkbox id="enableFollowCar" desc="enableFollowCar"
+                            text="开启跟车"
+                            checked="{{FunctionConfig.getInBus.enabled}}"></checkbox>
+                  <text marginLeft="40">跟车编队</text>
+                  <spinner id="getInBusFormationNum"
                              entries="{{formationOptionsStr}}">
                     </spinner>
                   </linear>
@@ -216,6 +260,11 @@ ui.post(function() {
   ui.getInBusFormationNum.setSelection(formationOptions.indexOf(FunctionConfig.getInBus.formationNum));
   let detectorNums = detectorNumOptionsStr.split("|");
   ui.detectorNum.setSelection(detectorNums.indexOf(FunctionConfig.events.oceanTreasure.detectorNum));
+  let soloHuntEnemys = soloHuntEnemyOptionsStr.split("|");
+  ui.soloHuntEnemyType.setSelection(soloHuntEnemys.indexOf(FunctionConfig.soloHunt.type));
+
+  let soloHuntAttackType = soloHuntAttackTypeOptionsStr.split("|");
+  ui.soloHuntAttackType.setSelection(soloHuntAttackType.indexOf(FunctionConfig.soloHunt.attackType));
 });
 
 
@@ -291,7 +340,6 @@ ui.juxingTimes.addTextChangedListener({
 
 ui.getInBusFormationNum.setOnItemSelectedListener({
   onItemSelected: function(parent, view, position, id) {
-    // 更新 FunctionConfig 中的相应字段
     FunctionConfig.getInBus.formationNum = parent.getItemAtPosition(position).toString(); // 或者根据需要更新字段
     updateStorage();
   },
@@ -299,11 +347,68 @@ ui.getInBusFormationNum.setOnItemSelectedListener({
 
 ui.detectorNum.setOnItemSelectedListener({
   onItemSelected: function(parent, view, position, id) {
-    // 更新 FunctionConfig 中的相应字段
     FunctionConfig.events.oceanTreasure.detectorNum = parent.getItemAtPosition(position).toString(); // 或者根据需要更新字段
     updateStorage();
   },
 })
+
+//===========单刷 start===================
+ui.soloHunt.on("check", updateConfig);
+ui.soloHuntFormationNum.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    FunctionConfig.soloHunt.formationNum = parent.getItemAtPosition(position).toString(); // 或者根据需要更新字段
+    updateStorage();
+  },
+})
+
+ui.soloHuntEnemyType.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    //"黑暗陆军|黑暗海军|黑暗海军|三军轮流|最右边"
+    let selected = parent.getItemAtPosition(position).toString();
+    switch (selected) {
+      case "黑暗陆军":
+        FunctionConfig.soloHunt.type = "army";
+        break;
+      case "黑暗海军":
+        FunctionConfig.soloHunt.type = "navy";
+        break;
+      case "黑暗空军":
+        FunctionConfig.soloHunt.type = "airForce";
+        break;
+      case "三军轮流":
+        FunctionConfig.soloHunt.type = "byTurn";
+        break;
+      case "最右边":
+        FunctionConfig.soloHunt.type = "right";
+        break;
+   }
+   updateStorage();
+  },
+})
+
+ui.soloHuntAttackType.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    let selected = parent.getItemAtPosition(position).toString();
+    switch (selected) {
+      case "五连":
+        FunctionConfig.soloHunt.attackType = "五连";
+        break;
+      case "单次":
+        FunctionConfig.soloHunt.attackType = "单次";
+        break;
+    }
+    updateStorage();
+  },
+})
+
+ui.soloHuntTimes.addTextChangedListener({
+  onTextChanged: function(text) {
+    FunctionConfig.soloHunt.times = text.toString();
+    updateStorage();
+  }
+});
+//===========单刷 end===================
+
 
 // 监听表单元素变化
 ui.enableFollowCar.on("check", updateConfig);
