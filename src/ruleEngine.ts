@@ -1,6 +1,7 @@
-import {CharacterState, FunctionConfig, Quest, NullQuest, ActionClassMap} from './types';
+import {CharacterState, FunctionConfig, Quest, NullQuest} from './types';
 // import { characterState, functionConfig } from "./config/config";
-import {Condition, loadRuleConfig } from "./condition";
+import {Condition } from "./condition";
+import {ActionClassMap} from "./ActionClassMap";
 
 
 export interface Rule {

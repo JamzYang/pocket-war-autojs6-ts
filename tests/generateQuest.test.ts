@@ -1,9 +1,6 @@
 import {
-  CharacterState,
   CollectCoinsQuest,
-  FunctionConfig,
   GatherFoodQuest, GetInBusQuest,
-  HuntType, NullQuest,
   SoloHuntQuest
 } from '../src/types';
 
@@ -12,11 +9,27 @@ import {characterState, functionConfig} from "../src/config/config";
 import {run} from "../src/ruleEngine";
 import {loadRuleConfig} from "../src/condition";
 import {loadFeatureConfig} from "../src/configLoader";
+import {OceanTreasureQuest} from "../src/oceanTreasure";
 
 
 jest.mock('../src/configLoader', () => ({
   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
 }))
+
+jest.mock('../src/autoHandler', () => ({
+  myLog: jest.fn(), // Creating a mock function for myLog
+  fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
+  captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
+  findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
+  findMultiColor: jest.fn().mockReturnValue({ x: 100, y: 100 }),
+  myClick: jest.fn().mockReturnValue(true),
+  mySwipe: jest.fn().mockReturnValue(true),
+  matchTemplate: jest.fn(), // 默认 mock 函数
+  ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),
+  ocrText: jest.fn().mockReturnValue(['战锤']),
+  mySleep: jest.fn(),
+}));
+
 
 describe('generate Quest', () => {
   it('should generate correct Quest based on character state and function config', () => {
@@ -77,5 +90,19 @@ describe('generate Quest', () => {
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, functionConfig)
     // expect(quests[0]).toBeInstanceOf(GetInBusQuest); //todo
+  });
+
+  it('should gen oceanTreasureQuest when treasure is enabled', () => {
+    characterState.stamina =30;
+    characterState.idleTeams = 1;
+    functionConfig.gatherFood = true;
+    functionConfig.getInBus.enabled = true;
+    functionConfig.getInBus.chuizi.enabled= true;
+    functionConfig.getInBus.chuizi.times = 1;
+    functionConfig.events.oceanTreasure.enabled = true;
+    let ruleConfig = loadRuleConfig()
+
+    let quests = run(ruleConfig,characterState, functionConfig)
+    expect(quests[0]).toBeInstanceOf(OceanTreasureQuest); //todo
   });
 });

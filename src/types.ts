@@ -1,22 +1,26 @@
 import {
-  AttackEnemy, CheckGetInBusSuccess,
-  ClickCoinPoll, ClickConfirmBattleBtn,
+  AttackEnemy,
+  CheckGetInBusSuccess,
+  ClickCoinPoll,
+  ClickConfirmBattleBtn,
   ClickConfirmGatherBtn,
   ClickConfirmSearchBtn,
   ClickFarmlandPic,
-  ClickFocusPoint, ClickOneClickBattle,
-  ClickSearch, GetInBus,
+  ClickFocusPoint,
+  ClickOneClickBattle,
+  ClickSearch,
+  GetInBus,
   SelectCommanderSolider,
   SelectResourceFieldTab,
   SelectSearchLevel,
   SelectSoloEnemy,
   Step,
   ToCity,
-  ToCoinHarvester, ToRallyWindow,
+  ToCoinHarvester,
+  ToRallyWindow,
   ToWorld
 } from "./steps";
-import * as console from "console";
-import {myLog, mySleep} from "./autoHandler";
+import {myLog} from "./autoHandler";
 import {repeatSeconds} from "./config/env.conf";
 
 
@@ -127,15 +131,14 @@ export class NeedRepeatFailure extends Failure{
 export  class Quest {
   protected characterState: CharacterState;
   protected functionConfig: FunctionConfig;
+  protected steps: Step[] = [];
+  public weight: number = 0;
 
   constructor(characterState: CharacterState, functionConfig: FunctionConfig) {
     this.characterState = characterState;
     this.functionConfig = functionConfig;
   }
 
-
-  protected steps: Step[] = [];
-  weight: number = 0;
   postExecute ():ExecuteResult {
    return  new SuccessResult('success')
   }
@@ -144,12 +147,11 @@ export  class Quest {
     return true;
   }
 
-  execute(): ExecuteResult {
+   execute(): ExecuteResult {
     myLog(`Executing Quest ${this.constructor.name}`);
     let actionResult: ExecuteResult
     for (const step of this.steps) {
       myLog(`Executing step: ${step.constructor.name}`);
-      const stepFirstStartTime = new Date().getTime();
       executeWithRetry(step, this.characterState, this.functionConfig)
     }
     return new SuccessResult(`action: ${this.constructor.name} success`);
@@ -274,12 +276,3 @@ export class GetInBusQuest extends Quest {
     return new SuccessResult("postExecute GetInBusQuest");
   }
 }
-
-
-export const ActionClassMap: { [key: string]: new (characterState: CharacterState, functionConfig: FunctionConfig) => Quest } = {
-  NullQuest: NullQuest,
-  SoloHuntQuest: SoloHuntQuest,
-  CollectCoinsQuest: CollectCoinsQuest,
-  GatherFoodQuest: GatherFoodQuest,
-  GetInBusQuest: GetInBusQuest,
-};

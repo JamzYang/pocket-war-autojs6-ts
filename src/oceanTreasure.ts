@@ -1,11 +1,10 @@
 import {
-  CharacterState, EnemyName,
+  CharacterState,
   ExecuteResult,
-  Failure,
   FunctionConfig,
   NeedRepeatFailure,
-  Quest,
-  SuccessResult
+  SuccessResult,
+  Quest
 } from "./types";
 import {captureScreen, findImage, fromBase64, myClick, myLog, mySleep, mySwipe} from "./autoHandler";
 import {pointConfig} from "./config/pointConfig";
@@ -23,8 +22,8 @@ const points = {
 
 
 export class OceanTreasureQuest extends Quest {
-  weight = 10;
-  nextExecuteTime: number = 0;
+  public weight = 10;
+  public nextExecuteTime: number = 0;
   protected steps = [
     new ToWorld(),
     new ToOceanTreasure(this),

@@ -44,6 +44,13 @@ export function loadRuleConfig(): RuleConfig {
         },
         quest: "GetInBusQuest"
       },
+      {
+        conditions: {
+          idleTeams: { gt: -1 },
+          oceanTreasure: {enable: loadFeatureConfig().events.oceanTreasure.enabled},
+        },
+        quest: "OceanTreasureQuest"
+      },
     ]
   };
 }
