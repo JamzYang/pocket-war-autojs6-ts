@@ -12,6 +12,7 @@ import {iconConfig} from "./config/iconConfig";
 import {Step, ToWorld} from "./steps";
 import * as autoHandler from "./autoHandler";
 import {repeatSeconds} from "./config/env.conf";
+import {intervalConfig} from "./config/intervalConfig";
 
 
 const points = {
@@ -24,15 +25,16 @@ const points = {
 export class OceanTreasureQuest extends Quest {
   public weight = 10;
   public nextExecuteTime: number = 0;
+
+  protected getInterval(): number {
+    return intervalConfig.oceanTreasure
+  }
   protected steps = [
     new ToWorld(),
     new ToOceanTreasure(this),
     new RecognizeState(this)
   ]
 
-  configMatched(): boolean {
-    return new Date().getTime() > this.nextExecuteTime;
-  }
 }
 
 export class ToOceanTreasure implements Step {

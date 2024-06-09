@@ -2,9 +2,9 @@ import * as autoHandler from "./autoHandler";
 import {EnemyName, NeedRepeatFailure, TextParseError} from "./types";
 import {myLog, ocrTextFromImgMlkit} from "./autoHandler";
 
-//行军队列数量bar 区域 [1,485,243,541]
+//行军队列数量bar 区域 [1,275,243,541]
 export function orcTeamNum(): { idle: number, total: number } | null {
-  let text = autoHandler.ocrText([1, 485, 243, 56])
+  let text = autoHandler.ocrText([1, 275, 243, 56])
   //查询包含'行军'的元素索引
   let flag = text.filter(text => text.includes('行军'))
   let num = text.filter(text => text.includes('/'))

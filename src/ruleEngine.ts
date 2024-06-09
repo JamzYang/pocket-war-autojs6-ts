@@ -63,9 +63,6 @@ function conditionAllMatched(rule: Rule, characterState: CharacterState, functio
     if (condition.lte !== undefined && !(value <= condition.lte)) return false;
     if (condition.equals !== undefined && value !== condition.equals) return false;
     if (condition.enable !== undefined && true !== condition.enable) return false;
-    if (condition.gtHoursAgo !== undefined
-        && !(new Date().getTime() - value.getTime() > condition.gtHoursAgo * 60 * 60 * 1000))
-      return false;
   }
   return true;
 }

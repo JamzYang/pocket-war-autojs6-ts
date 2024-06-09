@@ -7,7 +7,6 @@ export interface Condition {
   gte?: number;
   lte?: number;
   equals?: any;
-  gtHoursAgo?: number;
   enable?: boolean;
 }
 
@@ -33,7 +32,6 @@ export function loadRuleConfig(): RuleConfig {
         conditions: {
           idleTeams: { lte: 0 },
           collectCoins: {enable: loadFeatureConfig().collectCoins},
-          lastCoinCollectionTime: { gtHoursAgo: 1 }
         },
         quest: "CollectCoinsQuest"
       },

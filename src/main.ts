@@ -22,50 +22,26 @@ import {OceanTreasureQuest} from "./oceanTreasure";
 import {iconConfig} from "./config/iconConfig";
 import {hasDownwardTriangle} from "./finder";
 // 加载配置文件
-
-
 let featureConfig = loadFeatureConfig()
 let ruleConfig = loadRuleConfig()
 
 captureScreen()
 sleep(2000)
 
-// let text = autoHandler.ocrText([100,1036,580,27])
-//     [88,1031,660,1068]
-// let text = autoHandler.ocrText([88,1031,580,37])
-// let text = autoHandler.ocrText([76,1004,589,94])
-//
-// myLog("倒计时识别结果=>" + JSON.stringify(text))
-
-// let result = findImage(captureScreen(), fromBase64(iconConfig.oceanTreasure.base64),{
-//   threshold: 0.8,
-//   region: [0, 70, 720, 120]
-// })
-// myLog("识别结果=>" + JSON.stringify(result))
-// new OceanTreasureQuest(characterState, featureConfig).execute()
-// new ToWorld().execute(characterState, featureConfig)
-
-// images.save(captureScreenGray(), '/sdcard/yangshen_test.png')
-
 let downwardTriangle = hasDownwardTriangle();
-// if(downwardTriangle){
-//   myClick(downwardTriangle.points[0].x + iconConfig.downwardTriangleIcon.offSet.x,
-//       downwardTriangle.points[0].y + iconConfig.downwardTriangleIcon.offSet.y)
-// }
-
+//收起小地图
 if(downwardTriangle){
   myClick(downwardTriangle.x,downwardTriangle.y)
 }
 myLog("小三角坐标: "+downwardTriangle)
 
 //========================== main ========================
-// while (true) {
-//   mainRun()
-// }
+while (true) {
+  mainRun()
+}
 
 
-
-function mainRun() {
+ function mainRun() {
   try {
     new ToWorld().execute(characterState)
     let idle = orcTeamNum()?.idle
@@ -73,6 +49,7 @@ function mainRun() {
       myLog("空闲队伍："+idle)
       characterState.idleTeams = idle
     }else {
+      characterState.idleTeams = 0
       myLog("没有空闲队伍")
     }
     let quests = run(ruleConfig, characterState, featureConfig)

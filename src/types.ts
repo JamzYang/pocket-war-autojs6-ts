@@ -22,6 +22,7 @@ import {
 } from "./steps";
 import {myLog} from "./autoHandler";
 import {repeatSeconds} from "./config/env.conf";
+import {intervalConfig} from "./config/intervalConfig";
 
 
 export enum HuntType {
@@ -51,7 +52,7 @@ export interface CharacterState {
   stamina: number; // 体力
   totalTeams: number; // 队伍总数量
   idleTeams: number; // 空闲队伍
-  lastCoinCollectionTime: Date; // 上次收集金币的时间
+  lastQuests: Map<string, Quest>;
 }
 
 export interface FunctionConfig {
@@ -128,12 +129,18 @@ export class NeedRepeatFailure extends Failure{
 
 
 
-export  class Quest {
+export class Quest {
   protected characterState: CharacterState;
   protected functionConfig: FunctionConfig;
   protected steps: Step[] = [];
   public weight: number = 0;
+  public nextExecuteTime: number = 0;
 
+  /**
+   * 执行周期. 单位:秒
+   * @protected
+   */
+  protected getInterval(): number {return 0};
   constructor(characterState: CharacterState, functionConfig: FunctionConfig) {
     this.characterState = characterState;
     this.functionConfig = functionConfig;
@@ -144,7 +151,16 @@ export  class Quest {
   }
 
   configMatched(): boolean {
-    return true;
+    let nextExecuteTime =  this.characterState.lastQuests.get(this.constructor.name)?.nextExecuteTime
+    if(nextExecuteTime) {
+      myLog(`nextExecuteTime: ${new Date(nextExecuteTime).toLocaleString()}`)
+      myLog(`getInterval: ${this.getInterval()}`)
+      let isTimeTorun = new Date().getTime() > nextExecuteTime;
+      myLog("是否可以执行: "+isTimeTorun)
+      return isTimeTorun;
+    }else {
+      return true
+    }
   }
 
    execute(): ExecuteResult {
@@ -154,6 +170,8 @@ export  class Quest {
       myLog(`Executing step: ${step.constructor.name}`);
       executeWithRetry(step, this.characterState, this.functionConfig)
     }
+    this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
+    this.characterState.lastQuests.set(this.constructor.name, this)
     return new SuccessResult(`action: ${this.constructor.name} success`);
   }
 }
@@ -176,6 +194,7 @@ function executeWithRetry(step:Step, characterState: CharacterState, functionCon
 }
 
 export class NullQuest extends Quest {
+
 }
 
 export class SoloHuntQuest extends Quest {
@@ -187,6 +206,7 @@ export class SoloHuntQuest extends Quest {
     new SelectCommanderSolider(),
     // new GoFight()
   ]
+
 }
 
 export class GatherFoodQuest extends Quest {
@@ -210,8 +230,11 @@ export class GatherFoodQuest extends Quest {
  * 注意: 点收割机时 有可能弹出未达到最佳领取状态的提示窗
  */
 export class CollectCoinsQuest extends Quest {
-  protected steps = [new ToCity(),new ToCoinHarvester(), new ClickCoinPoll()]
-
+  public nextExecuteTime: number = 0;
+  protected steps = [new ToCity(),new ToCoinHarvester(), new ClickCoinPoll(this)]
+  protected getInterval(): number {
+    return intervalConfig.coin
+  }
 }
 
 interface EnemyObject {

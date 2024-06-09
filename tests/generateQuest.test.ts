@@ -101,7 +101,6 @@ describe('generate Quest', () => {
     functionConfig.getInBus.chuizi.times = 1;
     functionConfig.events.oceanTreasure.enabled = true;
     let ruleConfig = loadRuleConfig()
-
     let quests = run(ruleConfig,characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(OceanTreasureQuest); //todo
   });

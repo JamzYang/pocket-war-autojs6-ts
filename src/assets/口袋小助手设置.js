@@ -43,14 +43,17 @@ var FunctionConfig = {
       enabled: false,
       detectorNum: "3"
     },
-  }
+  },
+  routine: {
+    enabled: false,
+  },
 };
 
 
 // 从本地存储中读取数据
 // storages.remove("FunctionConfig");
 var storedConfig = storages.create("FunctionConfig").get("config");
-console.log("从本地存储读取配置："+storedConfig)
+// console.log("从本地存储读取配置："+storedConfig)
 if (storedConfig) {
   let storedConfigParsed = JSON.parse(storedConfig);
   mergeConfig(FunctionConfig, storedConfigParsed);
@@ -58,7 +61,7 @@ if (storedConfig) {
 }
 
 function updateStorage(){
-  console.log("更新本地存储配置："+JSON.stringify(FunctionConfig))
+  // console.log("更新本地存储配置："+JSON.stringify(FunctionConfig))
   storages.create("FunctionConfig").put("config", JSON.stringify(FunctionConfig));
 }
 
@@ -91,6 +94,7 @@ function updateConfig() {
   FunctionConfig.getInBus.juxing.enabled = ui.enableJuxing.isChecked();
   FunctionConfig.getInBus.juxing.times = ui.juxingTimes.getText();
   FunctionConfig.events.oceanTreasure.enabled = ui.oceanTreasure.isChecked();
+  FunctionConfig.collectCoins = ui.collectCoins.isChecked();
   console.log("更新配置：")
   console.log(JSON.stringify(FunctionConfig))
   updateStorage();
@@ -112,7 +116,7 @@ ui.layout(
               <frame id="跟车">
                 <vertical>
                   <linear>
-                    <checkbox id="enableFollowCar" text="开启跟车"
+                    <checkbox id="enableFollowCar" desc="enableFollowCar" text="开启跟车"
                               checked="{{FunctionConfig.getInBus.enabled}}"></checkbox>
                     <text marginLeft="40">跟车编队</text>
                     <spinner id="getInBusFormationNum"
@@ -174,16 +178,32 @@ ui.layout(
             <frame>
               <text>第5页</text>
             </frame>
+
+
+            {/*===================日常===================*/}
             <frame>
-              <text>第6页</text>
+              <vertical>
+{/*                <linear>
+                  <checkbox id="enableRoutine" text="开启日常"
+                            checked="{{FunctionConfig.routine.enabled}}"></checkbox>
+                  <text marginLeft="40">跟车编队</text>
+                  <spinner id="getInBusFormationNum"
+                           entries="{{formationOptionsStr}}">
+                  </spinner>
+
+                </linear>*/}
+                <checkbox id="collectCoins" text="领取金币"
+                          checked="{{FunctionConfig.collectCoins}}"></checkbox>
+              </vertical>
             </frame>
           </viewpager>
         </vertical>
       <vertical layout_gravity="left" bg="#ffffff" w="280">
-            <img w="280" h="200" scaleType="fitXY" src="http://images.shejidaren.com/wp-content/uploads/2014/10/023746fki.jpg"/>
-            <list id="menu">
-                <horizontal bg="?selectableItemBackground" w="*">
-                    <img w="50" h="50" padding="16" src="{{this.icon}}" tint="{{color}}"/>
+        <img w="280" h="200" scaleType="fitXY"
+             src="http://images.shejidaren.com/wp-content/uploads/2014/10/023746fki.jpg"/>
+        <list id="menu">
+          <horizontal bg="?selectableItemBackground" w="*">
+            <img w="50" h="50" padding="16" src="{{this.icon}}" tint="{{color}}"/>
                     <text textColor="black" textSize="15sp" text="{{this.title}}" layout_gravity="center"/>
                 </horizontal>
             </list>
@@ -220,7 +240,7 @@ ui.emitter.on("options_item_selected", (e, item)=>{
 activity.setSupportActionBar(ui.toolbar);
 
 //设置滑动页面的标题
-ui.viewpager.setTitles(["打野","跟车", "下田", "热门\n活动","曙光","限时\n活动","坑爹\n活动"]);
+ui.viewpager.setTitles(["打野","跟车", "下田", "活动","曙光","日常",]);
 //让滑动页面和标签栏联动
 ui.tabs.setupWithViewPager(ui.viewpager);
 
@@ -285,7 +305,6 @@ ui.detectorNum.setOnItemSelectedListener({
   },
 })
 
-
 // 监听表单元素变化
 ui.enableFollowCar.on("check", updateConfig);
 ui.enableChuizi.on("check", updateConfig);
@@ -294,6 +313,12 @@ ui.enableHeiJun.on("check", updateConfig);
 ui.enableNanmin.on("check", updateConfig);
 ui.enableJuxing.on("check", updateConfig);
 ui.oceanTreasure.on("check", updateConfig);
+ui.collectCoins.on("check", updateConfig);
+
+
+function addCheckListener(element) {
+  element.on("check", updateConfig);
+}
 
 events.on("key", function (keyCode, event){
   if(keyCode === keys.back ) {

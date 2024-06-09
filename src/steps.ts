@@ -1,9 +1,9 @@
 import {
-  CharacterState,
+  CharacterState, CollectCoinsQuest,
   ExecuteResult,
   Failure,
   FunctionConfig, GetInBusQuest,
-  NeedRepeatFailure,
+  NeedRepeatFailure, Quest,
   SuccessResult
 } from './types'
 import {
@@ -257,9 +257,24 @@ export class ToCoinHarvester implements Step {
 
 
 export class ClickCoinPoll implements Step {
+  private quest: CollectCoinsQuest;
+  constructor(quest: CollectCoinsQuest) {
+    this.quest = quest
+  }
+
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    clickCoinHarvesterIcon();
-    fastHarvest();
+
+    //[259,391,457,715]
+    let result = findImage(captureScreen(), fromBase64(iconConfig.coinIcon.base64),
+        { region: [250,390,200,400], threshold: 0.6})
+    if (result) {
+      myClick(result.x + iconConfig.coinIcon.offSet.x, result.y + iconConfig.coinIcon.offSet.y, 600, "coinIcon")
+    } else {
+      // throw new Failure("coinIcon not found") //todo
+    }
+    // fastHarvest();  //todo 快速收割先不做
+    this.quest.nextExecuteTime = new Date().getTime() + 60 * 1000;
+    myLog("金币下次时间:"+ (new Date(this.quest.nextExecuteTime).toLocaleString()))
     return new SuccessResult("金币收割成功")
 
     function fastHarvest() {
@@ -276,32 +291,28 @@ export class ClickCoinPoll implements Step {
       closeDialog()
       throw new Failure("fast harvest failure")
     }
-
-    function clickCoinHarvesterIcon() {
-      myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y - 90, 400, "clickCoinHarvesterIcon")
-    }
   }
 }
 
 
 function handleBackButton() {
-  myLog("handleBackButton")
+  // myLog("handleBackButton")
   let backBtn = hasBackBtn()
   if (backBtn) {
     //[25,8,84,70]
     myClick(backBtn.x + iconConfig.backBtn.offSet.x, backBtn.y + iconConfig.backBtn.offSet.y, 400, "backBtn");
-    myLog("click backBtn")
+    // myLog("click backBtn")
     handleBackButton();
   }
 }
 
 function handleCloseBtn() {
-  myLog("handleCloseBtn")
+  // myLog("handleCloseBtn")
   let closeBtn = hasCloseBtn()
   if (closeBtn != null) {
     // [630,119,675,163]
     myClick(closeBtn.x + 22, closeBtn.y + 22, 400, "closeBtn")
-    myLog("click closeBtn")
+    // myLog("click closeBtn")
     handleCloseBtn()
   }
 }
