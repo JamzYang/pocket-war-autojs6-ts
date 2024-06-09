@@ -5,7 +5,7 @@ import {functionConfig} from "./config/config";
  export function loadFeatureConfig(): FunctionConfig {
   console.log("loadFeatureConfig");
   let storedConfig = storages.create("FunctionConfig").get("config");
-  console.log("main从本地存储读取配置："+storedConfig)
+  // console.log("main从本地存储读取配置："+storedConfig)
   if (storedConfig) {
     return  JSON.parse(storedConfig);
   }else {
