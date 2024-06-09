@@ -10,10 +10,8 @@ import {
   ClickOneClickBattle,
   ClickSearch,
   GetInBus,
-  SelectCommanderSolider,
   SelectResourceFieldTab,
   SelectSearchLevel,
-  SelectSoloEnemy,
   Step,
   ToCity,
   ToCoinHarvester,
@@ -23,11 +21,18 @@ import {
 import {myLog} from "./autoHandler";
 import {repeatSeconds} from "./config/env.conf";
 import {intervalConfig} from "./config/intervalConfig";
-
+import {SelectCommanderSolider} from './selectFormation'
 
 export enum HuntType {
-  Normal = 'normal',
-  Elite = 'elite'
+  army = '陆军',
+  navy = '海军',
+  airForce = '空军',
+  chuizi = '战锤',
+  heijun = '黑暗军团',
+  nanmin = '难民',
+  juxing = '惧星',
+  byTurn = '三军轮流',
+  right = '右侧',
 }
 
 export enum EnemyName {
@@ -56,19 +61,39 @@ export interface CharacterState {
 }
 
 export interface FunctionConfig {
-  collectCoins: boolean; // 收集金币开关
-  gatherFood: boolean; // 采集粮食开关
+  collectCoins: boolean;
+  gatherFood: boolean;
   soloHunt: {
-    enabled: boolean; // 单独打野开关
-    type: HuntType; // 打普通怪或精英怪
-    level: number; // 怪的等级. 最高级降低级数
+    enabled: boolean;
+    type: HuntType;
+    attackType: string; //5连, 单次
+    level: number;
+    times: number;
     formationNum: number
   },
   rallyHunt: {
-    enabled: boolean; // 集结打野开关
-    type: HuntType; // 打普通怪或精英怪
-    level: number; // 怪的等级. 最高级降低级数
-    formationNum: number
+    enabled: boolean;
+    chuizi: {
+      enabled: boolean,
+      times: number,
+      level: number;
+      formationNum: number
+    },
+    juxing: {
+      enabled: boolean,
+      times: number,
+      level: number;
+      formationNum: number
+    },
+    nanmin: {
+      enabled: boolean,
+      times: number,
+      formationNum: number
+    },
+    heijun: {
+      enabled: boolean,
+      formationNum: number
+    },
   },
   getInBus: {
     enabled: boolean,
@@ -197,17 +222,7 @@ export class NullQuest extends Quest {
 
 }
 
-export class SoloHuntQuest extends Quest {
-  weight = 6;
-  protected steps = [
-    new ToWorld(),
-    new SelectSoloEnemy(),
-    new AttackEnemy(),
-    new SelectCommanderSolider(),
-    // new GoFight()
-  ]
 
-}
 
 export class GatherFoodQuest extends Quest {
   protected steps = [
@@ -269,7 +284,7 @@ export class GetInBusQuest extends Quest {
     new ToWorld(),
     new ToRallyWindow(),
     new GetInBus(this),
-    new SelectCommanderSolider(),
+    new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(),
     new CheckGetInBusSuccess(this),
   ]

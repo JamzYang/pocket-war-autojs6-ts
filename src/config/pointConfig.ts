@@ -32,6 +32,15 @@ export const pointConfig = {
   searchLevelMinusIcon: {x: 170, y: 1085},
   searchConfirmSearchBtn: {x: 365, y: 1177},
 
+  // 搜索界面 目标格子. 陆海空, 金油农
+  searchLeftCell: {x: 130, y: 780},
+  searchMidCell: {x: 350, y: 780},
+  searchRightCell: {x: 600, y: 780},
+
+  targetCenter: {x:360,y:640},
+  searchAttackBtn:{x: 360, y: 1115},
+  attack5TimesBtn:{x: 228, y: 460},
+  attack1TimeBtn:{x:494,y: 460},
   //========================出征界面========================
   oneClickBattleBtn: {x: 655, y: 1005},
   formationNum1: {x: 325, y: 1075},

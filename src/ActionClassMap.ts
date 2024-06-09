@@ -6,12 +6,13 @@ import {
   GatherFoodQuest, GetInBusQuest,
   NullQuest,
   Quest,
-  SoloHuntQuest
 } from "./types";
+import {RallyHuntQuest, SoloHuntQuest} from "./hunt";
 
 export const ActionClassMap: { [key: string]: new (characterState: CharacterState, functionConfig: FunctionConfig) => Quest } = {
   NullQuest: NullQuest,
   SoloHuntQuest: SoloHuntQuest,
+  RallyHuntQuest: RallyHuntQuest,
   CollectCoinsQuest: CollectCoinsQuest,
   GatherFoodQuest: GatherFoodQuest,
   GetInBusQuest: GetInBusQuest,

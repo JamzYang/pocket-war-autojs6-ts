@@ -22,6 +22,7 @@ import {pointConfig} from "./config/pointConfig";
 import {hasBackBtn, hasCloseBtn} from "./finder";
 import {orcRallyEnemyName} from "./ocr";
 import {repeatSeconds} from "./config/env.conf";
+import {RallyHuntQuest} from "./hunt";
 
 export interface Step {
   execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult;
@@ -37,11 +38,7 @@ export class CheckIdleTeamsStep implements Step {
   }
 }
 
-export class SelectSoloEnemy implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    throw new Error('Method not implemented.');
-  }
-}
+
 
 export class ClickSearch implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
@@ -140,8 +137,17 @@ export class ToRallyWindow implements Step {
 
 
 export class ClickConfirmBattleBtn implements Step {
+  private quest: Quest;
+  constructor(quest: Quest) {
+    this.quest = quest;
+  }
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myClick(pointConfig.confirmBattleBtn.x, pointConfig.confirmBattleBtn.y, 800, "ClickConfirmBattleBtn")
+
+    if(this.quest instanceof RallyHuntQuest){
+      // functionConfig.rallyHuntQuest = true;
+    }
+
     return new SuccessResult('ClickConfirmBattleBtn')
   }
 }
@@ -203,17 +209,12 @@ export class AttackEnemy implements Step {
   //判断单刷还是集结可以在创建Step时传个变量. 或者根据配置文件也可以,但是 配置中的单刷和集结得互斥
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     //根据配置文件,攻击几次或是集结
-    throw new Error('Method not implemented.');
+    // throw new Error('Method not implemented.');
+    return new SuccessResult("AttackEnemy")
   }
 }
 
-export class SelectCommanderSolider implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
-    myClick(pointConfig.formationNum2.x, pointConfig.formationNum2.y)
-    return new SuccessResult("SelectCommanderSolider")
-  }
-}
+
 
 
 export class ToWorld implements Step {
