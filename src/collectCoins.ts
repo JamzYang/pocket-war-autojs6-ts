@@ -60,6 +60,7 @@ export class ClickCoinPoll implements Step {
       myClick(result.x + iconConfig.coinIcon.offSet.x, result.y + iconConfig.coinIcon.offSet.y, 600, "coinIcon")
     } else {
       // throw new Failure("coinIcon not found") //todo
+      myLog("coinIcon not found");
     }
     // fastHarvest();  //todo 快速收割先不做
     this.quest.nextExecuteTime = new Date().getTime() + 60 * 1000;

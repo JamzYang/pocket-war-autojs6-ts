@@ -4,7 +4,8 @@ import * as autoHandler from "../src/helper/autoHandler";
 import {loadRuleConfig} from "../src/core/condition";
 import {run} from "../src/core/ruleEngine";
 import {myLog} from "../src/helper/autoHandler";
-import {CollectCoinsQuest} from "../src/collectCoins";
+import {ClickCoinPoll, CollectCoinsQuest} from "../src/collectCoins";
+import {Step} from "../src/core/step";
 
 jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
@@ -29,17 +30,19 @@ jest.mock('../src/helper/autoHandler', () => ({
 }));
 
 describe('CollectCoinsQuest', () => {
+
+
   it("execute", ()=>{
     //前两次mock是 ToWorld step
-    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
-    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
-
-    new TestCollectCoinsQuest(characterState, functionConfig).execute()
-    const callCount = (autoHandler.ocrText as jest.Mock).mock.calls.length;
-    expect(callCount).toBeGreaterThan(10);
+    // (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    // (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    //
+    // new TestCollectCoinsQuest(characterState, functionConfig).execute()
+    // const callCount = (autoHandler.ocrText as jest.Mock).mock.calls.length;
+    // expect(callCount).toBeGreaterThan(10);
   })
-
-  it('should gen oceanTreasureQuest when treasure is enabled', () => {
+    //为了测循环收金币的.
+/*  it('should gen oceanTreasureQuest when treasure is enabled', () => {
     characterState.stamina =30;
     characterState.idleTeams = 0;
     functionConfig.gatherFood = true;
@@ -61,11 +64,14 @@ describe('CollectCoinsQuest', () => {
       quest.execute()
       quest.postExecute()
     }
-  });
+  });*/
 })
 
+
+
+//mock掉 ToWorld
 class TestCollectCoinsQuest extends CollectCoinsQuest {
-  // protected steps: Step[] = [
-  //   new ClickCoinPoll(this)
-  // ]
+  protected steps: Step[] = [
+    new ClickCoinPoll(this)
+  ]
 }

@@ -13,10 +13,10 @@ jest.mock('../src/core/configLoader', () => ({
 
 jest.mock('../src/helper/autoHandler', () => ({
   myLog: jest.fn(), // Creating a mock function for myLog
-  // fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
-  // captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
-  // findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
-  // findMultiColor: jest.fn().mockReturnValue({ x: 100, y: 100 }),
+  fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
+  captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
+  findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
+  findMultiColor: jest.fn(),
   myClick: jest.fn().mockReturnValue(true),
   mySwipe: jest.fn().mockReturnValue(true),
   // matchTemplate: jest.fn(), // 默认 mock 函数

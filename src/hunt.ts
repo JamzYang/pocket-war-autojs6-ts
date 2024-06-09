@@ -11,7 +11,7 @@ import {FunctionConfig} from "./core/functionConfig";
 
 export class SoloHuntQuest extends Quest {
   public actualObject: {name: HuntType, times: number} |null = null
-  public weight = 5;
+  public weight = 6;
   protected steps = [
     new ToWorld(),
     new SelectSoloEnemy(),

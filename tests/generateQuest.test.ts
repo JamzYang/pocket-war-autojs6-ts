@@ -7,9 +7,17 @@ import {GatherFoodQuest} from "../src/gather";
 import {CollectCoinsQuest} from "../src/collectCoins";
 import {GetInBusQuest} from "../src/getInBus";
 import {HuntType} from "../src/enum";
+import * as autoHandler from "../src/helper/autoHandler";
+import {loadFeatureConfig} from "../src/core/configLoader";
+
+// import * as configLoader from "../src/core/configLoader"
+
+// jest.mock('../src/core/configLoader', () => ({
+//   loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
+// }))
 
 jest.mock('../src/core/configLoader', () => ({
-  loadFeatureConfig: jest.fn().mockReturnValue(functionConfig)
+  loadFeatureConfig: jest.fn()
 }))
 
 jest.mock('../src/helper/autoHandler', () => ({
@@ -28,93 +36,128 @@ jest.mock('../src/helper/autoHandler', () => ({
 
 
 describe('generate Quest', () => {
+
   it('should generate correct Quest based on character state and function config', () => {
+    let mockFunctionConfig =  JSON.parse(JSON.stringify(functionConfig));
+
     characterState.idleTeams = 1;
     characterState.stamina = 60;
-    functionConfig.soloHunt.enabled = true;
+    mockFunctionConfig.soloHunt.enabled = true;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(SoloHuntQuest);
   });
 
   it('should generate gather food action when stamina is less than 10', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
     characterState.stamina = 5;
     characterState.idleTeams = 1;
-    functionConfig.gatherFood = true;
-    functionConfig.getInBus.enabled = false;
+    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.getInBus.enabled = false;
+
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
   });
 
   it('should generate collect coins action when idle teams are zero and time since last coin collection is more than 1 hour', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
     characterState.idleTeams = 0;
-    functionConfig.collectCoins = true;
+    mockFunctionConfig.collectCoins = true;
+
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(CollectCoinsQuest);
   });
 
   it('should return null if no conditions match', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
     characterState.idleTeams = 0;
-    functionConfig.collectCoins = false;
+    mockFunctionConfig.collectCoins = false;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests.length).toBe(0);
   });
 
   it('should gen GetInBus, GatherFood when stamina > 20 and idleTeams > 0', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
     characterState.stamina =30;
     characterState.idleTeams = 1;
-    functionConfig.gatherFood = true;
-    functionConfig.getInBus.enabled = true;
-    functionConfig.getInBus.chuizi.enabled= true;
-    functionConfig.getInBus.chuizi.times = 1;
+    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.getInBus.enabled = true;
+    mockFunctionConfig.getInBus.chuizi.enabled= true;
+    mockFunctionConfig.getInBus.chuizi.times = 1;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
     expect(quests[1]).toBeInstanceOf(GatherFoodQuest);
   });
 
   it('should gen nonTeamNeedQuest when idleTeams = 0', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
     characterState.stamina =30;
     characterState.idleTeams = 0;
-    functionConfig.gatherFood = true;
-    functionConfig.getInBus.enabled = true;
-    functionConfig.getInBus.chuizi.enabled= true;
-    functionConfig.getInBus.chuizi.times = 1;
+    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.getInBus.enabled = true;
+    mockFunctionConfig.getInBus.chuizi.enabled= true;
+    mockFunctionConfig.getInBus.chuizi.times = 1;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     // expect(quests[0]).toBeInstanceOf(GetInBusQuest); //todo
   });
 
   it('should gen oceanTreasureQuest when treasure is enabled', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
     characterState.stamina =30;
     characterState.idleTeams = 1;
-    functionConfig.gatherFood = true;
-    functionConfig.getInBus.enabled = true;
-    functionConfig.getInBus.chuizi.enabled= true;
-    functionConfig.getInBus.chuizi.times = 1;
-    functionConfig.events.oceanTreasure.enabled = true;
+    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.getInBus.enabled = true;
+    mockFunctionConfig.getInBus.chuizi.enabled= true;
+    mockFunctionConfig.getInBus.chuizi.times = 1;
+    mockFunctionConfig.events.oceanTreasure.enabled = true;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(OceanTreasureQuest); //todo
   });
 
 
   it('should gen solo quest', () => {
-    characterState.stamina =30;
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
+
+    characterState.stamina =35;
     characterState.idleTeams = 1;
-    functionConfig.gatherFood = true;
-    functionConfig.getInBus.enabled = true;
-    functionConfig.getInBus.chuizi.enabled= true;
-    functionConfig.getInBus.chuizi.times = 1;
-    functionConfig.soloHunt.enabled = true;
-    functionConfig.soloHunt.type = HuntType.navy;
-    functionConfig.soloHunt.attackType = "单次";
-    functionConfig.soloHunt.times = 2;
+    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.getInBus.enabled = true;
+    mockFunctionConfig.getInBus.chuizi.enabled= true;
+    mockFunctionConfig.getInBus.chuizi.times = 1;
+    mockFunctionConfig.soloHunt.enabled = true;
+    mockFunctionConfig.soloHunt.type = HuntType.navy;
+    mockFunctionConfig.soloHunt.attackType = "单次";
+    mockFunctionConfig.soloHunt.times = 2;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, functionConfig)
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(SoloHuntQuest); //todo
   });
 });
