@@ -8,6 +8,7 @@ import {FunctionConfig} from "./core/functionConfig";
 import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {GetInBusQuest} from "./getInBus";
 import {iconConfig} from "./config/iconConfig";
+import {HuntType} from "./enum"
 export class SelectCommanderSolider implements Step {
   protected quest: Quest;
   constructor(quest: Quest) {
@@ -23,7 +24,27 @@ export class SelectCommanderSolider implements Step {
         return new SuccessResult("SelectCommanderSolider: no hero has selected.")
       }
     }else if(this.quest instanceof RallyHuntQuest){
-      // this.selectFormation(functionConfig.rallyHunt.formationNum); //todo 这里要根据怪类型来选择编队
+      //在搜怪步骤 用的是 expectObject[0] ,所以这里也是
+      let rallyHuntQuest = this.quest as RallyHuntQuest
+      let huntType = rallyHuntQuest.expectObject()[0].type;
+      switch (huntType){
+        case HuntType.chuizi:
+          this.selectFormation(functionConfig.rallyHunt.chuizi.formationNum);
+          break;
+        case HuntType.juxing:
+          this.selectFormation(functionConfig.rallyHunt.juxing.formationNum);
+          break;
+        case HuntType.right:
+          this.selectFormation(functionConfig.rallyHunt.right.formationNum);
+          break;
+        default:
+          throw new Error('huntType: ${huntType} 不支持集结' );
+      }
+      if(!this.heroIsSelected()){
+        myClick(pointConfig.exitBattleBtn.x,pointConfig.exitBattleBtn.y)
+        myClick(pointConfig.exitBattleConfirmBtn.x,pointConfig.exitBattleConfirmBtn.y)
+        return new SuccessResult("SelectCommanderSolider: no hero has selected.")
+      }
     }else if(this.quest instanceof GetInBusQuest) {
       this.selectFormation(functionConfig.getInBus.formationNum);
     }

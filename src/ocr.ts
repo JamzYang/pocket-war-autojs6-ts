@@ -29,13 +29,17 @@ export function orcStamina(): number {
   if(result && !Number.isNaN(result)){
     return result
   }
-  if(text[0].length >= 2){
-    let firstSymbal = text[0].charAt(0)
-    let array = ["1","2","3","4"]
-    if(array.some(item => item == firstSymbal)){
-      myErrorLog("体力识别失败,返回50")
-      return 50
+  try {
+    if(text[0].length >= 2){
+      let firstSymbal = text[0].charAt(0)
+      let array = ["1","2","3","4"]
+      if(array.some(item => item == firstSymbal)){
+        myErrorLog("体力识别失败,返回50")
+        return 50
+      }
     }
+  }catch (e){
+    myErrorLog("体力识别失败",e)
   }
   myErrorLog("体力识别失败,返回0")
   return 0

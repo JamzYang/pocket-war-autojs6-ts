@@ -65,7 +65,7 @@ export function myLog(msg: string): void {
   log(msg)
 }
 
-export function myErrorLog(msg: string): void {
+export function myErrorLog(msg: string,data?: any,): void {
   console.error(msg)
 }
 

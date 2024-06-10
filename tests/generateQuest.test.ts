@@ -2,7 +2,7 @@ import {characterState, functionConfig} from "../src/config/config";
 import {run} from "../src/core/ruleEngine";
 import {loadRuleConfig} from "../src/core/condition";
 import {OceanTreasureQuest} from "../src/oceanTreasure";
-import {SoloHuntQuest} from "../src/hunt";
+import {RallyHuntQuest, SoloHuntQuest} from "../src/hunt";
 import {GatherFoodQuest} from "../src/gather";
 import {CollectCoinsQuest} from "../src/collectCoins";
 import {GetInBusQuest} from "../src/getInBus";
@@ -143,7 +143,6 @@ describe('generate Quest', () => {
   it('should gen solo quest', () => {
     let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
 
-
     characterState.stamina =35;
     characterState.idleTeams = 1;
     mockFunctionConfig.gatherFood = true;
@@ -159,5 +158,29 @@ describe('generate Quest', () => {
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(SoloHuntQuest); //todo
+  });
+
+  it('should gen rally quest', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
+    characterState.stamina =45;
+    characterState.idleTeams = 1;
+    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.getInBus.enabled = true;
+    mockFunctionConfig.getInBus.chuizi.enabled= true;
+    mockFunctionConfig.getInBus.chuizi.times = 1;
+    mockFunctionConfig.soloHunt.enabled = false;
+    mockFunctionConfig.soloHunt.type = HuntType.navy;
+    mockFunctionConfig.soloHunt.attackType = "单次";
+    mockFunctionConfig.soloHunt.times = 2;
+
+    mockFunctionConfig.rallyHunt.enabled = true;
+    mockFunctionConfig.rallyHunt.chuizi.enabled = true;
+    mockFunctionConfig.rallyHunt.chuizi.times = 1;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    expect(quests[0]).toBeInstanceOf(RallyHuntQuest);
   });
 });

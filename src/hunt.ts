@@ -3,7 +3,7 @@ import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation"
 import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {Quest} from "./core/quest";
-import {EnemyName, HuntType} from "./enum";
+import {HuntType} from "./enum";
 import {ClickConfirmBattleBtn, ClickSearch, Step, ToWorld} from "./core/step";
 import {AttackEnemy} from "./steps";
 import {CharacterState} from "./core/characterState";
@@ -27,33 +27,57 @@ export class SoloHuntQuest extends Quest {
 }
 
 export class RallyHuntQuest extends Quest {
-  public actualObject: {name: EnemyName, times: number} |null = null
+  public actualObject: {type: HuntType, times: number} |null = null
   public weight = 5;
   protected steps = [
     new ToWorld(),
     new ClickSearch(),
-    new SelectRallyEnemy(),
+    new SelectRallyEnemy(this),
     new AttackEnemy(),
     new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(this),
   ]
 
+  public expectObject(): {type: HuntType, times: number}[] {
+    let huntTypes:{type: HuntType, times: number}[]  = [];
+    if(this.functionConfig.rallyHunt.chuizi.enabled && this.functionConfig.rallyHunt.chuizi.times >= 0){
+      huntTypes.push({type: HuntType.chuizi, times: this.functionConfig.rallyHunt.chuizi.times})
+    }
+    if(this.functionConfig.rallyHunt.juxing.enabled && this.functionConfig.rallyHunt.juxing.times >= 0){
+      huntTypes.push({type: HuntType.juxing, times: this.functionConfig.rallyHunt.juxing.times})
+    }
+    if(this.functionConfig.rallyHunt.nanmin.enabled && this.functionConfig.rallyHunt.nanmin.times >= 0){
+      huntTypes.push({type: HuntType.nanmin, times: this.functionConfig.rallyHunt.nanmin.times})
+    }
+    if(this.functionConfig.rallyHunt.right.enabled && this.functionConfig.rallyHunt.right.times >= 0){
+      huntTypes.push({type: HuntType.right, times: this.functionConfig.rallyHunt.right.times})
+    }
+    return huntTypes
+  }
+
+  public configMatched(): boolean {
+    return this.expectObject().length > 0;
+  }
+
   postExecute(): ExecuteResult {
     if(this.actualObject == null) {
       return new SuccessResult("postExecute RallyHuntQuest actualObject is null");
     }
-    switch (this.actualObject.name) {
-      case EnemyName.Chuizi:
+    switch (this.actualObject.type) {
+      case HuntType.chuizi:
         this.functionConfig.rallyHunt.chuizi.times -= 1;
         break;
-      case EnemyName.Nanmin:
-        this.functionConfig.rallyHunt.nanmin.times -= 1;
-        break;
-      case EnemyName.Juxing:
+      case HuntType.juxing:
         this.functionConfig.rallyHunt.juxing.times -= 1;
         break;
+      case HuntType.nanmin:
+        this.functionConfig.rallyHunt.nanmin.times -= 1;
+        break;
+      case HuntType.right:
+        this.functionConfig.rallyHunt.right.times -= 1;
+        break;
     }
-    return new SuccessResult("postExecute GetInBusQuest");
+    return new SuccessResult("postExecute RallyHuntQuest");
   }
 }
 
@@ -75,13 +99,13 @@ export class SelectSoloEnemy implements Step {
           let lastSolo =  lastQuest as SoloHuntQuest
           myLog("lastQuest==>" + JSON.stringify(lastSolo.actualObject))
           if(lastSolo.actualObject?.name == HuntType.army) {
-            myClick(pointConfig.searchMidCell.x, pointConfig.searchMidCell.y)
+            myClick(pointConfig.searchSecondCell.x, pointConfig.searchSecondCell.y)
             this.quest.actualObject = {name: HuntType.navy, times: 1}
           }else if(lastSolo.actualObject?.name == HuntType.navy){
-            myClick(pointConfig.searchRightCell.x, pointConfig.searchRightCell.y)
+            myClick(pointConfig.searchThirdCell.x, pointConfig.searchThirdCell.y)
             this.quest.actualObject = {name: HuntType.airForce, times: 1}
           }else {
-            myClick(pointConfig.searchLeftCell.x, pointConfig.searchLeftCell.y)
+            myClick(pointConfig.searchFirstCell.x, pointConfig.searchFirstCell.y)
             this.quest.actualObject = {name: HuntType.army, times: 1}
           }
         }
@@ -108,31 +132,34 @@ export class SelectSoloEnemy implements Step {
 
 
 export class SelectRallyEnemy implements Step {
+  private quest: RallyHuntQuest
+  constructor(param: RallyHuntQuest) {
+    this.quest = param;
+  }
+
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myClick(pointConfig.searchRallyEnemyTab.x, pointConfig.searchRallyEnemyTab.y, 600, "SelectSoloEnemyTab")
+    let expectObject = this.quest.expectObject();
+    let type = expectObject[0].type;
+    switch (type) {
+      case HuntType.chuizi:
+        myClick(pointConfig.searchFirstCell.x, pointConfig.searchFirstCell.y)
+        break;
+      case HuntType.juxing:
+        myClick(pointConfig.searchSecondCell.x, pointConfig.searchSecondCell.y)
+        break;
+      case HuntType.right:
+        // myClick(pointConfig.searchSecondCell.x, pointConfig.searchSecondCell.y)
+        // break;
+        throw new Error('right not implemented')
+      }
 
-    // switch (functionConfig.rallyHunt.type) {
-    //   case HuntType.chuizi:
-    //     myClick(pointConfig.searchMidCell.x, pointConfig.searchMidCell.y)
-    //     let lastQuest = characterState.lastQuests.get(SoloHuntQuest.name)
-    //     if(lastQuest){
-    //       let lastSolo =  lastQuest as SoloHuntQuest
-    //       if(lastSolo.actualObject?.name == HuntType.army) {
-    //       }else if(lastSolo.actualObject?.name == HuntType.navy){
-    //       }else {
-    //         myClick(pointConfig.searchLeftCell.x, pointConfig.searchLeftCell.y)
-    //       }
-    //     }
-    //     break;
-    //   case HuntType.juxing:
-    //     myClick(pointConfig.searchRightCell.x, pointConfig.searchRightCell.y)
-    //     break;
-    //   default:
-    //     throw new Error("not support hunt type");
-    // }
-    // myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y)
-    // myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y)
-    // myClick(pointConfig.attack1TimeBtn.x, pointConfig.attack1TimeBtn.y)
-    return new SuccessResult('SelectSoloEnemy')
+    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y)
+    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y)
+
+    myClick(pointConfig.attack1TimeBtn.x, pointConfig.attack1TimeBtn.y+5)
+
+    this.quest.actualObject = {type: type, times: 1}
+    return new SuccessResult('SelectRallyEnemy')
   }
 }

@@ -35,6 +35,12 @@ export const functionConfig: FunctionConfig = {
       level: 0,
       formationNum: 1
     },
+    right: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
     nanmin: {
       enabled: false,
       times: 10,

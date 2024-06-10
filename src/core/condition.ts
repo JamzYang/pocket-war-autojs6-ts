@@ -18,8 +18,17 @@ export function loadRuleConfig(): RuleConfig {
         conditions: {
           stamina: { gt: 30 },
           idleTeams: { gt: 0 },
+          soloHunt: {enable: functionConfig.soloHunt.enabled},
         },
         quest: "SoloHuntQuest"
+      },
+      {
+        conditions: {
+          stamina: { gt: 30 },
+          idleTeams: { gt: 0 },
+          rallyHunt: {enable: functionConfig.rallyHunt.enabled},
+        },
+        quest: "RallyHuntQuest"
       },
       {
         conditions: {

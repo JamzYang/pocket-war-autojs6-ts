@@ -30,7 +30,7 @@ export const pointConfig = {
   searchTreasureTab: {x: 640, y: 575},
   searchLevelPlusIcon: {x: 550, y: 1085},
   searchLevelMinusIcon: {x: 170, y: 1085},
-  searchConfirmSearchBtn: {x: 365, y: 1177},
+  searchConfirmSearchBtn: {x: 365, y: 1182},
 
   /**
    * 搜索界面敌军
@@ -38,9 +38,10 @@ export const pointConfig = {
   searchSoloEnemyTab: {x: 92, y: 575},
   searchRallyEnemyTab: {x: 450, y: 575},
   // 目标格子. 陆海空, 金油农
-  searchLeftCell: {x: 130, y: 780},
-  searchMidCell: {x: 350, y: 780},
-  searchRightCell: {x: 600, y: 780},
+  searchFirstCell: {x: 130, y: 780},
+  searchSecondCell: {x: 350, y: 780},
+  searchThirdCell: {x: 600, y: 780},
+  searchRightCell: {x: 0, y: 0}, //todo
 
   targetCenter: {x:360,y:640},
   searchAttackBtn:{x: 360, y: 1115},

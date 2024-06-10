@@ -25,6 +25,12 @@ export interface FunctionConfig {
       level: number,
       formationNum: number
     },
+    right: {
+      enabled: boolean,
+      times: number,
+      level: number,
+      formationNum: number
+    },
     nanmin: {
       enabled: boolean,
       times: number,
