@@ -1,4 +1,4 @@
-import {myClick} from "./helper/autoHandler";
+import {myClick, myLog} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {RallyHuntQuest, SoloHuntQuest} from "./hunt"
 import {Step} from "./core/step";
@@ -14,8 +14,8 @@ export class SelectCommanderSolider implements Step {
   }
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
-    myClick(pointConfig.formationNum2.x, pointConfig.formationNum2.y)
     if(this.quest instanceof SoloHuntQuest){
+      myLog("formationNum ========="+ functionConfig.soloHunt.formationNum)
       this.selectFormation(functionConfig.soloHunt.formationNum);
     }else if(this.quest instanceof RallyHuntQuest){
       // this.selectFormation(functionConfig.rallyHunt.formationNum); //todo 这里要根据怪类型来选择编队
@@ -27,8 +27,12 @@ export class SelectCommanderSolider implements Step {
 
 
 
-  private selectFormation(formationNum: number) {
-    switch (formationNum) {
+  private selectFormation(formationNum) {
+    // if (typeof formationNum !== 'number') {
+    //   throw new Error(`formationNum must be a number, but got ${typeof formationNum}`);
+    // }
+    let formationInt = parseInt(formationNum.toString()) //todo 这里workaround下,后续解决.
+    switch (formationInt) {
       case 1:
         myClick(pointConfig.formationNum1.x, pointConfig.formationNum1.y)
         break;
@@ -54,7 +58,7 @@ export class SelectCommanderSolider implements Step {
         myClick(pointConfig.formationNum8.x, pointConfig.formationNum8.y)
         break;
       default:
-        throw new Error("SelectCommanderSolider: formationNum is not in range 1-8")
+        throw new Error(`SelectCommanderSolider: formationNum: ${formationNum} is not in range 1-8. `)
     }
   }
 }

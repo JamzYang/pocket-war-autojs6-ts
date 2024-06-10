@@ -1,9 +1,9 @@
 import * as autoHandler from "./helper/autoHandler";
-import {myLog, ocrTextFromImgMlkit} from "./helper/autoHandler";
+import {myClick, myLog, ocrTextFromImgMlkit} from "./helper/autoHandler";
 import {EnemyName} from "./enum";
 
 //行军队列数量bar 区域 [1,275,243,541]
-export function orcTeamNum(): { idle: number, total: number } | null {
+export function orcTeamNum(): { idle: number, total: number } {
   let text = autoHandler.ocrText([1, 275, 243, 56])
   //查询包含'行军'的元素索引
   let flag = text.filter(text => text.includes('行军'))
@@ -13,8 +13,20 @@ export function orcTeamNum(): { idle: number, total: number } | null {
     let idle = total - parseInt(num[0].split('/')[0])
     return {idle: idle, total: total}
   }
-  return null;
+  //查不到默认空闲1队
+  return {idle:1, total:1};
 }
+
+//[119,2,276,50]
+export function orcStamina(): number {
+  let text = autoHandler.ocrText([120, 2, 160, 50])
+  myLog(`体力读取: ${text}`)
+  if(text.length > 0){
+    return  parseInt(text[0])
+  }
+  return 0;
+}
+
 
 export function orcRallyEnemyName(region: OmniRegion): EnemyName | null {
   let ocrResults = autoHandler.ocrText(region)

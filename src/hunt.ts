@@ -4,16 +4,18 @@ import {SelectCommanderSolider} from "./selectFormation"
 import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {Quest} from "./core/quest";
 import {EnemyName, HuntType} from "./enum";
-import {ClickConfirmBattleBtn, Step, ToWorld} from "./core/step";
+import {ClickConfirmBattleBtn, ClickSearch, Step, ToWorld} from "./core/step";
 import {AttackEnemy} from "./steps";
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
+import {ClickFarmlandPic, SelectResourceFieldTab} from "./gather";
 
 export class SoloHuntQuest extends Quest {
   public actualObject: {name: HuntType, times: number} |null = null
   public weight = 6;
   protected steps = [
     new ToWorld(),
+    new ClickSearch(),
     new SelectSoloEnemy(),
     new AttackEnemy(),
     new SelectCommanderSolider(this),
@@ -31,6 +33,7 @@ export class RallyHuntQuest extends Quest {
   public weight = 5;
   protected steps = [
     new ToWorld(),
+    new ClickSearch(),
     new SelectRallyEnemy(),
     new AttackEnemy(),
     new SelectCommanderSolider(this),
@@ -59,6 +62,7 @@ export class RallyHuntQuest extends Quest {
 
 export class SelectSoloEnemy implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.searchSoloEnemyTab.x, pointConfig.searchSoloEnemyTab.y, 600, "SelectSoloEnemyTab")
     switch (functionConfig.soloHunt.type) {
       case HuntType.byTurn:
         let lastQuest = characterState.lastQuests.get(SoloHuntQuest.name)
@@ -96,6 +100,8 @@ export class SelectSoloEnemy implements Step {
 
 export class SelectRallyEnemy implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+    myClick(pointConfig.searchRallyEnemyTab.x, pointConfig.searchRallyEnemyTab.y, 600, "SelectSoloEnemyTab")
+
     // switch (functionConfig.rallyHunt.type) {
     //   case HuntType.chuizi:
     //     myClick(pointConfig.searchMidCell.x, pointConfig.searchMidCell.y)

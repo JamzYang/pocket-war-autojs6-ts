@@ -11,6 +11,7 @@ export interface Condition {
 
 
 export function loadRuleConfig(): RuleConfig {
+  const functionConfig = loadFeatureConfig();
   return {
     rules: [
       {
@@ -23,28 +24,28 @@ export function loadRuleConfig(): RuleConfig {
       {
         conditions: {
           idleTeams: { gt: 0 },
-          gatherFood: {enable: loadFeatureConfig().gatherFood},
+          gatherFood: {enable: functionConfig.gatherFood},
         },
         quest: "GatherFoodQuest"
       },
       {
         conditions: {
           idleTeams: { lte: 0 },
-          collectCoins: {enable: loadFeatureConfig().collectCoins},
+          collectCoins: {enable: functionConfig.collectCoins},
         },
         quest: "CollectCoinsQuest"
       },
       {
         conditions: {
           idleTeams: { gt: 0 },
-          getInBus: {enable: loadFeatureConfig().getInBus.enabled},
+          getInBus: {enable: functionConfig.getInBus.enabled},
         },
         quest: "GetInBusQuest"
       },
       {
         conditions: {
           idleTeams: { gt: -1 },
-          oceanTreasure: {enable: loadFeatureConfig().events.oceanTreasure.enabled},
+          oceanTreasure: {enable: functionConfig.events.oceanTreasure.enabled},
         },
         quest: "OceanTreasureQuest"
       },
