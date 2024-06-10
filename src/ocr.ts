@@ -4,7 +4,7 @@ import {EnemyName} from "./enum";
 
 //行军队列数量bar 区域 [1,275,243,541]
 export function orcTeamNum(): { idle: number, total: number } {
-  let text = autoHandler.ocrText([1, 275, 243, 56])
+  let text = autoHandler.ocrText([1, 275, 243, 331])
   //查询包含'行军'的元素索引
   let flag = text.filter(text => text.includes('行军'))
   let num = text.filter(text => text.includes('/'))
@@ -17,9 +17,9 @@ export function orcTeamNum(): { idle: number, total: number } {
   return {idle:1, total:1};
 }
 
-//[119,2,276,50]
+
 export function orcStamina(): number {
-  let text = autoHandler.ocrText([120, 2, 160, 50])
+  let text = autoHandler.ocrText([119,2,276,50])
   myLog(`体力读取: ${text}`)
   if(text.length > 0){
     return  parseInt(text[0])
@@ -28,7 +28,7 @@ export function orcStamina(): number {
 }
 
 
-export function orcRallyEnemyName(region: OmniRegion): EnemyName | null {
+export function orcRallyEnemyName(region: number[]): EnemyName | null {
   let ocrResults = autoHandler.ocrText(region)
   myLog("识别结果=>" + JSON.stringify(ocrResults))
   //将text打印成json

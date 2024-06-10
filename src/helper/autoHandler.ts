@@ -69,8 +69,9 @@ export function  mySleep(time: number): void {
   sleep(time)
 }
 
-export function ocrText(region: OmniRegion): string[] {
-  return ocr.paddle.recognizeText(region)
+export function ocrText(range: number[]): string[] {
+  //[171,14,253,42]
+  return ocr.paddle.recognizeText(toOmnRegion(range))
 }
 
 // recognizeText(img: ImageWrapper | string, region: OmniRegion): string[];
@@ -89,4 +90,8 @@ export function ocrTextFromImg(img: ImageWrapper | string, region: OmniRegion): 
 export function ocrTextFromImgMlkit(img: ImageWrapper | string, region: OmniRegion): org.autojs.autojs.runtime.api.OcrResult[] {
   // return ocr.paddle.recognizeText(img,region)
   return ocr.mlkit.detect(img,{region:region});
+}
+
+function toOmnRegion(range: number[]): OmniRegion{
+  return [range[0],range[1],range[2]-range[0], range[3]-range[1]]
 }

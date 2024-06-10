@@ -22,12 +22,20 @@ test('myLog should be called with correct message', () => {
   let points = result.filter((item, index, self) => {
     return self.findIndex(i => i.x === item.x && i.y === item.y) === index;
   });
-
   myLog(msg);
 
+  //倒计时区域 [76,1004,665,1098] 转成region   [76,1004,589,94]
+  let range = [76,1004,665,1098];
+  let region = toOmnRegion(range)
+  expect(region).toEqual([76,1004,589,94]);
   // Assert
   expect(myLog).toHaveBeenCalledWith(msg);
 });
+
+
+function toOmnRegion(range: number[]): OmniRegion{
+  return [range[0],range[1],range[2]-range[0], range[3]-range[1]]
+}
 
 test("去重",() => {
 

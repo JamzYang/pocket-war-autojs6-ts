@@ -107,7 +107,7 @@ function clickDetector(detectorNum: number){
 export function orcOceanTreasureCountDown(): { timeStr: string, seconds: number, type: string } {
   //倒计时文字区域 [88,1031,660,1068] 转成 region: [88,1031,580,37]
 //倒计时区域 [76,1004,665,1098] 转成region   [76,1004,589,94]
-  let text = autoHandler.ocrText([76, 1004, 589, 94])
+  let text = autoHandler.ocrText([76,1004,665,1098])
   myLog("倒计时识别结果=>" + JSON.stringify(text))
   if (text.length >= 1) {
       if (text.some(item => item.includes("立即") || item.includes("完成"))) {

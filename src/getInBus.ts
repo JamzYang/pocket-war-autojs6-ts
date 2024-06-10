@@ -106,7 +106,14 @@ export class GetInBus implements Step {
       myLog("去重后：" + JSON.stringify(points))
       for (const point of points) {
         myLog("开始识别怪物名字")
-        let enemyName = orcRallyEnemyName([point.x + 164, point.y + 63, 131, 113])
+        let enemyName = orcRallyEnemyName(
+            [
+              point.x + 164,
+              point.y + 63,
+              point.x + 164+ 131,
+              point.y + 63 + 113
+            ]
+        )
         myLog('怪物名字: ' + enemyName)
         let expectObject = this.quest.expectObject();
         myLog("集结目标: " + JSON.stringify(expectObject))
