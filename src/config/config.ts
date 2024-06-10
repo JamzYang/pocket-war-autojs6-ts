@@ -4,7 +4,7 @@ import {FunctionConfig} from "../core/functionConfig";
 import {HuntType} from "../enum";
 
 export const characterState: CharacterState = {
-  stamina: 0,
+  stamina: 100,
   totalTeams: 0,
   idleTeams: 1,
   lastQuests: new Map<string, Quest>(),

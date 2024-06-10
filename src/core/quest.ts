@@ -48,6 +48,7 @@ export class Quest {
     }
     this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
     this.characterState.lastQuests.set(this.constructor.name, this)
+    myLog(`Quest: ${this.constructor.name} success`)
     return new SuccessResult(`action: ${this.constructor.name} success`);
   }
 }

@@ -1,4 +1,4 @@
-import {myClick, myLog} from "./helper/autoHandler";
+import {captureScreen, fromBase64, matchTemplate, myClick, myLog} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {RallyHuntQuest, SoloHuntQuest} from "./hunt"
 import {Step} from "./core/step";
@@ -7,6 +7,7 @@ import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
 import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {GetInBusQuest} from "./getInBus";
+import {iconConfig} from "./config/iconConfig";
 export class SelectCommanderSolider implements Step {
   protected quest: Quest;
   constructor(quest: Quest) {
@@ -15,8 +16,12 @@ export class SelectCommanderSolider implements Step {
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
     if(this.quest instanceof SoloHuntQuest){
-      myLog("formationNum ========="+ functionConfig.soloHunt.formationNum)
       this.selectFormation(functionConfig.soloHunt.formationNum);
+      if(!this.heroIsSelected()){
+        myClick(pointConfig.exitBattleBtn.x,pointConfig.exitBattleBtn.y)
+        myClick(pointConfig.exitBattleConfirmBtn.x,pointConfig.exitBattleConfirmBtn.y)
+        return new SuccessResult("SelectCommanderSolider: no hero has selected.")
+      }
     }else if(this.quest instanceof RallyHuntQuest){
       // this.selectFormation(functionConfig.rallyHunt.formationNum); //todo 这里要根据怪类型来选择编队
     }else if(this.quest instanceof GetInBusQuest) {
@@ -25,7 +30,13 @@ export class SelectCommanderSolider implements Step {
     return new SuccessResult("SelectCommanderSolider")
   }
 
-
+  private heroIsSelected(): boolean {
+   let matchingResult =  matchTemplate(captureScreen(),fromBase64(iconConfig.heroSelectBlank.base64))
+    if(matchingResult.points.length > 0){
+      return false;
+    }
+    return true;
+  }
 
   private selectFormation(formationNum) {
     // if (typeof formationNum !== 'number') {

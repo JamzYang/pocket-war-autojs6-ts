@@ -8,6 +8,9 @@ import '@jest/globals';
 
 
 import { myLog } from '../src/helper/autoHandler';
+import {SoloHuntQuest} from "../src/hunt";
+import {HuntType} from "../src/enum";
+import {FunctionConfig} from "../src/core/functionConfig";
 
 // Mocking the entire module
 jest.mock('../src/helper/autoHandler', () => ({
@@ -30,7 +33,38 @@ test('myLog should be called with correct message', () => {
   expect(region).toEqual([76,1004,589,94]);
   // Assert
   expect(myLog).toHaveBeenCalledWith(msg);
+
+  let number = parseInt("G8");
+  let name = SoloHuntQuest.name;
+  myLog(`${SoloHuntQuest.name}`)
+
+  let teamNumText =  ["(行军 3/5"]
+  let flag = teamNumText.filter(text => text.includes('行军'))
+  let num = teamNumText.filter(text => text.includes('/'))
+  if (flag.length == 1 && num.length == 1) {
+    let slashIndex = num[0].indexOf('/');
+    let total = parseInt(num[0].charAt(slashIndex +1))
+    let occupied = parseInt(num[0].charAt(slashIndex -1))
+    let idle = total - occupied;
+    let byTurn = HuntType.byTurn
+    myLog(`${HuntType.byTurn.toString()}`)
+  }
+
+
 });
+
+test('huntTypeElement',()=>{
+  let huntTypeElement = HuntType['army' as keyof typeof HuntType];
+  let parse: FunctionConfig = JSON.parse("{\"collectCoins\":true,\"gatherFood\":false,\"soloHunt\":{\"enabled\":true,\"type\":\"byTurn\",\"level\":\"1\",\"formationNum\":\"1\",\"attackType\":\"单次\",\"times\":\"6\"},\"rallyHunt\":{\"enabled\":false,\"type\":\"normal\",\"level\":\"0\",\"formationNum\":\"0\",\"chuizi\":{\"enabled\":false,\"times\":10,\"level\":0,\"formationNum\":1},\"juxing\":{\"enabled\":false,\"times\":10,\"level\":0,\"formationNum\":1},\"nanmin\":{\"enabled\":false,\"times\":10,\"formationNum\":1},\"heijun\":{\"enabled\":false,\"formationNum\":1}},\"getInBus\":{\"enabled\":false,\"chuizi\":{\"enabled\":false,\"times\":\"50\"},\"nanmin\":{\"enabled\":false,\"times\":\"10\"},\"heijun\":{\"enabled\":false,\"times\":\"50\"},\"juxing\":{\"enabled\":true,\"times\":\"3\"},\"formationNum\":\"8\"},\"events\":{\"oceanTreasure\":{\"enabled\":false,\"detectorNum\":\"2\"}},\"routine\":{\"enabled\":false}}");
+  let s1 = parse.soloHunt.type.toString();
+  let huntType = HuntType[s1 as keyof typeof HuntType];
+  switch (huntType) {
+    case HuntType.byTurn: //todo workaround
+        myLog("")
+        break;
+  }
+  myLog("")
+})
 
 
 function toOmnRegion(range: number[]): OmniRegion{

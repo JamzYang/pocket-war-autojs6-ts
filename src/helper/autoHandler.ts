@@ -65,6 +65,10 @@ export function myLog(msg: string): void {
   log(msg)
 }
 
+export function myErrorLog(msg: string): void {
+  console.error(msg)
+}
+
 export function  mySleep(time: number): void {
   sleep(time)
 }
@@ -72,6 +76,11 @@ export function  mySleep(time: number): void {
 export function ocrText(range: number[]): string[] {
   //[171,14,253,42]
   return ocr.paddle.recognizeText(toOmnRegion(range))
+}
+
+export function ocrTextLite(range: number[]): string[] {
+  //[171,14,253,42]
+  return ocr.paddle.recognizeText({region: toOmnRegion(range), useSlim: false})
 }
 
 // recognizeText(img: ImageWrapper | string, region: OmniRegion): string[];

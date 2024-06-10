@@ -1,4 +1,4 @@
-import {myClick} from "./helper/autoHandler";
+import {myClick, myLog} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation"
 import {ExecuteResult, SuccessResult} from "./core/executeResult";
@@ -8,15 +8,13 @@ import {ClickConfirmBattleBtn, ClickSearch, Step, ToWorld} from "./core/step";
 import {AttackEnemy} from "./steps";
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
-import {ClickFarmlandPic, SelectResourceFieldTab} from "./gather";
-
 export class SoloHuntQuest extends Quest {
   public actualObject: {name: HuntType, times: number} |null = null
   public weight = 6;
   protected steps = [
     new ToWorld(),
     new ClickSearch(),
-    new SelectSoloEnemy(),
+    new SelectSoloEnemy(this),
     new AttackEnemy(),
     new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(this),
@@ -61,23 +59,34 @@ export class RallyHuntQuest extends Quest {
 
 
 export class SelectSoloEnemy implements Step {
+  private quest: SoloHuntQuest
+  constructor(param: SoloHuntQuest) {
+    this.quest = param;
+  }
+
   execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
     myClick(pointConfig.searchSoloEnemyTab.x, pointConfig.searchSoloEnemyTab.y, 600, "SelectSoloEnemyTab")
-    switch (functionConfig.soloHunt.type) {
-      case HuntType.byTurn:
-        let lastQuest = characterState.lastQuests.get(SoloHuntQuest.name)
+    // const typeKey = Object.keys(HuntType).find(key => HuntType[key as keyof typeof HuntType] === type);
+    let huntType = HuntType[functionConfig.soloHunt.type.toString() as keyof typeof HuntType];
+    switch (huntType) {
+      case HuntType.byTurn: //todo workaround
+        let lastQuest = characterState.lastQuests.get(this.quest.constructor.name);
         if(lastQuest){
           let lastSolo =  lastQuest as SoloHuntQuest
+          myLog("lastQuest==>" + JSON.stringify(lastSolo.actualObject))
           if(lastSolo.actualObject?.name == HuntType.army) {
             myClick(pointConfig.searchMidCell.x, pointConfig.searchMidCell.y)
+            this.quest.actualObject = {name: HuntType.navy, times: 1}
           }else if(lastSolo.actualObject?.name == HuntType.navy){
             myClick(pointConfig.searchRightCell.x, pointConfig.searchRightCell.y)
+            this.quest.actualObject = {name: HuntType.airForce, times: 1}
           }else {
             myClick(pointConfig.searchLeftCell.x, pointConfig.searchLeftCell.y)
+            this.quest.actualObject = {name: HuntType.army, times: 1}
           }
         }
         break;
-      case HuntType.navy:
+      case HuntType.navy:  //todo workaround
         break;
       case HuntType.army:
         break;

@@ -1,13 +1,13 @@
 export enum HuntType {
-  army = '陆军',
-  navy = '海军',
-  airForce = '空军',
+  army = '黑暗陆军',
+  navy = '黑暗海军',
+  airForce = '黑暗空军',
   chuizi = '战锤',
   heijun = '黑暗军团',
   nanmin = '难民',
   juxing = '惧星',
-  byTurn = '三军轮流',
-  right = '右侧',
+  byTurn = 'byTurn', //三军轮流
+  right = 'right', //最右边
 }
 
 export enum EnemyName {
@@ -19,4 +19,8 @@ export enum EnemyName {
   Jingwei = '黑暗精卫',
   Shouwei = '守卫',
   Null = '无',
+}
+
+export function getValueByKey<T>(enumObj: T, key: string): T[keyof T] | undefined {
+  return enumObj[key as keyof T];
 }

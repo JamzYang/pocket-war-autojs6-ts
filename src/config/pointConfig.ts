@@ -57,6 +57,9 @@ export const pointConfig = {
   formationNum7: {x: 637, y: 1075},
   formationNum8: {x: 689, y: 1075},
   confirmBattleBtn: {x: 355, y: 510},
+  //退出出征窗口
+  exitBattleBtn: {x:43, y:63},
+  exitBattleConfirmBtn: {x:508, y:745},
 
   //无集结队伍 子窗口
   rallyNoBusWindowCloseBtn: {x: 650, y: 140}
