@@ -5,6 +5,7 @@ const formationOptionsStr = "1|2|3|4|5|6|7|8"
 const detectorNumOptionsStr = "1|2|3"
 const soloHuntEnemyOptionsStr = "黑暗陆军|黑暗海军|黑暗海军|三军轮流|最右边"
 const soloHuntAttackTypeOptionsStr =  "五连|单次"
+const rallyHuntEnemyOptionsStr =  "锤子|右数第二|最右边"
 var FunctionConfig = {
   collectCoins: false,
   gatherFood: false,
@@ -24,6 +25,12 @@ var FunctionConfig = {
       formationNum: 1
     },
     juxing: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
+    right: {
       enabled: false,
       times: 10,
       level: 0,
@@ -129,56 +136,100 @@ ui.layout(
           </appbar>
 
           <viewpager id="viewpager">
-              <frame id="打野">
-                <vertical>
-                  <linear>
-                    <checkbox id="soloHunt"
-                              text="单刷"
-                              checked="{{FunctionConfig.soloHunt.enabled}}"></checkbox>
-                    <text marginLeft="5">编队</text>
-                    <spinner id="soloHuntFormationNum"
-                             entries="{{formationOptionsStr}}">
-                    </spinner>
-                    <text marginLeft="2">敌军</text>
-                    <spinner id="soloHuntEnemyType"
-                             entries="{{soloHuntEnemyOptionsStr}}">
-                    </spinner>
-                  </linear>
-                  <linear>
-                    <text marginLeft="40">方式</text>
-                    <spinner id="soloHuntAttackType"
-                             entries="{{soloHuntAttackTypeOptionsStr}}">
-                    </spinner>
-                    <text marginLeft="10" text="次数"/>
-                    <input id="soloHuntTimes" inputType="number"
-                           text="{{FunctionConfig.soloHunt.times}}"/>
-                  </linear>
-                </vertical>
-              </frame>
+            <frame id="打野">
+              <vertical>
+                <linear>
+                  <checkbox id="soloHunt"
+                            text="单刷"
+                            checked="{{FunctionConfig.soloHunt.enabled}}">
+                  </checkbox>
+                  <text marginLeft="5">编队</text>
+                  <spinner id="soloHuntFormationNum"
+                           entries="{{formationOptionsStr}}">
+                  </spinner>
+                  <text marginLeft="2">敌军</text>
+                  <spinner id="soloHuntEnemyType"
+                           entries="{{soloHuntEnemyOptionsStr}}">
+                  </spinner>
+                </linear>
+                <linear>
+                  <text marginLeft="40">方式</text>
+                  <spinner id="soloHuntAttackType"
+                           entries="{{soloHuntAttackTypeOptionsStr}}">
+                  </spinner>
+                  <text marginLeft="10" text="次数"/>
+                  <input id="soloHuntTimes" inputType="number"
+                         text="{{FunctionConfig.soloHunt.times}}"/>
+                </linear>
+                <text>====================================================</text>
+                <linear>
+                  <checkbox id="enableRallyHunt"
+                            text="集结"
+                            checked="{{FunctionConfig.rallyHunt.enabled}}">
+                  </checkbox>
+                </linear>
+                <linear>
+                  <checkbox id="rallyHunt_enableChuizi" text="锤子"
+                            checked="{{FunctionConfig.rallyHunt.chuizi.enabled}}"/>
+                  <text marginLeft={"10"} text="次数"/>
+                  <input id="rallyHunt_chuiziTimes" inputType="number"
+                         text="{{FunctionConfig.rallyHunt.chuizi.times}}"/>
+
+                  <text marginLeft="5">编队</text>
+                  <spinner id="rallyHuntChuiziFormationNum"
+                           entries="{{formationOptionsStr}}">
+                  </spinner>
+                </linear>
+                <linear>
+                  <checkbox id="rallyHunt_enableJuxing" text="惧星"
+                            checked="{{FunctionConfig.rallyHunt.chuizi.enabled}}"/>
+                  <text marginLeft={"10"} text="次数"/>
+                  <input id="rallyHunt_juxingTimes" inputType="number"
+                         text="{{FunctionConfig.rallyHunt.juxing.times}}"/>
+                  <text marginLeft="5">编队</text>
+                  <spinner id="rallyHuntJuxingFormationNum"
+                           entries="{{formationOptionsStr}}">
+                  </spinner>
+                </linear>
+                <linear>
+                  <checkbox id="rallyHunt_enableRight" text="最后一格"
+                            checked="{{FunctionConfig.rallyHunt.right.enabled}}"/>
+                  <text marginLeft={"10"} text="次数"/>
+                  <input id="rallyHunt_rightTimes" inputType="number"
+                         text="{{FunctionConfig.rallyHunt.right.times}}"/>
+                  <text marginLeft="5">编队</text>
+                  <spinner id="rallyHuntRightFormationNum"
+                           entries="{{formationOptionsStr}}">
+                  </spinner>
+                </linear>
+
+              </vertical>
+            </frame>
 
             <frame id="跟车">
               <vertical>
                 <linear>
                   <checkbox id="enableFollowCar" desc="enableFollowCar"
                             text="开启跟车"
-                            checked="{{FunctionConfig.getInBus.enabled}}"></checkbox>
+                            checked="{{FunctionConfig.getInBus.enabled}}">
+                  </checkbox>
                   <text marginLeft="40">跟车编队</text>
                   <spinner id="getInBusFormationNum"
-                             entries="{{formationOptionsStr}}">
-                    </spinner>
-                  </linear>
-                  <linear>
-                    <checkbox id="enableChuizi" text="锤子"
-                              checked="{{FunctionConfig.getInBus.chuizi.enabled}}"/>
-                    <text marginLeft={"10"} text="次数"/>
-                    <input id="chuiziTimes" inputType="number"
-                           text="{{FunctionConfig.getInBus.chuizi.times}}"/>
-                  </linear>
-                  <linear>
-                    <checkbox id="enableHeiJun" text="黑暗军团"
-                              checked="{{FunctionConfig.getInBus.heijun.enabled}}"/>
-                    <text marginLeft={"10"} text="次数"/>
-                    <input id="heiJunTimes" inputType="number"
+                         entries="{{formationOptionsStr}}">
+                </spinner>
+              </linear>
+              <linear>
+                <checkbox id="enableChuizi" text="锤子"
+                          checked="{{FunctionConfig.getInBus.chuizi.enabled}}"/>
+                <text marginLeft={"10"} text="次数"/>
+                <input id="chuiziTimes" inputType="number"
+                       text="{{FunctionConfig.getInBus.chuizi.times}}"/>
+              </linear>
+              <linear>
+                <checkbox id="enableHeiJun" text="黑暗军团"
+                          checked="{{FunctionConfig.getInBus.heijun.enabled}}"/>
+                <text marginLeft={"10"} text="次数"/>
+                <input id="heiJunTimes" inputType="number"
                            text="{{FunctionConfig.getInBus.heijun.times}}"/>
                   </linear>
                   <linear>
@@ -356,7 +407,7 @@ ui.detectorNum.setOnItemSelectedListener({
 ui.soloHunt.on("check", updateConfig);
 ui.soloHuntFormationNum.setOnItemSelectedListener({
   onItemSelected: function(parent, view, position, id) {
-    FunctionConfig.soloHunt.formationNum = parent.getItemAtPosition(position).toString(); // 或者根据需要更新字段
+    FunctionConfig.soloHunt.formationNum = parent.getItemAtPosition(position).toString();
     updateStorage();
   },
 })
@@ -408,6 +459,73 @@ ui.soloHuntTimes.addTextChangedListener({
   }
 });
 //===========单刷 end===================
+
+//===========集结 start===================
+ui.enableRallyHunt.on("check", ()=>{
+  FunctionConfig.rallyHunt.enabled = ui.enableRallyHunt.isChecked();
+  updateStorage()
+});
+ui.rallyHunt_enableChuizi.on("check", ()=>{
+  FunctionConfig.rallyHunt.chuizi.enabled = ui.rallyHunt_enableChuizi.isChecked();
+  updateStorage()
+});
+
+ui.rallyHuntChuiziFormationNum.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    FunctionConfig.rallyHunt.chuizi.formationNum = parent.getItemAtPosition(position).toString();
+    updateStorage();
+  },
+})
+
+ui.rallyHunt_chuiziTimes.addTextChangedListener({
+  onTextChanged: function(text) {
+    FunctionConfig.rallyHunt.chuizi.times = text.toString();
+    updateStorage();
+  }
+});
+//==============//
+
+ui.rallyHunt_enableJuxing.on("check", ()=>{
+  FunctionConfig.rallyHunt.juxing.enabled = ui.rallyHunt_enableJuxing.isChecked();
+  updateStorage()
+});
+
+ui.rallyHuntJuxingFormationNum.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    FunctionConfig.rallyHunt.juxing.formationNum = parent.getItemAtPosition(position).toString();
+    updateStorage();
+  },
+})
+
+ui.rallyHunt_juxingTimes.addTextChangedListener({
+  onTextChanged: function(text) {
+    FunctionConfig.rallyHunt.juxing.times = text.toString();
+    updateStorage();
+  }
+});
+
+
+ui.rallyHunt_enableRight.on("check", ()=>{
+  FunctionConfig.rallyHunt.right.enabled = ui.rallyHunt_enableRight.isChecked();
+  updateStorage()
+});
+
+ui.rallyHuntRightFormationNum.setOnItemSelectedListener({
+  onItemSelected: function(parent, view, position, id) {
+    FunctionConfig.rallyHunt.right.formationNum = parent.getItemAtPosition(position).toString();
+    updateStorage();
+  },
+})
+
+ui.rallyHunt_rightTimes.addTextChangedListener({
+  onTextChanged: function(text) {
+    FunctionConfig.rallyHunt.right.times = text.toString();
+    updateStorage();
+  }
+});
+
+//===========集结 end===================
+
 
 
 // 监听表单元素变化
