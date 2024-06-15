@@ -48,3 +48,38 @@ jobs:
           asset_path: build-artifacts.zip
           asset_name: build-artifacts.zip
           asset_content_type: application/zip
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Generate download URL
+        id: generate_url
+        run: |
+          ASSET_ID=$(curl -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest \
+            | jq -r '.assets[] | select(.name == "build-artifacts.zip") | .id')
+          
+          DOWNLOAD_URL=$(curl -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -X POST https://api.github.com/repos/${{ github.repository }}/releases/assets/$ASSET_ID/generate-url \
+            | jq -r '.url')
+          
+          echo "Download URL: $DOWNLOAD_URL"
+
+      - name: Print download URL
+        run: echo "Download URL is ${{ steps.generate_url.outputs.url }}"
+
+      - name: Update Release Notes
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            const release_id = `{{ steps.create_release.outputs.id }}`;
+            const download_url = `{{ steps.generate_url.outputs.download_url }}`;
+            await github.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release_id,
+              body: `Download URL: ${download_url}`
+            });
