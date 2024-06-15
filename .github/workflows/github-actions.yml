@@ -6,7 +6,7 @@ on: [push]
 #      - main
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,44 +24,27 @@ jobs:
       - name: Build project
         run: npm run build:dev
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-artifacts
-          path: dist/
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build-artifacts
-          path: dist/
+      - name: Compress build artifacts
+        run: zip -r build-artifacts.zip dist/
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: '0.0.1' # Replace with your version
-          release_name: 'Release 0.0.1'
-          body: 'Automatic release by Gitee Actions'
+          tag_name: ${{ github.ref }}
+          release_name: 'Release ${{ github.ref }}'
+          body: 'Automatic release by GitHub Actions'
           draft: false
           prerelease: false
 
-      - name: Upload Release mainjs
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/ # Path to your build artifacts
-          asset_name: your-asset.zip # Name of your asset
+          asset_path: build-artifacts.zip
+          asset_name: build-artifacts.zip
           asset_content_type: application/zip
