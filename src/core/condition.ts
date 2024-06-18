@@ -1,5 +1,6 @@
 import {loadFeatureConfig} from "./configLoader"
 import {RuleConfig} from "./ruleEngine";
+import {ExpeditionQuest} from "../expedition";
 export interface Condition {
   gt?: number;
   lt?: number;
@@ -43,6 +44,12 @@ export function loadRuleConfig(): RuleConfig {
           collectCoins: {enable: functionConfig.collectCoins},
         },
         quest: "CollectCoinsQuest"
+      },
+      {
+        conditions: {
+          collectCoins: {enable: functionConfig.expedition},
+        },
+        quest: "ExpeditionQuest"
       },
       {
         conditions: {

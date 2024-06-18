@@ -12,6 +12,7 @@ export const characterState: CharacterState = {
 
 export const functionConfig: FunctionConfig = {
   collectCoins: false,
+  expedition: false,
   gatherFood: false,
   soloHunt: {
     enabled: false,

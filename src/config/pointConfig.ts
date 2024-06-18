@@ -8,7 +8,8 @@ export const pointConfig = {
   coinHarvester: {x: 220, y: 1040},
   unionIcon: {x: 660, y: 856},
   valueEventsIcon: {x: 656, y:254},
-
+  //军情
+  intelligenceIcon: {x: 47, y: 1072},
   //========================联盟窗口======================
   warIcon: {x: 200, y: 1000},
 
@@ -63,5 +64,11 @@ export const pointConfig = {
   exitBattleConfirmBtn: {x:508, y:745},
 
   //无集结队伍 子窗口
-  rallyNoBusWindowCloseBtn: {x: 650, y: 140}
+  rallyNoBusWindowCloseBtn: {x: 650, y: 140},
+
+  //远程行动 快速战斗
+  expeditionFastBattleBtn: {x: 605, y: 1187},
+  expeditionFreeFastBattleBtn: {x: 360,y: 890},
+  expeditionCollectRewards: {x: 212,y: 1065},
+  expeditionConfirmCollect: {x: 360,y: 1126},
 }

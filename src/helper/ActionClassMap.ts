@@ -7,6 +7,7 @@ import {NullQuest, Quest} from "../core/quest";
 import {CollectCoinsQuest} from "../collectCoins";
 import {GatherFoodQuest} from "../gather";
 import {GetInBusQuest} from "../getInBus";
+import {ExpeditionQuest} from "../expedition";
 
 export const ActionClassMap: { [key: string]: new (characterState: CharacterState, functionConfig: FunctionConfig) => Quest } = {
   NullQuest: NullQuest,
@@ -16,4 +17,5 @@ export const ActionClassMap: { [key: string]: new (characterState: CharacterStat
   GatherFoodQuest: GatherFoodQuest,
   GetInBusQuest: GetInBusQuest,
   OceanTreasureQuest: OceanTreasureQuest,
+  ExpeditionQuest: ExpeditionQuest,
 };

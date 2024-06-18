@@ -8,6 +8,7 @@ const soloHuntAttackTypeOptionsStr =  "五连|单次"
 const rallyHuntEnemyOptionsStr =  "锤子|右数第二|最右边"
 var FunctionConfig = {
   collectCoins: false,
+  expedition: false,
   gatherFood: false,
   soloHunt: {
     enabled: false,
@@ -278,7 +279,7 @@ ui.layout(
             {/*===================日常===================*/}
             <frame>
               <vertical>
-{/*                <linear>
+                {/*                <linear>
                   <checkbox id="enableRoutine" text="开启日常"
                             checked="{{FunctionConfig.routine.enabled}}"></checkbox>
                   <text marginLeft="40">跟车编队</text>
@@ -288,7 +289,12 @@ ui.layout(
 
                 </linear>*/}
                 <checkbox id="collectCoins" text="领取金币"
-                          checked="{{FunctionConfig.collectCoins}}"></checkbox>
+                          checked="{{FunctionConfig.collectCoins}}">
+                </checkbox>
+
+                <checkbox id="expedition" text="远程行动"
+                          checked="{{FunctionConfig.expedition}}">
+                </checkbox>
               </vertical>
             </frame>
           </viewpager>
@@ -305,7 +311,7 @@ ui.layout(
         </vertical>
     </drawer>
 );
-//反显数据
+//下拉框反显数据
 ui.post(function() {
   let formationOptions = formationOptionsStr.split("|");
   ui.getInBusFormationNum.setSelection(formationOptions.indexOf(FunctionConfig.getInBus.formationNum));
@@ -526,6 +532,15 @@ ui.rallyHunt_rightTimes.addTextChangedListener({
 
 //===========集结 end===================
 
+//==========日常start==================
+ui.expedition.on("check", ()=>{
+  FunctionConfig.expedition = ui.expedition.isChecked();
+  updateStorage()
+});
+ui.collectCoins.on("check", ()=>{
+  FunctionConfig.collectCoins = ui.collectCoins.isChecked();
+  updateStorage()
+});
 
 
 // 监听表单元素变化
@@ -536,7 +551,7 @@ ui.enableHeiJun.on("check", updateConfig);
 ui.enableNanmin.on("check", updateConfig);
 ui.enableJuxing.on("check", updateConfig);
 ui.oceanTreasure.on("check", updateConfig);
-ui.collectCoins.on("check", updateConfig);
+
 
 
 function addCheckListener(element) {
