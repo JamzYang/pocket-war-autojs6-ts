@@ -1,10 +1,9 @@
 import {characterState, functionConfig} from "../src/config/config";
-import {OceanTreasureQuest, RecognizeState, ToOceanTreasure} from "../src/oceanTreasure";
 import * as autoHandler from "../src/helper/autoHandler";
-import {ClickConfirmBattleBtn, Step} from "../src/core/step";
 import {SelectSoloEnemy, SoloHuntQuest} from "../src/hunt";
 import {AttackEnemy} from "../src/steps";
 import {SelectCommanderSolider} from "../src/selectFormation";
+import {Step} from "../src/core/step";
 
 jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
@@ -44,8 +43,7 @@ describe('solo hunt quest', () => {
 class TestSoloHuntQuest extends SoloHuntQuest {
   protected steps: Step[] = [
     new SelectSoloEnemy(this),
-    new AttackEnemy(),
+    new AttackEnemy(this),
     new SelectCommanderSolider(this),
-    new ClickConfirmBattleBtn(this),
   ]
 }

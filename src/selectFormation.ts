@@ -9,15 +9,11 @@ import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {GetInBusQuest} from "./getInBus";
 import {iconConfig} from "./config/iconConfig";
 import {HuntType} from "./enum"
-export class SelectCommanderSolider implements Step {
-  protected quest: Quest;
-  constructor(quest: Quest) {
-    this.quest = quest;
-  }
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class SelectCommanderSolider extends Step {
+  execute(): ExecuteResult {
     //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
     if(this.quest instanceof SoloHuntQuest){
-      this.selectFormation(functionConfig.soloHunt.formationNum);
+      this.selectFormation(this.quest.getFunctionConfig.soloHunt.formationNum);
       if(!this.heroIsSelected()){
         myClick(pointConfig.exitBattleBtn.x,pointConfig.exitBattleBtn.y)
         myClick(pointConfig.exitBattleConfirmBtn.x,pointConfig.exitBattleConfirmBtn.y)
@@ -29,13 +25,13 @@ export class SelectCommanderSolider implements Step {
       let huntType = rallyHuntQuest.expectObject()[0].type;
       switch (huntType){
         case HuntType.chuizi:
-          this.selectFormation(functionConfig.rallyHunt.chuizi.formationNum);
+          this.selectFormation(this.quest.getFunctionConfig.rallyHunt.chuizi.formationNum);
           break;
         case HuntType.juxing:
-          this.selectFormation(functionConfig.rallyHunt.juxing.formationNum);
+          this.selectFormation(this.quest.getFunctionConfig.rallyHunt.juxing.formationNum);
           break;
         case HuntType.right:
-          this.selectFormation(functionConfig.rallyHunt.right.formationNum);
+          this.selectFormation(this.quest.getFunctionConfig.rallyHunt.right.formationNum);
           break;
         default:
           throw new Error('huntType: ${huntType} 不支持集结' );
@@ -46,7 +42,7 @@ export class SelectCommanderSolider implements Step {
         return new SuccessResult("SelectCommanderSolider: no hero has selected.")
       }
     }else if(this.quest instanceof GetInBusQuest) {
-      this.selectFormation(functionConfig.getInBus.formationNum);
+      this.selectFormation(this.quest.getFunctionConfig.getInBus.formationNum);
     }
     return new SuccessResult("SelectCommanderSolider")
   }

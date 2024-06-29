@@ -1,6 +1,7 @@
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
-import {Step,ToWorld, ToCity, ClickConfirmBattleBtn, closeDialog} from "./core/step";
+import {Step,ToWorld, ToCity, closeDialog} from "./core/step";
+
 import {Quest} from "./core/quest";
 import {ExecuteResult,SuccessResult, NeedRepeatFailure, Failure} from "./core/executeResult";
 
@@ -22,7 +23,11 @@ import {EnemyName} from "./enum";
  */
 export class CollectCoinsQuest extends Quest {
   public nextExecuteTime: number = 0;
-  protected steps = [new ToCity(),new ToCoinHarvester(), new ClickCoinPoll(this)]
+  protected steps = [
+    new ToCity(this),
+    new ToCoinHarvester(this),
+    new ClickCoinPoll(this)
+  ]
   protected getInterval(): number {
     return intervalConfig.coin
   }
@@ -35,8 +40,8 @@ interface EnemyObject {
 
 
 
-export class ToCoinHarvester implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ToCoinHarvester extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.coinBar.x, pointConfig.coinBar.y, 400, "coinBar")
     mySwipe(560, 700, 580, 500)
     myClick(pointConfig.coinHarvester.x, pointConfig.coinHarvester.y, 800, "coinHarvester")
@@ -45,13 +50,8 @@ export class ToCoinHarvester implements Step {
 }
 
 
-export class ClickCoinPoll implements Step {
-  private quest: CollectCoinsQuest;
-  constructor(quest: CollectCoinsQuest) {
-    this.quest = quest
-  }
-
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ClickCoinPoll extends Step {
+  execute(): ExecuteResult {
 
     //[259,391,457,715]
     let result = findImage(captureScreen(), fromBase64(iconConfig.coinIcon.base64),

@@ -1,6 +1,6 @@
 import {Quest} from "./core/quest";
 import {HuntType} from "./enum";
-import {ClickConfirmBattleBtn, ClickSearch, Step, ToWorld} from "./core/step";
+import {ClickSearch, Step, ToWorld} from "./core/step";
 import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
@@ -24,10 +24,10 @@ export class ExpeditionQuest extends Quest {
     return intervalConfig.expediton
   }
   protected steps = [
-    new ToWorld(),
-    new ToExpedition(),
-    new CollectRewards(),
-    new FastBattle(),
+    new ToWorld(this),
+    new ToExpedition(this),
+    new CollectRewards(this),
+    new FastBattle(this),
   ]
   // postExecute(): ExecuteResult {
   //   this.functionConfig.soloHunt.times -= 1;
@@ -35,8 +35,8 @@ export class ExpeditionQuest extends Quest {
   // }
 }
 
-export class ToExpedition implements Step {
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
+export class ToExpedition extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.intelligenceIcon.x, pointConfig.intelligenceIcon.y)
     let findTimes = 0;
     let result  = this.findExpeditionIcon()
@@ -64,8 +64,8 @@ export class ToExpedition implements Step {
   }
 }
 
-class FastBattle implements Step {
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
+class FastBattle extends Step {
+  execute(): ExecuteResult {
     if(this.parseCost() >= 100){
       let closeBtn = hasCloseBtn()
       if (closeBtn != null) {
@@ -96,8 +96,8 @@ class FastBattle implements Step {
   }
 }
 
-class CollectRewards implements Step {
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
+class CollectRewards extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.expeditionCollectRewards.x, pointConfig.expeditionCollectRewards.y, 1000)
     myClick(pointConfig.expeditionConfirmCollect.x, pointConfig.expeditionConfirmCollect.y)
     return new SuccessResult("CollectRewards success");

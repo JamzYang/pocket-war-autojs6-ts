@@ -1,21 +1,22 @@
-import {CharacterState} from "./characterState";
-import {FunctionConfig} from "./functionConfig";
 import {ExecuteResult, Failure, SuccessResult} from "./executeResult";
 import {captureScreen, findMultiColor, myClick, myLog} from "../helper/autoHandler";
 import {pointConfig} from "../config/pointConfig";
-import {RallyHuntQuest} from "../hunt";
 import {hasBackBtn, hasCloseBtn} from "../helper/finder";
 import {colorConfig} from "../config/colorConfig";
 import {iconConfig} from "../config/iconConfig";
 import {Quest} from "./quest";
 
-export interface Step {
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult;
+export abstract class Step {
+  protected quest: Quest;
+  constructor(quest: Quest) {
+    this.quest = quest;
+  }
+  abstract execute(): ExecuteResult;
 }
 
-export class CheckIdleTeamsStep implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    if (characterState.idleTeams < 1) {
+export class CheckIdleTeamsStep extends Step {
+  execute(): ExecuteResult {
+    if (this.quest.getCharacterState.idleTeams < 1) {
       throw new Failure('没有空闲队伍');
     }
     return new SuccessResult('空闲队伍检查通过');
@@ -26,54 +27,45 @@ export class CheckIdleTeamsStep implements Step {
 /**
  * 主界面搜索
  */
-export class ClickSearch implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ClickSearch extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y, 400, "mainSearchBtn")
     return new SuccessResult('ClickSearch');
   }
 }
 
 
-export class ClickConfirmBattleBtn implements Step {
-  private quest: Quest;
-  constructor(quest: Quest) {
-    this.quest = quest;
-  }
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
-    myClick(pointConfig.confirmBattleBtn.x, pointConfig.confirmBattleBtn.y, 800, "ClickConfirmBattleBtn")
 
-    if(this.quest instanceof RallyHuntQuest){ //todo 依赖反转
-      // functionConfig.rallyHuntQuest = true;
-    }
-    return new SuccessResult('ClickConfirmBattleBtn')
-  }
-}
 
-export class ClickOneClickBattle implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ClickOneClickBattle extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.oneClickBattleBtn.x, pointConfig.oneClickBattleBtn.y, 200, "ClickOneClickBattle")
     return new SuccessResult('ClickOneClickBattle')
   }
 }
 
 
-export class ToWorld implements Step {
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
-    handleCloseBtn()
-    handleBackButton();
-    if (!isWorldWindow()) {
-      clickMainCityBtnOrWorldBtn()
-    }
-
-    if (!isWorldWindow()) {
-      throw new Failure('回到世界失败');
-    }
+export class ToWorld extends Step {
+  execute(): ExecuteResult {
+    toWorld()
     return new SuccessResult('已到世界');
   }
 }
 
-export class ToCity implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export function toWorld(){
+  handleCloseBtn()
+  handleBackButton();
+  if (!isWorldWindow()) {
+    clickMainCityBtnOrWorldBtn()
+  }
+
+  if (!isWorldWindow()) {
+    throw new Failure('回到世界失败');
+  }
+}
+
+export class ToCity extends Step {
+  execute(): ExecuteResult {
     handleCloseBtn()
     handleBackButton();
     if (isWorldWindow()) {

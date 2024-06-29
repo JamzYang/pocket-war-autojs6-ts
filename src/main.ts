@@ -1,5 +1,5 @@
 import {captureScreen, myClick, myLog} from "./helper/autoHandler";
-import {ToWorld} from "./core/step"
+import {toWorld, ToWorld} from "./core/step"
 
 import {characterState} from "./config/config";
 
@@ -9,6 +9,8 @@ import {loadFeatureConfig} from "./core/configLoader";
 import {loadRuleConfig} from "./core/condition";
 import {hasDownwardTriangle} from "./helper/finder";
 import {SoloHuntQuest} from "./hunt";
+import any = jasmine.any;
+import anything = jasmine.anything;
 // 加载配置文件
 let featureConfig = loadFeatureConfig()
 let ruleConfig = loadRuleConfig()
@@ -31,7 +33,7 @@ while (true) {
 
 function mainRun() {
   try {
-    new ToWorld().execute(characterState)
+    toWorld()
     getIdleTeamNum()
     // characterState.stamina = orcStamina()
     orcStamina() //todo 只读取体力,但不赋值

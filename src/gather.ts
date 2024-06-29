@@ -1,6 +1,8 @@
 import {captureScreen, findMultiColor, myClick} from "./helper/autoHandler";
 import {colorConfig} from "./config/colorConfig";
-import {Step, ToWorld, ClickSearch, ClickOneClickBattle, ClickConfirmBattleBtn} from "./core/step";
+import {Step, ToWorld, ClickSearch, ClickOneClickBattle} from "./core/step";
+import {ClickConfirmBattleBtn} from "../src/clickConfirmBattleBtn";
+
 import {Quest} from "./core/quest"
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
@@ -17,15 +19,15 @@ import {
 
 export class GatherFoodQuest extends Quest {
   protected steps = [
-    new ToWorld(),
-    new ClickSearch(),
-    new SelectResourceFieldTab(),
-    new ClickFarmlandPic(),
-    new SelectSearchLevel(),
-    new ClickConfirmSearchBtn(),
-    new ClickFocusPoint(),
-    new ClickConfirmGatherBtn(),
-    new ClickOneClickBattle(),
+    new ToWorld(this),
+    new ClickSearch(this),
+    new SelectResourceFieldTab(this),
+    new ClickFarmlandPic(this),
+    new SelectSearchLevel(this),
+    new ClickConfirmSearchBtn(this),
+    new ClickFocusPoint(this),
+    new ClickConfirmGatherBtn(this),
+    new ClickOneClickBattle(this),
     // new GatherResource(),
     // new SelectCommanderSolider(),
     new ClickConfirmBattleBtn(this)
@@ -37,8 +39,8 @@ export class GatherFoodQuest extends Quest {
 /**
  * 选中出征对像后, 目标信息界面一般出现在窗口上半部,有没有可能出现在下半部? //todo
  */
-export class ClickConfirmGatherBtn implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ClickConfirmGatherBtn extends Step {
+  execute(): ExecuteResult {
     let result = findMultiColor(captureScreen(), colorConfig.confirmGatherBtn)
     if (result == null) {
       throw new Failure('没有找到确认按钮')
@@ -48,15 +50,15 @@ export class ClickConfirmGatherBtn implements Step {
   }
 }
 
-export class SelectResourceFieldTab implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class SelectResourceFieldTab extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 400, "SelectResourceFieldTab")
     return new SuccessResult('SelectResourceFieldTab')
   }
 }
 
-export class ClickFarmlandPic implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ClickFarmlandPic extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.searchFarmLandPic.x, pointConfig.searchFarmLandPic.y, 400, "ClickFarmlandPic")
     return new SuccessResult('ClickFarmlandPic');
   }

@@ -1,10 +1,11 @@
-import {Step,ToWorld, ToCity, ClickConfirmBattleBtn} from "./core/step";
+import {Step,ToWorld, ToCity} from "./core/step";
+import {ClickConfirmBattleBtn} from "./clickConfirmBattleBtn";
+
 import {Quest} from "./core/quest";
 import {EnemyName} from "./enum";
 import {SelectCommanderSolider} from "./selectFormation";
 import {ExecuteResult,SuccessResult, NeedRepeatFailure, Failure} from "./core/executeResult";
-import {CharacterState} from "./core/characterState";
-import {FunctionConfig} from "./core/functionConfig";
+
 import {myLog,myClick,mySleep,captureScreen,captureScreenGray,
   matchTemplate,mySwipe,fromBase64,findImage,findMultiColor}
   from "./helper/autoHandler";
@@ -41,8 +42,8 @@ export class GetInBusQuest extends Quest {
 
   weight = 5;
   protected steps = [
-    new ToWorld(),
-    new ToRallyWindow(),
+    new ToWorld(this),
+    new ToRallyWindow(this),
     new GetInBus(this),
     new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(this),
@@ -78,14 +79,8 @@ export class GetInBusQuest extends Quest {
 }
 
 //跟车页 卡片之间垂直间隔610px,
-export class GetInBus implements Step {
-  private quest: GetInBusQuest;
-
-  constructor(quest: GetInBusQuest) {
-    this.quest = quest
-  }
-
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class GetInBus extends Step {
+  execute(): ExecuteResult {
     //怪物名字 [496,309,684,352] 中心点： 349 272  相比加号中心 x偏移 147， y偏移 37  名字框 高 43 宽 188
     //这个方法有个问题。多点找色只能找到最上面一个
     // let result = findMultiColor(img, colorConfig.rallyJoinInIcon)
@@ -115,11 +110,11 @@ export class GetInBus implements Step {
             ]
         )
         myLog('怪物名字: ' + enemyName)
-        let expectObject = this.quest.expectObject();
+        let expectObject = (this.quest as GetInBusQuest).expectObject();
         myLog("集结目标: " + JSON.stringify(expectObject))
         if (enemyName && expectObject.find(item => item.name == enemyName)) {
-          myClick(point.x + iconConfig.getInBusIcon.offSet.x, point.y + iconConfig.getInBusIcon.offSet.y, 300, "click get in bus icon")
-          this.quest.actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
+          myClick(point.x + iconConfig.getInBusIcon.offSet.x, point.y + iconConfig.getInBusIcon.offSet.y, 300, "click get in bus icon");
+          (this.quest as GetInBusQuest).actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
           return new SuccessResult('GetInBus success. enemyName=' + enemyName)
         }
       }
@@ -130,28 +125,22 @@ export class GetInBus implements Step {
   }
 }
 
-export class CheckGetInBusSuccess implements Step {
-  private quest: GetInBusQuest;
-
-  constructor(quest: GetInBusQuest) {
-    this.quest = quest
-  }
-
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class CheckGetInBusSuccess extends Step {
+  execute(): ExecuteResult {
     // this.quest.actualObject?.name
 
     return new SuccessResult('CheckGetInBusSuccess')
   }
 }
 
-export class ToRallyWindow implements Step {
-  execute(characterState: CharacterState, functionConfig: FunctionConfig): ExecuteResult {
+export class ToRallyWindow extends Step {
+  execute(): ExecuteResult {
     myClick(pointConfig.unionIcon.x, pointConfig.unionIcon.y, 400, "ClickUnionIcon")
     myClick(pointConfig.warIcon.x, pointConfig.warIcon.y, 400, "ClickWarIcon")
     let result = findMultiColor(captureScreen(), colorConfig.rallyNoBusWindow)
     if (result != null) {
       myClick(pointConfig.rallyNoBusWindowCloseBtn.x, pointConfig.rallyNoBusWindowCloseBtn.y, 200, "click rallyNoBusWindowCloseBtn")
-      new ToWorld().execute(characterState, functionConfig)
+      new ToWorld(this.quest).execute()
       throw new NeedRepeatFailure('no bus found', Number(repeatSeconds().toString() || '50'))
     }
     return new SuccessResult('ToRallyWindow')

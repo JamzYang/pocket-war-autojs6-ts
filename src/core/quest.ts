@@ -22,6 +22,14 @@ export class Quest {
     this.functionConfig = functionConfig;
   }
 
+  get getCharacterState() {
+    return this.characterState;
+  }
+
+  get getFunctionConfig() {
+    return this.functionConfig;
+  }
+
   postExecute ():ExecuteResult {
     return  new SuccessResult('success')
   }
@@ -44,7 +52,7 @@ export class Quest {
     let actionResult: ExecuteResult
     for (const step of this.steps) {
       myLog(`Executing step: ${step.constructor.name}`);
-      executeWithRetry(step, this.characterState, this.functionConfig)
+      executeWithRetry(step)
     }
     this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
     this.characterState.lastQuests.set(this.constructor.name, this)
@@ -53,11 +61,11 @@ export class Quest {
   }
 }
 
-function executeWithRetry(step:Step, characterState: CharacterState, functionConfig: FunctionConfig):ExecuteResult {
+function executeWithRetry(step:Step):ExecuteResult {
   const startTime = new Date().getTime();
   while(true){
     try {
-      return  step.execute(characterState, functionConfig)
+      return  step.execute()
     }catch (e){
       if (!(e instanceof NeedRepeatFailure)) {
         myLog(`Executing step: ${step.constructor.name} error.  ${e}`)

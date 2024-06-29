@@ -27,20 +27,15 @@ export class OceanTreasureQuest extends Quest {
     return intervalConfig.oceanTreasure
   }
   protected steps = [
-    new ToWorld(),
+    new ToWorld(this),
     new ToOceanTreasure(this),
     new RecognizeState(this)
   ]
 
 }
 
-export class ToOceanTreasure implements Step {
-  private quest: OceanTreasureQuest;
-  constructor(quest: OceanTreasureQuest) {
-    this.quest = quest
-  }
-
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
+export class ToOceanTreasure extends Step {
+  execute(): ExecuteResult {
     mySleep(1000)
     myClick(pointConfig.valueEventsIcon.x, pointConfig.valueEventsIcon.y, 1000, "ClickValueEventsIcon")
     let result
@@ -66,24 +61,19 @@ export class ToOceanTreasure implements Step {
   }
 }
 
-export class RecognizeState implements Step {
-  private quest: OceanTreasureQuest;
-  constructor(quest: OceanTreasureQuest) {
-    this.quest = quest
-  }
-
-  execute(characterState?: CharacterState, functionConfig?: FunctionConfig): ExecuteResult {
+export class RecognizeState extends Step {
+  execute(): ExecuteResult {
     const {timeStr, seconds, type} = orcOceanTreasureCountDown()
     if (type === '进行中') {
       //当前系统时间 加上 seconds
       this.quest.nextExecuteTime = new Date().getTime() + seconds * 1000 + 10 * 1000; //加10秒冗余
       myLog("深海下次收取时间：" + timeStr)
     } else if (type === '待领取') {
-      clickDetector(functionConfig?.events.oceanTreasure.detectorNum as number)
-      clickDetector(functionConfig?.events.oceanTreasure.detectorNum as number)
+      clickDetector(this.quest.getFunctionConfig.events.oceanTreasure.detectorNum as number)
+      clickDetector(this.quest.getFunctionConfig.events.oceanTreasure.detectorNum as number)
       this.quest.nextExecuteTime = new Date().getTime() + 3600 * 1000;
     } else if (type === '待探测') {
-      clickDetector(functionConfig?.events.oceanTreasure.detectorNum as number)
+      clickDetector(this.quest.getFunctionConfig.events.oceanTreasure.detectorNum as number)
       this.quest.nextExecuteTime = new Date().getTime() + 3600 * 1000;
     }
     return new SuccessResult("oceanTreasure RecognizeState");

@@ -1,7 +1,8 @@
 import {characterState, functionConfig} from "../src/config/config";
-import {OceanTreasureQuest, RecognizeState, ToOceanTreasure} from "../src/oceanTreasure";
 import * as autoHandler from "../src/helper/autoHandler";
-import {ClickConfirmBattleBtn, Step} from "../src/core/step";
+import {Step} from "../src/core/step";
+import {ClickConfirmBattleBtn} from "../src/clickConfirmBattleBtn";
+
 import {SelectSoloEnemy, SoloHuntQuest} from "../src/hunt";
 import {AttackEnemy} from "../src/steps";
 import {SelectCommanderSolider} from "../src/selectFormation";
@@ -44,7 +45,7 @@ describe('rally hunt quest', () => {
 class TestSoloHuntQuest extends SoloHuntQuest {
   protected steps: Step[] = [
     new SelectSoloEnemy(this),
-    new AttackEnemy(),
+    new AttackEnemy(this),
     new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(this),
   ]
