@@ -1,5 +1,7 @@
+
 export const pointConfig = {
   focusPoint: {x: 360, y: 640},
+  midAttackPoint: {x: 360, y: 795},
 
   //========================主界面========================
   mainCityWorldBtn: {x: 630, y: 1200},
@@ -11,10 +13,14 @@ export const pointConfig = {
   //军情
   intelligenceIcon: {x: 47, y: 1072},
   //========================联盟窗口======================
+  unionEventIcon: {x: 186, y: 727},
   warIcon: {x: 200, y: 1000},
 
 
-
+  //========================联盟活动======================
+  //联盟活动页 机甲卡片中心
+  unionEventMechs: {x: 360, y: 240},
+  unionMechDonateBtn: {x: 360, y: 1205},
 
 
 

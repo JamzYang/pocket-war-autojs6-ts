@@ -87,6 +87,17 @@ test("去重",() => {
       console.log(`${s} 不匹配`);
     }
   });
-
-
 })
+
+test("遍历时动态添加元素", () =>{
+  let arr = [1,2,3]
+  for (const item of arr) {
+    console.log("item==> "+ item)
+    if(item == 3){
+      arr.push(4)
+    }
+    if(item == 4){
+      arr.push(5)
+    }
+  }
+});

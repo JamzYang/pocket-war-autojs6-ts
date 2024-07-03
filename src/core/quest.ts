@@ -59,6 +59,10 @@ export class Quest {
     myLog(`Quest: ${this.constructor.name} success`)
     return new SuccessResult(`action: ${this.constructor.name} success`);
   }
+
+   addStep(step: Step) {
+    this.steps.push(step)
+  }
 }
 
 function executeWithRetry(step:Step):ExecuteResult {
@@ -78,6 +82,9 @@ function executeWithRetry(step:Step):ExecuteResult {
   }
 }
 
+
+
 export class NullQuest extends Quest {
 
 }
+

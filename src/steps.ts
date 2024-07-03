@@ -16,12 +16,6 @@ import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
 import {ExecuteResult,SuccessResult,Failure} from "./core/executeResult";
 
-
-
-
-
-
-
 export class SelectSearchLevel extends Step {
   execute(): ExecuteResult {
     for (let i = 0; i < 5; i++) {
@@ -34,6 +28,14 @@ export class SelectSearchLevel extends Step {
 export class ClickFocusPoint extends Step {
   execute(): ExecuteResult {
     myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y, 1000, "ClickFocusPoint")
+    return new SuccessResult('ClickFocusPoint');
+  }
+}
+
+
+export class ClickMidAttackPoint extends Step {
+  execute(): ExecuteResult {
+    myClick(pointConfig.midAttackPoint.x, pointConfig.midAttackPoint.y, 1000, "ClickMidAttackPoint")
     return new SuccessResult('ClickFocusPoint');
   }
 }
