@@ -81,7 +81,7 @@ var FunctionConfig = {
 
 // 从本地存储中读取数据
 // storages.remove("FunctionConfig");
-var storedConfig = storages.create("FunctionConfig").get("config");
+var storedConfig = storages.create("script_config").get("config");
 // console.log("从本地存储读取配置："+storedConfig)
 if (storedConfig) {
   let storedConfigParsed = JSON.parse(storedConfig);
