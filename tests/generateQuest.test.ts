@@ -154,10 +154,26 @@ describe('generate Quest', () => {
     mockFunctionConfig.soloHunt.attackType = "单次";
     mockFunctionConfig.soloHunt.times = 2;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
-
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(SoloHuntQuest); //todo
+  });
+
+
+  it('should gen no quest when hunt enabled but times is 0', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
+    characterState.stamina =35;
+    characterState.idleTeams = 1;
+
+    mockFunctionConfig.soloHunt.enabled = true;
+    mockFunctionConfig.soloHunt.type = HuntType.navy;
+    mockFunctionConfig.soloHunt.attackType = "单次";
+    mockFunctionConfig.soloHunt.times = 0;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    expect(quests[0]).toBe(null);
   });
 
   it('should gen rally quest', () => {

@@ -2,7 +2,6 @@ import {FunctionConfig} from "./functionConfig";
 
 export function loadFeatureConfig(): FunctionConfig {
   let storedConfig = storages.create("script_config").get("config");
-  console.log("main读取配置："+storedConfig)
   if (storedConfig) {
     return  storedConfig;
   }else {

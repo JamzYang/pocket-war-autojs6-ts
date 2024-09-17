@@ -1,5 +1,5 @@
 import {captureScreen, myClick, myLog} from "./helper/autoHandler";
-import {toWorld, ToWorld} from "./core/step"
+import {toWorld} from "./core/step"
 
 import {characterState} from "./config/config";
 
@@ -8,17 +8,13 @@ import {run} from "./core/ruleEngine";
 import {loadFeatureConfig} from "./core/configLoader";
 import {loadRuleConfig} from "./core/condition";
 import {hasDownwardTriangle} from "./helper/finder";
-import {SoloHuntQuest} from "./hunt";
-import any = jasmine.any;
-import anything = jasmine.anything;
+
 // 加载配置文件
 let featureConfig = loadFeatureConfig()
+myLog("配置："+JSON.stringify(featureConfig))
 let ruleConfig = loadRuleConfig()
 
-captureScreen()
-sleep(2000)
-
-
+toWorld()
 let downwardTriangle = hasDownwardTriangle();
 //收起小地图
 if (downwardTriangle) {
@@ -37,6 +33,7 @@ function mainRun() {
     getIdleTeamNum()
     // characterState.stamina = orcStamina()
     orcStamina() //todo 只读取体力,但不赋值
+
     let quests = run(ruleConfig, characterState, featureConfig)
     if (quests.length == 0) {
       sleep(2000)

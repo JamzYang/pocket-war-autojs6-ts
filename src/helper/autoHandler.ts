@@ -32,9 +32,6 @@ export function findImage(image: ImageWrapper, template: ImageWrapper, options?:
 }
 
 
-
-
-
 export function matchTemplate(img: ImageWrapper, template: ImageWrapper, options?: {
   threshold?: number;
   weakThreshold?: number;
@@ -46,11 +43,12 @@ export function matchTemplate(img: ImageWrapper, template: ImageWrapper, options
 }
 
 
-
 export function myClick(x: number, y: number, time: number = 600, name?: string): boolean {
-  myLog(`点击 ${name}, 坐标:${x},${y}`)
+  if(name){
+    myLog(`点击 ${name}, 坐标:${x},${y}`)
+  }
   let result = click(x,y)
-  sleep(1000)
+  sleep(time)
   return result
 }
 

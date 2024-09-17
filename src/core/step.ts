@@ -1,7 +1,7 @@
 import {ExecuteResult, Failure, SuccessResult} from "./executeResult";
-import {captureScreen, findMultiColor, myClick, myLog} from "../helper/autoHandler";
+import {captureScreen, findImage, findMultiColor, fromBase64, myClick, myLog} from "../helper/autoHandler";
 import {pointConfig} from "../config/pointConfig";
-import {hasBackBtn, hasCloseBtn} from "../helper/finder";
+import {getCurrentCityIcon, getCurrentWorldIcon, hasBackBtn, hasCloseBtn} from "../helper/finder";
 import {colorConfig} from "../config/colorConfig";
 import {iconConfig} from "../config/iconConfig";
 import {Quest} from "./quest";
@@ -55,11 +55,12 @@ export class ToWorld extends Step {
 export function toWorld(){
   handleCloseBtn()
   handleBackButton();
-  if (!isWorldWindow()) {
+  if (!isInWorld()) {
     clickMainCityBtnOrWorldBtn()
   }
 
-  if (!isWorldWindow()) {
+  if (!isInWorld()) {
+    //todo 弹 toast
     throw new Failure('回到世界失败');
   }
 }
@@ -68,11 +69,11 @@ export class ToCity extends Step {
   execute(): ExecuteResult {
     handleCloseBtn()
     handleBackButton();
-    if (isWorldWindow()) {
+    if (isInWorld()) {
       clickMainCityBtnOrWorldBtn()
     }
 
-    if (!isCityWindow()) {
+    if (!isInCity()) {
       throw new Failure('回到主城失败');
     }
     return new SuccessResult('已到主城');
@@ -87,7 +88,7 @@ function handleBackButton() {
   if (backBtn) {
     //[25,8,84,70]
     myClick(backBtn.x + iconConfig.backBtn.offSet.x, backBtn.y + iconConfig.backBtn.offSet.y, 400, "backBtn");
-    // myLog("click backBtn")
+    myLog("click 返回")
     handleBackButton();
   }
 }
@@ -98,27 +99,40 @@ function handleCloseBtn() {
   if (closeBtn != null) {
     // [630,119,675,163]
     myClick(closeBtn.x + 22, closeBtn.y + 22, 400, "closeBtn")
-    // myLog("click closeBtn")
+    myLog("click closeBtn")
     handleCloseBtn()
   }
 }
 
 
-function isWorldWindow() {
-  let result = findMultiColor(captureScreen(), colorConfig.mainWindow.mainCityColor)
+// function isInWorld() {
+//   let cityIcon = fromBase64(getCurrentCityIcon());
+//   let result = findImage(captureScreen(), cityIcon)
+//   return result != null
+// }
+
+function isInWorld() {
+  let littleMap = fromBase64(iconConfig.littleMap.base64);
+  let result = findImage(captureScreen(), littleMap,
+      { threshold: 0.8, region: [165, 170, 240, 222]})
   return result != null
 }
 
-function isCityWindow(): OpenCV.Point | null {
-  let result = findMultiColor(captureScreen(), colorConfig.mainWindow.worldColor)
-  return result
+function isInCity(){
+  return !isInWorld();
 }
+
+// function isInCity(): OpenCV.Point | null {
+//   let worldIcon = fromBase64(getCurrentWorldIcon());
+//   let result = findImage(captureScreen(), worldIcon)
+//   return result
+// }
 
 /**
  * 主城和世界界面切换有点慢,多sleep一会儿
  */
 function clickMainCityBtnOrWorldBtn() {
-  myClick(pointConfig.mainCityWorldBtn.x, pointConfig.mainCityWorldBtn.y, 800, "clickMainCityBtnOrWorldBtn")
+  myClick(pointConfig.mainCityWorldBtn.x, pointConfig.mainCityWorldBtn.y, 1000, "clickMainCityBtnOrWorldBtn")
 }
 
 export function closeDialog(): ExecuteResult {

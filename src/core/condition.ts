@@ -20,6 +20,7 @@ export function loadRuleConfig(): RuleConfig {
           stamina: { gt: 30 },
           idleTeams: { gt: 0 },
           soloHunt: {enable: functionConfig.soloHunt.enabled},
+          "soloHunt.times": { gt: 0 }  // 添加这一行
         },
         quest: "SoloHuntQuest"
       },
