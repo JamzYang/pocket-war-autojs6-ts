@@ -43,9 +43,9 @@ export function matchTemplate(img: ImageWrapper, template: ImageWrapper, options
 
 
 export function myClick(x: number, y: number, time: number = 600, name?: string): boolean {
-  if(name){
-    myLog(`点击 ${name}, 坐标:${x},${y}`)
-  }
+  // if(name){
+  //   myLog(`点击 ${name}, 坐标:${x},${y}`)
+  // }
   let result = click(x,y)
   sleep(time)
   return result
@@ -53,7 +53,7 @@ export function myClick(x: number, y: number, time: number = 600, name?: string)
 
 export function clickPoint(point: Point, time: number = 600): boolean {
   let result = click(point.x, point.y);
-  myLog(`点击 ${point}, 坐标:${point.x},${point.y}`);
+  // myLog(`点击 ${point}, 坐标:${point.x},${point.y}`);
   sleep(time);
   return result;
 }

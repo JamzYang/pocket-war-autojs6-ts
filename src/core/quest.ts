@@ -11,7 +11,7 @@ export class Quest {
   protected steps: Step[] = [];
   public weight: number = 0;
   public nextExecuteTime: number = 0;
-
+  public name: string = "NullQuest";
   /**
    * 执行周期. 单位:秒
    * @protected
@@ -76,7 +76,7 @@ function executeWithRetry(step:Step):ExecuteResult {
       return  step.execute()
     }catch (e){
       if (!(e instanceof NeedRepeatFailure)) {
-        myLog(`Executing step: ${step.constructor.name} error.  ${e}`)
+        myLog(`step: ${step.constructor.name} error.  ${e}`)
         throw e;
       }
       if (new Date().getTime() - startTime > repeatSeconds() * 1000) {

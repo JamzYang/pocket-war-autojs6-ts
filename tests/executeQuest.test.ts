@@ -107,8 +107,8 @@ describe('execute action', () =>{
     // (autoHandler.ocrTextFromImg as jest.Mock).mockReturnValue();
 
     let getInBusQuest = new GetInBusQuest(characterState, functionConfig);
-    getInBusQuest.execute();
-    getInBusQuest.postExecute()
+    let questResult = getInBusQuest.execute();
+    getInBusQuest.postExecute(questResult)
     // expect(autoHandler.matchTemplate).toHaveBeenCalledTimes(100);
     const callCount = (autoHandler.matchTemplate as jest.Mock).mock.calls.length;
     expect(callCount).toBe(1);
