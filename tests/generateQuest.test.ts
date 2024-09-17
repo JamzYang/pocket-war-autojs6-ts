@@ -173,7 +173,7 @@ describe('generate Quest', () => {
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, mockFunctionConfig)
-    expect(quests[0]).toBe(null);
+    expect(quests.length).toBe(0);
   });
 
   it('should gen rally quest', () => {
