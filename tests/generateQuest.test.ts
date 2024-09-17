@@ -128,15 +128,15 @@ describe('generate Quest', () => {
     characterState.stamina =30;
     characterState.idleTeams = 1;
     mockFunctionConfig.gatherFood = true;
-    mockFunctionConfig.getInBus.enabled = true;
-    mockFunctionConfig.getInBus.chuizi.enabled= true;
-    mockFunctionConfig.getInBus.chuizi.times = 1;
+    // mockFunctionConfig.getInBus.enabled = true;
+    // mockFunctionConfig.getInBus.chuizi.enabled= true;
+    // mockFunctionConfig.getInBus.chuizi.times = 1;
     mockFunctionConfig.events.oceanTreasure.enabled = true;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, mockFunctionConfig)
-    expect(quests[0]).toBeInstanceOf(OceanTreasureQuest); //todo
+    expect(quests[0]).toBeInstanceOf(OceanTreasureQuest);
   });
 
 

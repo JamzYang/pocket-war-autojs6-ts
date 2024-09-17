@@ -21,6 +21,7 @@ export function loadRuleConfig(): RuleConfig {
   return {
     rules: [
       {
+        name: "Solo Hunt Rule",
         conditions: {
           stamina: { gt: 30 },
           idleTeams: { gt: 0 },
@@ -30,6 +31,7 @@ export function loadRuleConfig(): RuleConfig {
         quest: SoloHuntQuest
       },
       {
+        name: "Rally Hunt Rule",
         conditions: {
           stamina: { gt: 30 },
           idleTeams: { gt: 0 },
@@ -38,6 +40,7 @@ export function loadRuleConfig(): RuleConfig {
         quest: RallyHuntQuest
       },
       {
+        name: "Gather Food Rule",
         conditions: {
           idleTeams: { gt: 0 },
           gatherFood: {enable: functionConfig.gatherFood},
@@ -45,6 +48,7 @@ export function loadRuleConfig(): RuleConfig {
         quest: GatherFoodQuest
       },
       {
+        name: "Collect Coins Rule",
         conditions: {
           idleTeams: { lte: 0 },
           collectCoins: {enable: functionConfig.collectCoins},
@@ -52,12 +56,14 @@ export function loadRuleConfig(): RuleConfig {
         quest: CollectCoinsQuest
       },
       {
+        name: "Expedition Rule",
         conditions: {
           collectCoins: {enable: functionConfig.expedition},
         },
         quest: ExpeditionQuest
       },
       {
+        name: "Get In Bus Rule",
         conditions: {
           idleTeams: { gt: 0 },
           getInBus: {enable: functionConfig.getInBus.enabled},
@@ -65,8 +71,9 @@ export function loadRuleConfig(): RuleConfig {
         quest: GetInBusQuest
       },
       {
+        name: "Ocean Treasure Rule",
         conditions: {
-          oceanTreasure: {enable: functionConfig.events.oceanTreasure.enabled},
+          "events.oceanTreasure": {enable: functionConfig.events.oceanTreasure.enabled},
         },
         quest: OceanTreasureQuest
       },
