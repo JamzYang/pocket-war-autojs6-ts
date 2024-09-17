@@ -27,19 +27,24 @@ jest.mock('../src/helper/autoHandler', () => ({
   mySleep: jest.fn(),
 }));
 
-describe('solo hunt quest', () => {
-  it("execute", ()=>{
+describe('打野单刷', () => {
+  it("单杀1次后, 次数变为0", ()=>{
     //前两次mock是 ToWorld step
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
     (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [], points: [] });
-
-    new TestSoloHuntQuest(characterState,functionConfig).execute()
-    new TestSoloHuntQuest(characterState,functionConfig).execute()
-    expect(11).toBeGreaterThan(10);
+    functionConfig.soloHunt.enabled = true;
+    functionConfig.soloHunt.times = 1;
+    let testSoloHuntQuest = new TestSoloHuntQuest(characterState,functionConfig);
+    testSoloHuntQuest.execute()
+    testSoloHuntQuest.postExecute()
+    expect(functionConfig.soloHunt.times).toBe(0)
   })
 })
 
+/**
+ * 测试类. 步骤相较于 SoloHuntQuest 少了一些
+ */
 class TestSoloHuntQuest extends SoloHuntQuest {
   protected steps: Step[] = [
     new SelectSoloEnemy(this),

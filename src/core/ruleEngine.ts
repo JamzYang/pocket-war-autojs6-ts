@@ -54,10 +54,8 @@ function createRuleFunction(rule: Rule): RuleFunction {
 
 function conditionAllMatched(rule: Rule, characterState: CharacterState, functionConfig: FunctionConfig) {
   for (const [key, condition] of Object.entries(rule.conditions)) {
-    //没定义 默认为true
-    //定义了， 且条件成立 继续
-    //condition中已定义的条件都成立，则返回true。 未定义的条件默认为成立
     const value = getNestedValue({...characterState, ...functionConfig}, key);
+    if (value === undefined) return false;  // 如果属性不存在，条件不满足
     if (condition.gt !== undefined && !(value > condition.gt)) return false;
     if (condition.lt !== undefined && !(value < condition.lt)) return false;
     if (condition.gte !== undefined && !(value >= condition.gte)) return false;
