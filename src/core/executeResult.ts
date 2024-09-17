@@ -9,6 +9,10 @@ export class SuccessResult extends ExecuteResult{
 
 }
 
+export class FailureResult extends ExecuteResult{
+
+}
+
 export class Failure extends Error{
 
 }

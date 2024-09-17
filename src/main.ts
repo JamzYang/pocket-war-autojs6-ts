@@ -40,8 +40,8 @@ function mainRun() {
       return
     }
     let quest = quests[0]
-    quest.execute()
-    quest.postExecute()
+    let questResult=  quest.execute()
+    quest.postExecute(questResult)
   } catch (e) {
     console.error('An error occurred:', e);
   }

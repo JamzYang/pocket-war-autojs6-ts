@@ -15,7 +15,7 @@ export class SelectCommanderSolider extends Step {
       if(!this.heroIsSelected()){
         clickPoint(pointConfig.exitBattleBtn)
         clickPoint(pointConfig.exitBattleConfirmBtn)
-        return new SuccessResult("SelectCommanderSolider: no hero has selected.")
+        throw new Failure("SelectCommanderSolider: no hero has been selected.")
       }
     }else if(this.quest instanceof RallyHuntQuest){
       //在搜怪步骤 用的是 expectObject[0] ,所以这里也是

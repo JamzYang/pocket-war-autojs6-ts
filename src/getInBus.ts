@@ -4,7 +4,7 @@ import {ClickConfirmBattleBtn} from "./clickConfirmBattleBtn";
 import {Quest} from "./core/quest";
 import {EnemyName} from "./enum";
 import {SelectCommanderSolider} from "./selectFormation";
-import {ExecuteResult,SuccessResult, NeedRepeatFailure, Failure} from "./core/executeResult";
+import {ExecuteResult, SuccessResult, NeedRepeatFailure, Failure, FailureResult} from "./core/executeResult";
 
 import {myLog,myClick, clickPoint,mySleep,captureScreen,captureScreenGray,
   matchTemplate,mySwipe,fromBase64,findImage,findMultiColor}
@@ -56,10 +56,16 @@ export class GetInBusQuest extends Quest {
   actualObject: {name: EnemyName, times: number} |null = null
 
   //重写postExecute方法
-  postExecute(): ExecuteResult {
+  postExecute(questResult: ExecuteResult){
     if(this.actualObject == null) {
-      return new SuccessResult("postExecute GetInBusQuest actualObject is null");
+      myLog("postExecute GetInBusQuest actualObject is null")
+      return;
     }
+
+    if(questResult instanceof FailureResult) {
+      return;
+    }
+
     switch (this.actualObject.name) {
       case EnemyName.Chuizi:
         this.functionConfig.getInBus.chuizi.times -= 1;
@@ -74,7 +80,6 @@ export class GetInBusQuest extends Quest {
         this.functionConfig.getInBus.juxing.times -= 1;
         break;
     }
-    return new SuccessResult("postExecute GetInBusQuest");
   }
 }
 

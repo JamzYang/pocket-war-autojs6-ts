@@ -3,7 +3,7 @@ import {repeatSeconds} from "../config/env.conf";
 import {Step} from "./step";
 import {CharacterState} from "./characterState";
 import {FunctionConfig} from "./functionConfig";
-import {ExecuteResult, NeedRepeatFailure, SuccessResult} from "./executeResult";
+import {ExecuteResult, FailureResult, NeedRepeatFailure, SuccessResult} from "./executeResult";
 
 export class Quest {
   protected characterState: CharacterState;
@@ -30,8 +30,8 @@ export class Quest {
     return this.functionConfig;
   }
 
-  postExecute ():ExecuteResult {
-    return  new SuccessResult('success')
+  postExecute (questResult: ExecuteResult) {
+
   }
 
   configMatched(): boolean {
@@ -48,16 +48,20 @@ export class Quest {
   }
 
   execute(): ExecuteResult {
-    myLog(`Executing Quest ${this.constructor.name}`);
-    let actionResult: ExecuteResult
-    for (const step of this.steps) {
-      // myLog(`Executing step: ${step.constructor.name}`);
-      executeWithRetry(step)
+    try {
+      myLog(`Executing Quest ${this.constructor.name}`);
+      let actionResult: ExecuteResult
+      for (const step of this.steps) {
+        // myLog(`Executing step: ${step.constructor.name}`);
+        executeWithRetry(step)
+      }
+      this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
+      this.characterState.lastQuests.set(this.constructor.name, this)
+      myLog(`Quest: ${this.constructor.name} success`)
+      return new SuccessResult(`action: ${this.constructor.name} success`);
+    }catch (e) {
+      return new FailureResult(`action: ${this.constructor.name} success`);
     }
-    this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
-    this.characterState.lastQuests.set(this.constructor.name, this)
-    myLog(`Quest: ${this.constructor.name} success`)
-    return new SuccessResult(`action: ${this.constructor.name} success`);
   }
 
    addStep(step: Step) {

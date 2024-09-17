@@ -1,7 +1,7 @@
 import {clickPoint,myClick, myLog} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation"
-import {ExecuteResult, SuccessResult} from "./core/executeResult";
+import {ExecuteResult, FailureResult, SuccessResult} from "./core/executeResult";
 import {Quest} from "./core/quest";
 import {HuntType} from "./enum";
 import {ClickSearch, Step, ToWorld} from "./core/step";
@@ -19,7 +19,10 @@ export class SoloHuntQuest extends Quest {
     new ClickConfirmBattleBtn(this),
   ]
 
-  postExecute(): ExecuteResult {
+  postExecute(questResult: ExecuteResult) {
+    if(questResult instanceof FailureResult) {
+      return;
+    }
     this.functionConfig.soloHunt.times -= 1;
     return new SuccessResult("postExecute SoloHuntQuest");
   }
@@ -58,9 +61,13 @@ export class RallyHuntQuest extends Quest {
     return this.expectObject().length > 0;
   }
 
-  postExecute(): ExecuteResult {
+  postExecute(questResult: ExecuteResult) {
     if(this.actualObject == null) {
-      return new SuccessResult("postExecute RallyHuntQuest actualObject is null");
+      myLog("postExecute RallyHuntQuest actualObject is null");
+      return;
+    }
+    if(questResult instanceof FailureResult) {
+      return;
     }
     switch (this.actualObject.type) {
       case HuntType.chuizi:

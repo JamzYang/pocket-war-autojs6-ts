@@ -4,6 +4,8 @@ import {SelectSoloEnemy, SoloHuntQuest} from "../src/hunt";
 import {AttackEnemy} from "../src/steps";
 import {SelectCommanderSolider} from "../src/selectFormation";
 import {Step} from "../src/core/step";
+import {fromBase64} from "../src/helper/autoHandler";
+import {iconConfig} from "../src/config/iconConfig";
 
 jest.mock('../src/config/env.conf', () => ({
   repeatSeconds: jest.fn().mockReturnValue(0.1)
@@ -37,9 +39,29 @@ describe('打野单刷', () => {
     functionConfig.soloHunt.enabled = true;
     functionConfig.soloHunt.times = 1;
     let testSoloHuntQuest = new TestSoloHuntQuest(characterState,functionConfig);
-    testSoloHuntQuest.execute()
-    testSoloHuntQuest.postExecute()
+    let questResult = testSoloHuntQuest.execute()
+    testSoloHuntQuest.postExecute(questResult)
     expect(functionConfig.soloHunt.times).toBe(0)
+  })
+
+  it("单刷任务失败时, 次数不变", ()=>{
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    (autoHandler.findMultiColor as jest.Mock).mockReturnValueOnce({x: 100, y: 100 });
+    (autoHandler.matchTemplate as jest.Mock).mockReturnValue({ matches: [], points: [{x: 100, y: 100 }] });
+    (autoHandler.matchTemplate as jest.Mock).mockImplementation((img, template, options) => {
+      let noHeroPic = fromBase64(iconConfig.heroSelectBlank.base64);
+      if (noHeroPic == template) {
+        return { matches: [], points: [{x: 100, y: 100}] };
+      }
+      return { matches: [], points: [] };
+    });
+
+    functionConfig.soloHunt.enabled = true;
+    functionConfig.soloHunt.times = 1;
+    let testSoloHuntQuest = new TestSoloHuntQuest(characterState,functionConfig);
+    let questResult = testSoloHuntQuest.execute()
+    testSoloHuntQuest.postExecute(questResult)
+    expect(functionConfig.soloHunt.times).toBe(1)
   })
 })
 
