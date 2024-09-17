@@ -1,4 +1,4 @@
-import {captureScreen, findMultiColor, myClick} from "./helper/autoHandler";
+import {captureScreen, findMultiColor, clickPoint, myClick} from "./helper/autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {Step, ToWorld, ClickSearch, ClickOneClickBattle} from "./core/step";
 import {ClickConfirmBattleBtn} from "../src/clickConfirmBattleBtn";

@@ -1,6 +1,5 @@
-
 import {parseAjColorParam} from "./ParamParser";
-
+import { Point } from "../config/pointConfig";
 
 export function captureScreen(width: number = 720,height: number = 1280,  quality: number = 100): ImageWrapper{
   return  images.captureScreen()
@@ -50,6 +49,13 @@ export function myClick(x: number, y: number, time: number = 600, name?: string)
   let result = click(x,y)
   sleep(time)
   return result
+}
+
+export function clickPoint(point: Point, time: number = 600): boolean {
+  let result = click(point.x, point.y);
+  myLog(`点击 ${point}, 坐标:${point.x},${point.y}`);
+  sleep(time);
+  return result;
 }
 
 export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 1000): boolean {

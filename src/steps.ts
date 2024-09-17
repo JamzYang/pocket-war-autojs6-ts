@@ -1,20 +1,7 @@
-import {
-  captureScreen, findImage,
-  findMultiColor,
-  fromBase64,
-  matchTemplate,
-  myClick,
-  myLog,
-  mySleep,
-  mySwipe
-} from "./helper/autoHandler";
-import {colorConfig} from "./config/colorConfig";
-import {iconConfig} from "./config/iconConfig";
+import {myClick} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {Step} from "./core/step";
-import {CharacterState} from "./core/characterState";
-import {FunctionConfig} from "./core/functionConfig";
-import {ExecuteResult,SuccessResult,Failure} from "./core/executeResult";
+import {ExecuteResult, SuccessResult} from "./core/executeResult";
 
 export class SelectSearchLevel extends Step {
   execute(): ExecuteResult {

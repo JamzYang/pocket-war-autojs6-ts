@@ -51,7 +51,7 @@ export class Quest {
     myLog(`Executing Quest ${this.constructor.name}`);
     let actionResult: ExecuteResult
     for (const step of this.steps) {
-      myLog(`Executing step: ${step.constructor.name}`);
+      // myLog(`Executing step: ${step.constructor.name}`);
       executeWithRetry(step)
     }
     this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000

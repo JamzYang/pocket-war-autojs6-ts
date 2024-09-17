@@ -1,14 +1,7 @@
-import {Condition } from "./condition";
-import {ActionClassMap} from "../helper/ActionClassMap";
+import {Condition} from "./condition";
 import {CharacterState} from "./characterState";
 import {FunctionConfig} from "./functionConfig";
 import {Quest} from "./quest";
-import {SoloHuntQuest, RallyHuntQuest} from "../hunt";
-import {CollectCoinsQuest} from "../collectCoins";
-import {GatherFoodQuest} from "../gather";
-import {GetInBusQuest} from "../getInBus";
-import {OceanTreasureQuest} from "../oceanTreasure";
-import {ExpeditionQuest} from "../expedition";
 
 export interface Rule {
   name: string; // 添加名称字段
@@ -30,11 +23,11 @@ function getNestedValue(obj: any, path: string): any {
   let current = obj;
   for (const key of keys) {
     if (current === undefined || current === null) {
-      console.log(`访问路径 "${path}" 时遇到 undefined 或 null`);
+      // console.log(`访问路径 "${path}" 时遇到 undefined 或 null`);
       return undefined;
     }
     if (!(key in current)) {
-      console.log(`属性 "${key}" 在对象中不存在`);
+      // console.log(`属性 "${key}" 在对象中不存在`);
       return undefined;
     }
     current = current[key];
@@ -65,27 +58,27 @@ function conditionAllMatched(rule: Rule, characterState: CharacterState, functio
   for (const [key, condition] of Object.entries(rule.conditions)) {
     const value = getNestedValue({...characterState, ...functionConfig}, key);
     if (value === undefined) {
-      console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 属性不存在或为 undefined`);
+      // console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 属性不存在或为 undefined`);
       return false;
     }
     
     // 检查其他条件
     if (condition.gt !== undefined && !(value > condition.gt)) {
-      console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 值 ${value} 不大于 ${condition.gt}`);
+      // console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 值 ${value} 不大于 ${condition.gt}`);
       return false;
     }
     if (condition.lt !== undefined && !(value < condition.lt)) {
-      console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 值 ${value} 不小于 ${condition.lt}`);
+      // console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 值 ${value} 不小于 ${condition.lt}`);
       return false;
     }
     // ... 其他条件检查 ...
     
     if (condition.enable !== undefined && !condition.enable) {
-      console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 未启用`);
+      // console.log(`规则 "${rule.name}": 条件 "${key}" 不满足 - 未启用`);
       return false;
     }
   }
-  console.log(`规则 "${rule.name}": 所有条件都满足`);
+  // console.log(`规则 "${rule.name}": 所有条件都满足`);
   return true;
 }
 
@@ -94,10 +87,10 @@ function generateQuest(rules: RuleFunction[], characterState: CharacterState, fu
   for (const rule of rules) {
     const quest = rule.apply(characterState, functionConfig);
     if (quest) {
-      console.log(`Rule "${rule.name}" generated a quest: ${quest.constructor.name}`);
+      // console.log(`Rule "${rule.name}" generated a quest: ${quest.constructor.name}`);
       quests.push(quest);
     } else {
-      console.log(`Rule "${rule.name}" did not generate a quest`);
+      // console.log(`Rule "${rule.name}" did not generate a quest`);
     }
   }
   //根据 quest的权重排序

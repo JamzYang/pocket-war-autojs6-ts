@@ -20,6 +20,7 @@ jest.mock('../src/helper/autoHandler', () => ({
   findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
   findMultiColor: jest.fn(),
   myClick: jest.fn().mockReturnValue(true),
+  clickPoint: jest.fn().mockReturnValue(true),
   mySwipe: jest.fn().mockReturnValue(true),
   matchTemplate: jest.fn(), // 默认 mock 函数
   ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),

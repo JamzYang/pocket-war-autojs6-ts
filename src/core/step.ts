@@ -1,6 +1,6 @@
 import {ExecuteResult, Failure, SuccessResult} from "./executeResult";
-import {captureScreen, findImage, findMultiColor, fromBase64, myClick, myLog} from "../helper/autoHandler";
-import {pointConfig} from "../config/pointConfig";
+import {captureScreen, findImage, findMultiColor, fromBase64, clickPoint, myClick, myLog} from "../helper/autoHandler";
+import {pointConfig, Point} from "../config/pointConfig";
 import {getCurrentCityIcon, getCurrentWorldIcon, hasBackBtn, hasCloseBtn} from "../helper/finder";
 import {colorConfig} from "../config/colorConfig";
 import {iconConfig} from "../config/iconConfig";
@@ -29,7 +29,7 @@ export class CheckIdleTeamsStep extends Step {
  */
 export class ClickSearch extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.mainSearchBtn.x, pointConfig.mainSearchBtn.y, 400, "mainSearchBtn")
+    clickPoint(pointConfig.mainSearchBtn, 400)
     return new SuccessResult('ClickSearch');
   }
 }
@@ -98,7 +98,7 @@ function handleCloseBtn() {
   let closeBtn = hasCloseBtn()
   if (closeBtn != null) {
     // [630,119,675,163]
-    myClick(closeBtn.x + 22, closeBtn.y + 22, 400, "closeBtn")
+    myClick(closeBtn.x + 22, closeBtn.y + 22)
     myLog("click closeBtn")
     handleCloseBtn()
   }

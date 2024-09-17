@@ -9,6 +9,7 @@ jest.mock('../src/helper/autoHandler', () => ({
   findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
   findMultiColor: jest.fn(),
   myClick: jest.fn().mockReturnValue(true),
+  clickPoint: jest.fn().mockReturnValue(true),
   mySwipe: jest.fn().mockReturnValue(true),
   matchTemplate: jest.fn(), // 默认 mock 函数
   ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),
@@ -20,8 +21,6 @@ jest.mock('../src/helper/autoHandler', () => ({
 describe('SelectCommanderSolider', () => {
   it("execute", ()=>{
     (autoHandler.matchTemplate as jest.Mock).mockReturnValue({matches: [{point:{x: 100, y: 100}}], points: [{x: 100, y: 100}]});
-
-
     functionConfig.soloHunt.formationNum = 1;
     new SelectCommanderSolider(new SoloHuntQuest(characterState,functionConfig)).execute();
   })

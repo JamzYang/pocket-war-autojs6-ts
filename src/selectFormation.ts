@@ -1,22 +1,20 @@
-import {captureScreen, fromBase64, matchTemplate, myClick, myLog} from "./helper/autoHandler";
+import {captureScreen, clickPoint, fromBase64, matchTemplate} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {RallyHuntQuest, SoloHuntQuest} from "./hunt"
 import {Step} from "./core/step";
-import {Quest} from "./core/quest";
-import {CharacterState} from "./core/characterState";
-import {FunctionConfig} from "./core/functionConfig";
-import {ExecuteResult, SuccessResult} from "./core/executeResult";
+import {ExecuteResult, Failure, SuccessResult} from "./core/executeResult";
 import {GetInBusQuest} from "./getInBus";
 import {iconConfig} from "./config/iconConfig";
 import {HuntType} from "./enum"
+
 export class SelectCommanderSolider extends Step {
   execute(): ExecuteResult {
     //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
     if(this.quest instanceof SoloHuntQuest){
       this.selectFormation(this.quest.getFunctionConfig.soloHunt.formationNum);
       if(!this.heroIsSelected()){
-        myClick(pointConfig.exitBattleBtn.x,pointConfig.exitBattleBtn.y)
-        myClick(pointConfig.exitBattleConfirmBtn.x,pointConfig.exitBattleConfirmBtn.y)
+        clickPoint(pointConfig.exitBattleBtn)
+        clickPoint(pointConfig.exitBattleConfirmBtn)
         return new SuccessResult("SelectCommanderSolider: no hero has selected.")
       }
     }else if(this.quest instanceof RallyHuntQuest){
@@ -37,9 +35,9 @@ export class SelectCommanderSolider extends Step {
           throw new Error('huntType: ${huntType} 不支持集结' );
       }
       if(!this.heroIsSelected()){
-        myClick(pointConfig.exitBattleBtn.x,pointConfig.exitBattleBtn.y)
-        myClick(pointConfig.exitBattleConfirmBtn.x,pointConfig.exitBattleConfirmBtn.y)
-        return new SuccessResult("SelectCommanderSolider: no hero has selected.")
+        clickPoint(pointConfig.exitBattleBtn)
+        clickPoint(pointConfig.exitBattleConfirmBtn)
+        throw new Failure("SelectCommanderSolider: Hero has not been selected.")
       }
     }else if(this.quest instanceof GetInBusQuest) {
       this.selectFormation(this.quest.getFunctionConfig.getInBus.formationNum);
@@ -62,28 +60,28 @@ export class SelectCommanderSolider extends Step {
     let formationInt = parseInt(formationNum.toString()) //todo 这里workaround下,后续解决.
     switch (formationInt) {
       case 1:
-        myClick(pointConfig.formationNum1.x, pointConfig.formationNum1.y)
+        clickPoint(pointConfig.formationNum1)
         break;
       case 2:
-        myClick(pointConfig.formationNum2.x, pointConfig.formationNum2.y)
+        clickPoint(pointConfig.formationNum2)
         break;
       case 3:
-        myClick(pointConfig.formationNum3.x, pointConfig.formationNum3.y)
+        clickPoint(pointConfig.formationNum3)
         break;
       case 4:
-        myClick(pointConfig.formationNum4.x, pointConfig.formationNum4.y)
+        clickPoint(pointConfig.formationNum4)
         break;
       case 5:
-        myClick(pointConfig.formationNum5.x, pointConfig.formationNum5.y)
+        clickPoint(pointConfig.formationNum5)
         break;
       case 6:
-        myClick(pointConfig.formationNum6.x, pointConfig.formationNum6.y)
+        clickPoint(pointConfig.formationNum6)
         break;
       case 7:
-        myClick(pointConfig.formationNum7.x, pointConfig.formationNum7.y)
+        clickPoint(pointConfig.formationNum7)
         break;
       case 8:
-        myClick(pointConfig.formationNum8.x, pointConfig.formationNum8.y)
+        clickPoint(pointConfig.formationNum8)
         break;
       default:
         throw new Error(`SelectCommanderSolider: formationNum: ${formationNum} is not in range 1-8. `)

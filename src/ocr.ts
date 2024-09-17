@@ -1,5 +1,5 @@
 import * as autoHandler from "./helper/autoHandler";
-import {myClick, myErrorLog, myLog, ocrTextFromImgMlkit, ocrTextLite} from "./helper/autoHandler";
+import {clickPoint, myErrorLog, myLog, ocrTextFromImgMlkit, ocrTextLite} from "./helper/autoHandler";
 import {EnemyName} from "./enum";
 
 //行军队列数量bar 区域 [1,275,243,541]

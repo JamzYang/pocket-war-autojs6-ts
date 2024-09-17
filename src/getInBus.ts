@@ -6,7 +6,7 @@ import {EnemyName} from "./enum";
 import {SelectCommanderSolider} from "./selectFormation";
 import {ExecuteResult,SuccessResult, NeedRepeatFailure, Failure} from "./core/executeResult";
 
-import {myLog,myClick,mySleep,captureScreen,captureScreenGray,
+import {myLog,myClick, clickPoint,mySleep,captureScreen,captureScreenGray,
   matchTemplate,mySwipe,fromBase64,findImage,findMultiColor}
   from "./helper/autoHandler";
 import {orcRallyEnemyName, orcTeamNum} from "./ocr"

@@ -1,4 +1,4 @@
-import {myClick, myLog} from "./helper/autoHandler";
+import {clickPoint,myClick, myLog} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation"
 import {ExecuteResult, SuccessResult} from "./core/executeResult";

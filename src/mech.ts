@@ -4,7 +4,7 @@ import {ExecuteResult, SuccessResult} from "./core/executeResult";
 
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
-import {myClick} from "./helper/autoHandler";
+import {clickPoint} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation";
 import {ClickConfirmBattleBtn} from "./clickConfirmBattleBtn";
@@ -27,9 +27,9 @@ export class MechQuest extends Quest {
 
 export class ToMech extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.unionIcon.x,pointConfig.unionIcon.y)
-    myClick(pointConfig.unionEventIcon.x,pointConfig.unionEventIcon.y)
-    myClick(pointConfig.unionEventMechs.x,pointConfig.unionEventMechs.y)
+    clickPoint(pointConfig.unionIcon)
+    clickPoint(pointConfig.unionEventIcon)
+    clickPoint(pointConfig.unionEventMechs)
     return new SuccessResult('ToMech');
   }
 }
@@ -74,7 +74,7 @@ class canDonate extends Step {
 
 class Donate extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.unionMechDonateBtn.x,pointConfig.unionMechDonateBtn.y)
+    clickPoint(pointConfig.unionMechDonateBtn)
     return new SuccessResult('Donate');
   }
 }
@@ -82,7 +82,7 @@ class Donate extends Step {
 class Challenge extends Step {
   execute(): ExecuteResult {
     //挑战btn和捐献btn位置相同
-    myClick(pointConfig.unionEventIcon.x,pointConfig.unionEventIcon.y)
+    clickPoint(pointConfig.unionEventIcon)
     return new SuccessResult('Challenge');
   }
 }

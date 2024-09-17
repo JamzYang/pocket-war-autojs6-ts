@@ -1,5 +1,5 @@
 
-import {captureScreen, findImage, fromBase64, myClick, myLog, mySleep, mySwipe} from "./helper/autoHandler";
+import {captureScreen, findImage, fromBase64,myClick, clickPoint, myLog, mySleep, mySwipe} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {iconConfig} from "./config/iconConfig";
 import * as autoHandler from "./helper/autoHandler";

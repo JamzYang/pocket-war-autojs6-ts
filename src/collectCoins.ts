@@ -5,7 +5,7 @@ import {Step,ToWorld, ToCity, closeDialog} from "./core/step";
 import {Quest} from "./core/quest";
 import {ExecuteResult,SuccessResult, NeedRepeatFailure, Failure} from "./core/executeResult";
 
-import {myLog,myClick,mySleep,captureScreen,captureScreenGray,
+import {myLog,clickPoint,myClick, mySleep,captureScreen,captureScreenGray,
   matchTemplate,mySwipe,fromBase64,findImage,findMultiColor}
   from "./helper/autoHandler";
 import {orcRallyEnemyName, orcTeamNum} from "./ocr"

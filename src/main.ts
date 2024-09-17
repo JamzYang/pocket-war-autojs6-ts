@@ -1,4 +1,4 @@
-import {captureScreen, myClick, myLog} from "./helper/autoHandler";
+import {captureScreen, clickPoint, myLog} from "./helper/autoHandler";
 import {toWorld} from "./core/step"
 
 import {characterState} from "./config/config";
@@ -18,7 +18,7 @@ toWorld()
 let downwardTriangle = hasDownwardTriangle();
 //收起小地图
 if (downwardTriangle) {
-  myClick(downwardTriangle.x, downwardTriangle.y)
+  clickPoint(downwardTriangle)
 }
 //========================== main ========================
 

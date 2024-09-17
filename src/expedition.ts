@@ -5,7 +5,8 @@ import {ExecuteResult, SuccessResult} from "./core/executeResult";
 import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
 import {
-  myClick,
+  clickPoint,
+    myClick,
   myLog,
   findImage,
   mySwipe,
