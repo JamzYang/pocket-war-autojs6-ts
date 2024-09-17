@@ -13,6 +13,7 @@ export const pointConfig: PointConfig = {
  mainSearchBtn: {x: 80, y: 1200},
  coinBar: {x: 220, y: 25},
  coinHarvester: {x: 220, y: 1040},
+ coinHarvestIcon: {x: 360, y: 585},
  unionIcon: {x: 660, y: 856},
  valueEventsIcon: {x: 656, y:254},
  //军情

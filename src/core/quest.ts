@@ -11,7 +11,7 @@ export class Quest {
   protected steps: Step[] = [];
   public weight: number = 0;
   public nextExecuteTime: number = 0;
-  public name: string = "NullQuest";
+  public name: string = "";
   /**
    * 执行周期. 单位:秒
    * @protected
@@ -37,11 +37,11 @@ export class Quest {
   configMatched(): boolean {
     let nextExecuteTime =  this.characterState.lastQuests.get(this.constructor.name)?.nextExecuteTime
     if(nextExecuteTime) {
-      myLog(`nextExecuteTime: ${new Date(nextExecuteTime).toLocaleString()}`)
-      myLog(`getInterval: ${this.getInterval()}`)
-      let isTimeTorun = new Date().getTime() > nextExecuteTime;
-      myLog("是否可以执行: "+isTimeTorun)
-      return isTimeTorun;
+      myLog(`${this.name} nextExecuteTime: ${new Date(nextExecuteTime).toLocaleString()}`)
+      myLog(`${this.name} interval: ${this.getInterval()}`)
+      let isTimeToRun = new Date().getTime() > nextExecuteTime;
+      myLog(`${this.name} 是否可以执行: ${isTimeToRun}`)
+      return isTimeToRun;
     }else {
       return true
     }
