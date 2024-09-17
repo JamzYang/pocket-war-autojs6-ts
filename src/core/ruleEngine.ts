@@ -3,11 +3,16 @@ import {ActionClassMap} from "../helper/ActionClassMap";
 import {CharacterState} from "./characterState";
 import {FunctionConfig} from "./functionConfig";
 import {Quest} from "./quest";
-
+import {SoloHuntQuest, RallyHuntQuest} from "../hunt";
+import {CollectCoinsQuest} from "../collectCoins";
+import {GatherFoodQuest} from "../gather";
+import {GetInBusQuest} from "../getInBus";
+import {OceanTreasureQuest} from "../oceanTreasure";
+import {ExpeditionQuest} from "../expedition";
 
 export interface Rule {
   conditions: { [key: string]: Condition };
-  quest: string;
+  quest: new (characterState: CharacterState, functionConfig: FunctionConfig) => Quest;
 }
 
 export interface RuleConfig {
@@ -30,12 +35,8 @@ function getNestedValue(obj: any, path: string): any {
   return current;
 }
 
-function evalQuest(actionName: string, characterState: CharacterState, functionConfig: FunctionConfig): Quest {
-  let questClass = ActionClassMap[actionName];
-  if(!questClass) {
-    throw new Error(`Unknown action name: ${actionName}`);
-  }
-  return new questClass(characterState, functionConfig);
+function evalQuest(QuestClass: new (characterState: CharacterState, functionConfig: FunctionConfig) => Quest, characterState: CharacterState, functionConfig: FunctionConfig): Quest {
+  return new QuestClass(characterState, functionConfig);
 }
 
 function createRuleFunction(rule: Rule): RuleFunction {

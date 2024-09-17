@@ -1,6 +1,12 @@
 import {loadFeatureConfig} from "./configLoader"
 import {RuleConfig} from "./ruleEngine";
+import {SoloHuntQuest, RallyHuntQuest} from "../hunt";
+import {CollectCoinsQuest} from "../collectCoins";
+import {GatherFoodQuest} from "../gather";
+import {GetInBusQuest} from "../getInBus";
+import {OceanTreasureQuest} from "../oceanTreasure";
 import {ExpeditionQuest} from "../expedition";
+
 export interface Condition {
   gt?: number;
   lt?: number;
@@ -9,7 +15,6 @@ export interface Condition {
   equals?: any;
   enable?: boolean;
 }
-
 
 export function loadRuleConfig(): RuleConfig {
   const functionConfig = loadFeatureConfig();
@@ -20,9 +25,9 @@ export function loadRuleConfig(): RuleConfig {
           stamina: { gt: 30 },
           idleTeams: { gt: 0 },
           soloHunt: {enable: functionConfig.soloHunt.enabled},
-          "soloHunt.times": { gt: 0 }  // 添加这一行
+          "soloHunt.times": { gt: 0 }
         },
-        quest: "SoloHuntQuest"
+        quest: SoloHuntQuest
       },
       {
         conditions: {
@@ -30,41 +35,40 @@ export function loadRuleConfig(): RuleConfig {
           idleTeams: { gt: 0 },
           rallyHunt: {enable: functionConfig.rallyHunt.enabled},
         },
-        quest: "RallyHuntQuest"
+        quest: RallyHuntQuest
       },
       {
         conditions: {
           idleTeams: { gt: 0 },
           gatherFood: {enable: functionConfig.gatherFood},
         },
-        quest: "GatherFoodQuest"
+        quest: GatherFoodQuest
       },
       {
         conditions: {
           idleTeams: { lte: 0 },
           collectCoins: {enable: functionConfig.collectCoins},
         },
-        quest: "CollectCoinsQuest"
+        quest: CollectCoinsQuest
       },
       {
         conditions: {
           collectCoins: {enable: functionConfig.expedition},
         },
-        quest: "ExpeditionQuest"
+        quest: ExpeditionQuest
       },
       {
         conditions: {
           idleTeams: { gt: 0 },
           getInBus: {enable: functionConfig.getInBus.enabled},
         },
-        quest: "GetInBusQuest"
+        quest: GetInBusQuest
       },
       {
         conditions: {
-          idleTeams: { gt: -1 },
           oceanTreasure: {enable: functionConfig.events.oceanTreasure.enabled},
         },
-        quest: "OceanTreasureQuest"
+        quest: OceanTreasureQuest
       },
     ]
   };
