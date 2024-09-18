@@ -182,6 +182,8 @@ describe('generate Quest', () => {
 
   it('should gen solo quest', () => {
     let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+    //characterState是全局, 容易被污染,用之前清一下.
+    characterState.lastQuests.clear()
     characterState.stamina =35;
     characterState.idleTeams = 1;
     mockFunctionConfig.gatherFood = true;
