@@ -238,6 +238,43 @@ describe('generate Quest', () => {
 
     let ruleConfig = loadRuleConfig()
     let quests = run(ruleConfig,characterState, mockFunctionConfig)
+
+    let conname = quests[0].constructor.name;
+    console.log(conname)
     expect(quests[0]).toBeInstanceOf(RallyHuntQuest);
+  });
+
+
+  it('rally times should be same when quest fail ', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+    characterState.stamina =35;
+    characterState.idleTeams = 1;
+    mockFunctionConfig.rallyHunt.enabled = true;
+    mockFunctionConfig.rallyHunt.chuizi.enabled = true;
+    mockFunctionConfig.rallyHunt.chuizi.times = 2;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    //mock 没有选中英雄
+    (autoHandler.matchTemplate as jest.Mock).mockImplementation((img, template, options) => {
+      let noHeroPic = fromBase64(iconConfig.heroSelectBlank.base64);
+      if (noHeroPic == template) {
+        return { matches: [], points: [{x: 100, y: 100}] };
+      }
+      return { matches: [], points: [] };
+    });
+
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
+
+    //mock 到世界
+    let ruleConfig = loadRuleConfig()
+
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+
+    let quest = quests[0]
+    let questResult=  quest.execute()
+    quest.postExecute(questResult)
+    expect(mockFunctionConfig.rallyHunt.chuizi.times).toBe(2);
+    expect(questResult.message).toContain('NoHeroSelectedError');
   });
 });

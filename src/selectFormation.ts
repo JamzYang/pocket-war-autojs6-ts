@@ -37,7 +37,7 @@ export class SelectCommanderSolider extends Step {
       if(!this.heroIsSelected()){
         clickPoint(pointConfig.exitBattleBtn)
         clickPoint(pointConfig.exitBattleConfirmBtn)
-        throw new Failure("SelectCommanderSolider: Hero has not been selected.")
+        throw new NoHeroSelectedError("SelectCommanderSolider: Hero has not been selected.")
       }
     }else if(this.quest instanceof GetInBusQuest) {
       this.selectFormation(this.quest.getFunctionConfig.getInBus.formationNum);

@@ -1,5 +1,11 @@
 # pocket-war-autojs6-ts
-基于 autojs6-typescript-template 开发
+
+# 上线checkList
+- 配置文件增加字段时, 后端ui.config.js 属性一定要和 Function类一致
+
+
+
+### 遗留问题
 刷军功时,点目标有可能点到别的东西上,导致跑偏.
 选中出征对像后, 目标信息界面一般出现在窗口上半部,有没有可能出现在下半部? //todo
 
@@ -9,5 +15,6 @@ UI中配置文件部分字段值是 string, 服务中是 number,有坑,后续解
 
 //单刷和集结 点攻击1次和集结的红按钮 高度不一致
 
-- 打野英雄出门后,再次选英雄后,打野次数不应该 -1.
-- 
+- checkpoint 可以放在最后. 失败就throw
+
+

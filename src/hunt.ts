@@ -88,6 +88,7 @@ export class RallyHuntQuest extends Quest {
         this.functionConfig.rallyHunt.right.times -= 1;
         break;
     }
+    myLog(`${this.name} ${this.actualObject.type} 剩余执行次数 减-1`)  //todo 待完善
     return new SuccessResult("postExecute RallyHuntQuest");
   }
 }
