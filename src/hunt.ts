@@ -62,8 +62,9 @@ export class RallyHuntQuest extends Quest {
     return huntTypes
   }
 
+  //todo 不明白 集结为啥要 重写这个方法
   public configMatched(): boolean {
-    return this.expectObject().length > 0;
+    return super.configMatched() && this.expectObject().length > 0;
   }
 
   postExecute(questResult: ExecuteResult) {

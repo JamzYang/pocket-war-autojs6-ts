@@ -276,5 +276,10 @@ describe('generate Quest', () => {
     quest.postExecute(questResult)
     expect(mockFunctionConfig.rallyHunt.chuizi.times).toBe(2);
     expect(questResult.message).toContain('NoHeroSelectedError');
+
+    //第一次失败后,第二次不会再生成任务
+    let quests2 = run(ruleConfig,characterState, mockFunctionConfig)
+    let quest2 = quests2[0]
+    expect(quests2.length).toBe(0);
   });
 });

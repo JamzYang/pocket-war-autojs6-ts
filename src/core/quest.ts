@@ -62,7 +62,7 @@ export class Quest {
       myLog(`Quest: ${this.constructor.name} success`)
       return new SuccessResult(`action: ${this.constructor.name} success`);
     }catch (e: any) {
-      myLog(`Quest: ${this.constructor.name} error.`)
+      myLog(`Quest: ${this.constructor.name} error. ${e}`)
       if(e.name === "NoHeroSelectedError" || e instanceof NoHeroSelectedError) {
         //打野英雄没回家时sleep 60秒
         this.nextExecuteTime = new Date().getTime() + 60 * 1000
@@ -89,7 +89,6 @@ function executeWithRetry(step:Step):ExecuteResult {
         }
         // 继续循环
       } else {
-        myLog(`executeWithRetry 捕获到错误: ${e.constructor.name}`);
         myLog(`step: ${step.constructor.name} error.  ${e}`)
         throw e;
       }
