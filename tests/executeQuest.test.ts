@@ -114,5 +114,4 @@ describe('execute action', () =>{
     expect(callCount).toBe(1);
     expect(functionConfig.getInBus.chuizi.times).toBe(0);
   })
-
 })

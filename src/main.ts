@@ -36,7 +36,8 @@ function mainRun() {
 
     let quests = run(ruleConfig, characterState, featureConfig)
     if (quests.length == 0) {
-      sleep(2000)
+      //无任务休眠10s
+      sleep(10000)
       return
     }
     let quest = quests[0]

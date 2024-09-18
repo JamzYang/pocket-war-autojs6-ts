@@ -22,10 +22,12 @@ export class SoloHuntQuest extends Quest {
   ]
 
   postExecute(questResult: ExecuteResult) {
+    //任务执行异常时 返回的不是 FailureResult?
     if(questResult instanceof FailureResult) {
       return;
     }
     this.functionConfig.soloHunt.times -= 1;
+    myLog(`${this.name} 剩余执行次数 ${this.functionConfig.soloHunt.times}`)
     return new SuccessResult("postExecute SoloHuntQuest");
   }
 }

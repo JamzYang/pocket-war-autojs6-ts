@@ -4,6 +4,7 @@ import {Step} from "./step";
 import {CharacterState} from "./characterState";
 import {FunctionConfig} from "./functionConfig";
 import {ExecuteResult, FailureResult, NeedRepeatFailure, NoHeroSelectedError, SuccessResult} from "./executeResult";
+import {getFormattedTime} from "../helper/dateHelper";
 
 export class Quest {
   protected characterState: CharacterState;
@@ -37,12 +38,8 @@ export class Quest {
   configMatched(): boolean {
     let nextExecuteTime =  this.characterState.lastQuests.get(this.constructor.name)?.nextExecuteTime
     if(nextExecuteTime) {
-      if(this.getInterval() > 0) {
-        myLog(`${this.name} nextExecuteTime: ${new Date(nextExecuteTime).toLocaleString()}`)
-        myLog(`${this.name} interval: ${this.getInterval()}`)
-      }
       let isTimeToRun = new Date().getTime() > nextExecuteTime;
-      myLog(`${this.name} 是否可以执行: ${isTimeToRun}`)
+      myLog(`${this.name} 下次执行时间: ${getFormattedTime(nextExecuteTime)}`)
       return isTimeToRun;
     }else {
       return true
@@ -57,7 +54,10 @@ export class Quest {
         // myLog(`Executing step: ${step.constructor.name}`);
         executeWithRetry(step)
       }
-      this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
+      //只有 Interval > 0 才有必要给 nextExecuteTime赋值.
+      if(this.getInterval() > 0) {
+        this.nextExecuteTime = new Date().getTime() + this.getInterval() * 1000
+      }
       this.characterState.lastQuests.set(this.constructor.name, this)
       myLog(`Quest: ${this.constructor.name} success`)
       return new SuccessResult(`action: ${this.constructor.name} success`);
@@ -68,9 +68,8 @@ export class Quest {
         this.nextExecuteTime = new Date().getTime() + 60 * 1000
         this.characterState.lastQuests.set(this.constructor.name, this)
         myLog(`no hero selected. wait ${60} seconds`)
-        return new SuccessResult(`action: ${this.constructor.name} success`);
       }
-      return new FailureResult(`action: ${this.constructor.name} success`);
+      return new FailureResult(`${this.constructor.name} fail. ${e.name}`);
     }
   }
    addStep(step: Step) {

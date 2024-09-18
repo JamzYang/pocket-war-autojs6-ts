@@ -9,6 +9,11 @@ import {GetInBusQuest} from "../src/getInBus";
 import {HuntType} from "../src/enum";
 import * as autoHandler from "../src/helper/autoHandler";
 import {loadFeatureConfig} from "../src/core/configLoader";
+import {captureScreen, findImage, fromBase64, matchTemplate} from "../src/helper/autoHandler";
+import {iconConfig} from "../src/config/iconConfig";
+
+import * as stepModule from "../src/core/step";
+import {SuccessResult} from "../src/core/executeResult";
 
 // import * as configLoader from "../src/core/configLoader"
 
@@ -27,6 +32,7 @@ jest.mock('../src/helper/autoHandler', () => ({
   findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
   findMultiColor: jest.fn().mockReturnValue({ x: 100, y: 100 }),
   myClick: jest.fn().mockReturnValue(true),
+  clickPoint: jest.fn().mockReturnValue(true),
   mySwipe: jest.fn().mockReturnValue(true),
   matchTemplate: jest.fn(), // 默认 mock 函数
   ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),
@@ -140,9 +146,42 @@ describe('generate Quest', () => {
   });
 
 
+  it('solo times should be same when quest fail ', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+    characterState.stamina =35;
+    characterState.idleTeams = 1;
+    mockFunctionConfig.soloHunt.enabled = true;
+    mockFunctionConfig.soloHunt.type = HuntType.navy;
+    mockFunctionConfig.soloHunt.attackType = "单次";
+    mockFunctionConfig.soloHunt.times = 2;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    //mock 没有选中英雄
+    (autoHandler.matchTemplate as jest.Mock).mockImplementation((img, template, options) => {
+      let noHeroPic = fromBase64(iconConfig.heroSelectBlank.base64);
+      if (noHeroPic == template) {
+        return { matches: [], points: [{x: 100, y: 100}] };
+      }
+      return { matches: [], points: [] };
+    });
+
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
+
+    //mock 到世界
+    let ruleConfig = loadRuleConfig()
+
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+
+    let quest = quests[0]
+    let questResult=  quest.execute()
+    quest.postExecute(questResult)
+    expect(mockFunctionConfig.soloHunt.times).toBe(2);
+    expect(questResult.message).toContain('NoHeroSelectedError');
+  });
+
   it('should gen solo quest', () => {
     let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
-
     characterState.stamina =35;
     characterState.idleTeams = 1;
     mockFunctionConfig.gatherFood = true;
