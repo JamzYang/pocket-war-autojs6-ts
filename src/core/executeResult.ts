@@ -14,11 +14,21 @@ export class FailureResult extends ExecuteResult{
 }
 
 export class Failure extends Error{
-
+  constructor(message: string) {
+    super(message);
+    this.name = "Failure";
+  }
 }
 
 export class TextParseError extends  Error{
 
+}
+
+export class NoHeroSelectedError extends Failure{
+  constructor(message: string) {
+    super(message);
+    this.name = "NoHeroSelectedError";
+  }
 }
 
 export class NeedRepeatFailure extends Failure{

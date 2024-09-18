@@ -7,7 +7,9 @@ import {HuntType} from "./enum";
 import {ClickSearch, Step, ToWorld} from "./core/step";
 import {ClickConfirmBattleBtn} from "./clickConfirmBattleBtn";
 import {AttackEnemy} from "./steps";
+import {intervalConfig} from "./config/intervalConfig";
 export class SoloHuntQuest extends Quest {
+  public name: string = "单刷";
   public actualObject: {name: HuntType, times: number} |null = null
   public weight = 6;
   protected steps = [
@@ -29,6 +31,7 @@ export class SoloHuntQuest extends Quest {
 }
 
 export class RallyHuntQuest extends Quest {
+  public name: string = "集结";
   public actualObject: {type: HuntType, times: number} |null = null
   public weight = 5;
   protected steps = [

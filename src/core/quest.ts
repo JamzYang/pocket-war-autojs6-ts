@@ -3,7 +3,7 @@ import {repeatSeconds} from "../config/env.conf";
 import {Step} from "./step";
 import {CharacterState} from "./characterState";
 import {FunctionConfig} from "./functionConfig";
-import {ExecuteResult, FailureResult, NeedRepeatFailure, SuccessResult} from "./executeResult";
+import {ExecuteResult, FailureResult, NeedRepeatFailure, NoHeroSelectedError, SuccessResult} from "./executeResult";
 
 export class Quest {
   protected characterState: CharacterState;
@@ -37,8 +37,10 @@ export class Quest {
   configMatched(): boolean {
     let nextExecuteTime =  this.characterState.lastQuests.get(this.constructor.name)?.nextExecuteTime
     if(nextExecuteTime) {
-      myLog(`${this.name} nextExecuteTime: ${new Date(nextExecuteTime).toLocaleString()}`)
-      myLog(`${this.name} interval: ${this.getInterval()}`)
+      if(this.getInterval() > 0) {
+        myLog(`${this.name} nextExecuteTime: ${new Date(nextExecuteTime).toLocaleString()}`)
+        myLog(`${this.name} interval: ${this.getInterval()}`)
+      }
       let isTimeToRun = new Date().getTime() > nextExecuteTime;
       myLog(`${this.name} 是否可以执行: ${isTimeToRun}`)
       return isTimeToRun;
@@ -59,11 +61,18 @@ export class Quest {
       this.characterState.lastQuests.set(this.constructor.name, this)
       myLog(`Quest: ${this.constructor.name} success`)
       return new SuccessResult(`action: ${this.constructor.name} success`);
-    }catch (e) {
+    }catch (e: any) {
+      myLog(`Quest: ${this.constructor.name} error.`)
+      if(e.name === "NoHeroSelectedError" || e instanceof NoHeroSelectedError) {
+        //打野英雄没回家时sleep 60秒
+        this.nextExecuteTime = new Date().getTime() + 60 * 1000
+        this.characterState.lastQuests.set(this.constructor.name, this)
+        myLog(`no hero selected. wait ${60} seconds`)
+        return new SuccessResult(`action: ${this.constructor.name} success`);
+      }
       return new FailureResult(`action: ${this.constructor.name} success`);
     }
   }
-
    addStep(step: Step) {
     this.steps.push(step)
   }
@@ -73,14 +82,17 @@ function executeWithRetry(step:Step):ExecuteResult {
   const startTime = new Date().getTime();
   while(true){
     try {
-      return  step.execute()
-    }catch (e){
-      if (!(e instanceof NeedRepeatFailure)) {
+      return step.execute()
+    }catch (e: any){
+      if (e instanceof NeedRepeatFailure) {
+        if (new Date().getTime() - startTime > repeatSeconds() * 1000) {
+          return new SuccessResult(`repeat execute step: ${step.constructor.name} time out.`)
+        }
+        // 继续循环
+      } else {
+        myLog(`executeWithRetry 捕获到错误: ${e.constructor.name}`);
         myLog(`step: ${step.constructor.name} error.  ${e}`)
         throw e;
-      }
-      if (new Date().getTime() - startTime > repeatSeconds() * 1000) {
-        return  new SuccessResult(`repeat execute step: ${step.constructor.name} time out.`)
       }
     }
   }

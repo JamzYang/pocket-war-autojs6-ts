@@ -2,7 +2,7 @@ import {captureScreen, clickPoint, fromBase64, matchTemplate} from "./helper/aut
 import {pointConfig} from "./config/pointConfig";
 import {RallyHuntQuest, SoloHuntQuest} from "./hunt"
 import {Step} from "./core/step";
-import {ExecuteResult, Failure, SuccessResult} from "./core/executeResult";
+import {ExecuteResult, Failure, NoHeroSelectedError, SuccessResult} from "./core/executeResult";
 import {GetInBusQuest} from "./getInBus";
 import {iconConfig} from "./config/iconConfig";
 import {HuntType} from "./enum"
@@ -15,7 +15,7 @@ export class SelectCommanderSolider extends Step {
       if(!this.heroIsSelected()){
         clickPoint(pointConfig.exitBattleBtn)
         clickPoint(pointConfig.exitBattleConfirmBtn)
-        throw new Failure("SelectCommanderSolider: no hero has been selected.")
+        throw new NoHeroSelectedError("no hero has been selected.")
       }
     }else if(this.quest instanceof RallyHuntQuest){
       //在搜怪步骤 用的是 expectObject[0] ,所以这里也是
