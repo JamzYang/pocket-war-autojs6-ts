@@ -7,6 +7,7 @@ import {GetInBusQuest} from "../getInBus";
 import {OceanTreasureQuest} from "../oceanTreasure";
 import {ExpeditionQuest} from "../expedition";
 import {FreeDiamondQuest} from "../FreeDiamondQuest";
+import {FunctionConfig} from "./functionConfig";
 
 export interface Condition {
   gt?: number;
@@ -17,8 +18,7 @@ export interface Condition {
   enable?: boolean;
 }
 
-export function loadRuleConfig(): RuleConfig {
-  const functionConfig = loadFeatureConfig();
+export function loadRuleConfig(functionConfig: FunctionConfig): RuleConfig {
   return {
     rules: [
       {

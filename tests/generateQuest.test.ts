@@ -1,6 +1,5 @@
 import {characterState, functionConfig} from "../src/config/config";
 import {run} from "../src/core/ruleEngine";
-import {loadRuleConfig} from "../src/core/condition";
 import {OceanTreasureQuest} from "../src/oceanTreasure";
 import {RallyHuntQuest, SoloHuntQuest} from "../src/hunt";
 import {GatherFoodQuest} from "../src/gather";
@@ -51,8 +50,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.soloHunt.enabled = true;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(SoloHuntQuest);
   });
 
@@ -65,8 +63,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.getInBus.enabled = false;
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
   });
 
@@ -78,8 +75,7 @@ describe('generate Quest', () => {
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(CollectCoinsQuest);
   });
 
@@ -90,8 +86,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.collectCoins = false;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests.length).toBe(0);
   });
 
@@ -106,8 +101,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.getInBus.chuizi.times = 1;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
     expect(quests[1]).toBeInstanceOf(GatherFoodQuest);
   });
@@ -123,8 +117,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.getInBus.chuizi.times = 1;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     // expect(quests[0]).toBeInstanceOf(GetInBusQuest); //todo
   });
 
@@ -140,8 +133,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.events.oceanTreasure.enabled = true;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(OceanTreasureQuest);
   });
 
@@ -169,9 +161,8 @@ describe('generate Quest', () => {
     jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
 
     //mock 到世界
-    let ruleConfig = loadRuleConfig()
 
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
 
     let quest = quests[0]
     let questResult=  quest.execute()
@@ -180,24 +171,22 @@ describe('generate Quest', () => {
     expect(questResult.message).toContain('NoHeroSelectedError');
   });
 
-  it('should gen solo quest', () => {
+  it('should gen solo quest and should not gen solo when engine run again', () => {
     let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
     //characterState是全局, 容易被污染,用之前清一下.
     characterState.lastQuests.clear()
     characterState.stamina =35;
     characterState.idleTeams = 1;
-    mockFunctionConfig.gatherFood = true;
-    mockFunctionConfig.getInBus.enabled = true;
-    mockFunctionConfig.getInBus.chuizi.enabled= true;
-    mockFunctionConfig.getInBus.chuizi.times = 1;
     mockFunctionConfig.soloHunt.enabled = true;
     mockFunctionConfig.soloHunt.type = HuntType.navy;
-    mockFunctionConfig.soloHunt.attackType = "单次";
-    mockFunctionConfig.soloHunt.times = 2;
+    mockFunctionConfig.soloHunt.attackType = "五连";
+    mockFunctionConfig.soloHunt.times = 1;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
-    expect(quests[0]).toBeInstanceOf(SoloHuntQuest); //todo
+    let quests = run(characterState, mockFunctionConfig)
+    expect(quests[0]).toBeInstanceOf(SoloHuntQuest);
+    quests[0].postExecute(new SuccessResult("mock result"))
+    let quests2 = run(characterState, mockFunctionConfig)
+    expect(quests2.length).toBe(0);
   });
 
 
@@ -212,8 +201,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.soloHunt.attackType = "单次";
     mockFunctionConfig.soloHunt.times = 0;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     expect(quests.length).toBe(0);
   });
 
@@ -236,8 +224,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.rallyHunt.chuizi.times = 1;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
 
     let conname = quests[0].constructor.name;
     console.log(conname)
@@ -267,9 +254,8 @@ describe('generate Quest', () => {
     const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
     jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
 
-    let ruleConfig = loadRuleConfig()
 
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
 
     let quest = quests[0]
     let questResult=  quest.execute()
@@ -278,7 +264,7 @@ describe('generate Quest', () => {
     expect(questResult.message).toContain('NoHeroSelectedError');
 
     //第一次失败后,第二次不会再生成任务
-    let quests2 = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests2 = run(characterState, mockFunctionConfig)
     let quest2 = quests2[0]
     expect(quests2.length).toBe(0);
   });
@@ -297,13 +283,11 @@ describe('generate Quest', () => {
       return { matches: [], points: [] };
     });
 
+    //mock 到城市
     const mockToCityExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
     jest.spyOn(stepModule.ToCity.prototype, 'execute').mockImplementation(mockToCityExecute);
 
-    //mock 到城市
-    let ruleConfig = loadRuleConfig()
-
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
 
     let quest = quests[0]
     let questResult=  quest.execute()
@@ -311,7 +295,7 @@ describe('generate Quest', () => {
     // expect(questResult.message).toContain('NoHeroSelectedError');
 
     //第一次失败后,第二次不会再生成任务
-    let quests2 = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests2 = run(characterState, mockFunctionConfig)
     let quest2 = quests2[0]
     expect(quests2.length).toBe(0);
   });
@@ -336,8 +320,7 @@ describe('generate Quest', () => {
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     quests[0].execute()
   });
 
@@ -356,8 +339,7 @@ describe('generate Quest', () => {
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    let quests = run(characterState, mockFunctionConfig)
     quests[0].execute()
   });
 });

@@ -23,7 +23,7 @@ describe('rally quest', () => {
     // functionConfig.rallyHunt.enabled = true;
     functionConfig.getInBus.enabled = true;
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig, characterState, functionConfig)
+    let quests = run(characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
   });
 
@@ -40,7 +40,7 @@ describe('rally quest', () => {
     functionConfig.getInBus.nanmin.enabled = true;
     functionConfig.getInBus.nanmin.times = -1;
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig, characterState, functionConfig)
+    let quests = run(characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
 
   });
@@ -59,7 +59,7 @@ describe('rally quest', () => {
     functionConfig.getInBus.nanmin.enabled = true;
     functionConfig.getInBus.nanmin.times = -1;
     let ruleConfig = loadRuleConfig()
-    let quests = run(ruleConfig, characterState, functionConfig)
+    let quests = run(characterState, functionConfig)
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
   });
 });

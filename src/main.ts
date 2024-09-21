@@ -12,7 +12,6 @@ import {hasDownwardTriangle} from "./helper/finder";
 // 加载配置文件
 let featureConfig = loadFeatureConfig()
 myLog("配置："+JSON.stringify(featureConfig))
-let ruleConfig = loadRuleConfig()
 
 toWorld()
 let downwardTriangle = hasDownwardTriangle();
@@ -29,12 +28,13 @@ while (true) {
 
 function mainRun() {
   try {
+    let ruleConfig = loadRuleConfig(featureConfig)
     toWorld()
     getIdleTeamNum()
     // characterState.stamina = orcStamina()
     orcStamina() //todo 只读取体力,但不赋值
 
-    let quests = run(ruleConfig, characterState, featureConfig)
+    let quests = run(characterState, featureConfig)
     if (quests.length == 0) {
       //无任务休眠10s
       sleep(10000)

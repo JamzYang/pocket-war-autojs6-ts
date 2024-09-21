@@ -1,4 +1,4 @@
-import {Condition} from "./condition";
+import {Condition, loadRuleConfig} from "./condition";
 import {CharacterState} from "./characterState";
 import {FunctionConfig} from "./functionConfig";
 import {Quest} from "./quest";
@@ -103,7 +103,8 @@ function generateQuest(rules: RuleFunction[], characterState: CharacterState, fu
   return quests;
 }
 
-export function run(ruleConfig: RuleConfig, characterState: CharacterState, featureConfig: FunctionConfig): Quest[] {
+export function run(characterState: CharacterState, featureConfig: FunctionConfig): Quest[] {
+  let ruleConfig = loadRuleConfig(featureConfig)
   const ruleFunctions = ruleConfig.rules.map(createRuleFunction);
   return  generateQuest(ruleFunctions, characterState, featureConfig)
 }
