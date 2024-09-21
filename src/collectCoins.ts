@@ -36,13 +36,6 @@ export class CollectCoinsQuest extends Quest {
   }
 }
 
-interface EnemyObject {
-  name: EnemyName;
-  times: number;
-}
-
-
-
 export class ToCoinHarvester extends Step {
   execute(): ExecuteResult {
     myClick(pointConfig.coinBar.x, pointConfig.coinBar.y, 400, "coinBar")
@@ -55,20 +48,8 @@ export class ToCoinHarvester extends Step {
 
 export class ClickCoinPoll extends Step {
   execute(): ExecuteResult {
-
-    //[259,391,457,715]
-    // let result = findImage(captureScreen(), fromBase64(iconConfig.coinIcon.base64),
-    //     { region: [250,390,200,400], threshold: 0.6})
-    // if (result) {
-    //   myClick(result.x + iconConfig.coinIcon.offSet.x, result.y + iconConfig.coinIcon.offSet.y, 600, "coinIcon")
-    // } else {
-    //   // throw new Failure("coinIcon not found") //todo
-    //   myLog("coinIcon not found");
-    // }
     clickPoint(pointConfig.coinHarvestIcon)
-    fastHarvest();  //todo 快速收割先不做
-    this.quest.nextExecuteTime = new Date().getTime() + 60 * 1000;
-    myLog("金币下次时间:"+ (new Date(this.quest.nextExecuteTime).toLocaleString()))
+    fastHarvest();
     return new SuccessResult("金币收割成功")
   }
 }

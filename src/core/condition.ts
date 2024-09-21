@@ -6,6 +6,7 @@ import {GatherFoodQuest} from "../gather";
 import {GetInBusQuest} from "../getInBus";
 import {OceanTreasureQuest} from "../oceanTreasure";
 import {ExpeditionQuest} from "../expedition";
+import {FreeDiamondQuest} from "../FreeDiamondQuest";
 
 export interface Condition {
   gt?: number;
@@ -46,6 +47,13 @@ export function loadRuleConfig(): RuleConfig {
           gatherFood: {enable: functionConfig.gatherFood},
         },
         quest: GatherFoodQuest
+      },
+      {
+        name: "Free Diamond Rule",
+        conditions: {
+          freeDiamond: {enable: functionConfig.freeDiamond},
+        },
+        quest: FreeDiamondQuest
       },
       {
         name: "Collect Coins Rule",

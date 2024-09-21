@@ -30,6 +30,12 @@ export class NoHeroSelectedError extends Failure{
     this.name = "NoHeroSelectedError";
   }
 }
+export class TodayTaskNotRequiredFailure extends Failure{
+  constructor(message: string) {
+    super(message);
+    this.name = "TodayTaskNotRequiredFailure";
+  }
+}
 
 export class NeedRepeatFailure extends Failure{
   repeatSeconds: number;

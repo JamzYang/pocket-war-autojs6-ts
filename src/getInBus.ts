@@ -7,7 +7,7 @@ import {SelectCommanderSolider} from "./selectFormation";
 import {ExecuteResult, SuccessResult, NeedRepeatFailure, Failure, FailureResult} from "./core/executeResult";
 
 import {myLog,myClick, clickPoint,mySleep,captureScreen,captureScreenGray,
-  matchTemplate,mySwipe,fromBase64,findImage,findMultiColor}
+  matchTemplate,mySwipe,fromBase64,findMultiColor}
   from "./helper/autoHandler";
 import {orcRallyEnemyName, orcTeamNum} from "./ocr"
 import {iconConfig} from "./config/iconConfig"

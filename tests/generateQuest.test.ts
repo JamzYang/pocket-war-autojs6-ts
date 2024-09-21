@@ -282,4 +282,37 @@ describe('generate Quest', () => {
     let quest2 = quests2[0]
     expect(quests2.length).toBe(0);
   });
+
+
+  it('if no diamond to take,FreeDiamondQuest should not run again ', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+    characterState.stamina =35;
+    characterState.idleTeams = 1;
+    mockFunctionConfig.freeDiamond = true;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    //mock 没有选中英雄
+    (autoHandler.findImage as jest.Mock).mockImplementation((img, template, options) => {
+      let noHeroPic = fromBase64(iconConfig.takeDiamondGrayBtn.base64);
+      return { matches: [], points: [] };
+    });
+
+    const mockToCityExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToCity.prototype, 'execute').mockImplementation(mockToCityExecute);
+
+    //mock 到城市
+    let ruleConfig = loadRuleConfig()
+
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+
+    let quest = quests[0]
+    let questResult=  quest.execute()
+    quest.postExecute(questResult)
+    // expect(questResult.message).toContain('NoHeroSelectedError');
+
+    //第一次失败后,第二次不会再生成任务
+    let quests2 = run(ruleConfig,characterState, mockFunctionConfig)
+    let quest2 = quests2[0]
+    expect(quests2.length).toBe(0);
+  });
 });

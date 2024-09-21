@@ -1,6 +1,7 @@
 import {HuntType} from "../enum";
 
 export interface FunctionConfig {
+  freeDiamond: boolean;
   collectCoins: boolean;
   expedition: boolean;
   gatherFood: boolean;

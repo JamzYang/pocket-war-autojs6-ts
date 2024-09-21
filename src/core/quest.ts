@@ -64,10 +64,17 @@ export class Quest {
     }catch (e: any) {
       myLog(`Quest: ${this.constructor.name} error. ${e}`)
       if(e.name === "NoHeroSelectedError" || e instanceof NoHeroSelectedError) {
-        //打野英雄没回家时sleep 60秒
-        this.nextExecuteTime = new Date().getTime() + 60 * 1000
+        //打野英雄没回家时sleep 10秒
+        this.nextExecuteTime = new Date().getTime() + 10 * 1000
         this.characterState.lastQuests.set(this.constructor.name, this)
         myLog(`no hero selected. wait ${60} seconds`)
+      } else if(e.name === "TodayTaskNotRequiredFailure" || e instanceof NoHeroSelectedError) {
+        let tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(1, 0, 0, 0);
+        this.nextExecuteTime = tomorrow.getTime()
+        this.characterState.lastQuests.set(this.constructor.name, this)
+        myLog(`${this.name} 今日已完成`)
       }
       return new FailureResult(`${this.constructor.name} fail. ${e.name}`);
     }

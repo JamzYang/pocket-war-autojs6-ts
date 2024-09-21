@@ -11,6 +11,7 @@ export const pointConfig: PointConfig = {
  //========================主界面========================
  mainCityWorldBtn: {x: 630, y: 1200},
  mainSearchBtn: {x: 80, y: 1200},
+ packageStoreBtn: {x: 580, y: 40},
  coinBar: {x: 220, y: 25},
  coinHarvester: {x: 220, y: 1040},
  coinHarvestIcon: {x: 360, y: 585},
@@ -83,4 +84,8 @@ export const pointConfig: PointConfig = {
  expeditionFreeFastBattleBtn: {x: 360,y: 890},
  expeditionCollectRewards: {x: 212,y: 1065},
  expeditionConfirmCollect: {x: 360,y: 1126},
+
+ //免费钻石
+ weeklyMemberTab: {x: 505, y: 130},
+ takeDiamondBtn: {x: 590, y: 293},
 };

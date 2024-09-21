@@ -11,6 +11,7 @@ export const characterState: CharacterState = {
 };
 
 export const functionConfig: FunctionConfig = {
+  freeDiamond: false,
   collectCoins: false,
   expedition: false,
   gatherFood: false,
