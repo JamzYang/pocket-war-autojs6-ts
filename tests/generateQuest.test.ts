@@ -330,10 +330,6 @@ describe('generate Quest', () => {
     mockFunctionConfig.soloHunt.attackType = "五连";
     mockFunctionConfig.soloHunt.times = 2;
 
-    // mockFunctionConfig.rallyHunt.enabled = true;
-    // mockFunctionConfig.rallyHunt.chuizi.enabled = true;
-    // mockFunctionConfig.rallyHunt.chuizi.times = 1;
-
     //mock 到世界
     const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
     jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);

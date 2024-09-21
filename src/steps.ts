@@ -74,7 +74,6 @@ export class AttackEnemy extends Step {
     // throw new Error('Method not implemented.');
     let screen = captureScreen()
     let result = findMultiColor(screen,colorConfig.rallySoloAttackBtn)
-    screen.saveTo(`/sdcard/脚本/${new Date().getTime()}.png`)
     if(result){
       myClick(result.x + offset, result.y)
     }else {

@@ -26,6 +26,7 @@ import {EnemyName} from "./enum";
 export class CollectCoinsQuest extends Quest {
   public name: string = "金币收取";
   public nextExecuteTime: number = 0;
+  public weight = 10;
   protected steps = [
     new ToCity(this),
     new ToCoinHarvester(this),

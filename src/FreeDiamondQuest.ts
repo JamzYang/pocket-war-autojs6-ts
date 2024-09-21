@@ -12,6 +12,7 @@ import {getFormattedTimeNow} from "./helper/dateHelper";
 export class FreeDiamondQuest extends Quest {
   public name: string = "免费钻石";
   public nextExecuteTime: number = 0;
+  public weight = 10;
   protected steps = [
     new ToCity(this),
     new ToWeeklyMemberTab(this),
