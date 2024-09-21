@@ -40,7 +40,7 @@ export class GetInBusQuest extends Quest {
     return this.expectObject().length > 0;
   }
 
-  weight = 2;
+  weight = 0;
   protected steps = [
     new ToWorld(this),
     new ToRallyWindow(this),

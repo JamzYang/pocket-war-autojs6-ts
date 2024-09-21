@@ -8,6 +8,11 @@ export enum HuntType {
   juxing = '惧星',
   byTurn = 'byTurn', //三军轮流
   right = 'right', //最右边
+  left1 = '左一',
+  left2 = '左二',
+  left3 = '左三',
+  right1 = '右一',
+  right2 = '右二',
 }
 
 export enum EnemyName {

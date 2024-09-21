@@ -58,10 +58,10 @@ export function clickPoint(point: Point, time: number = 600): boolean {
   return result;
 }
 
-export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 1000): boolean {
+export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 1000,sleepMillSec: number = 2000): boolean {
   // myLog(`滑动坐标:${sx},${sy}->${ex},${ey}`)
   let result = swipe(sx,sy,ex,ey,duration)
-  sleep(2000)
+  sleep(sleepMillSec)
   return result
 }
 

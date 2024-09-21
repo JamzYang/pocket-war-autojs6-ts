@@ -1,5 +1,6 @@
-import {clickPoint,myClick, myLog} from "./helper/autoHandler";
+import {captureScreen, clickPoint, findImage, fromBase64, myClick, myLog, mySwipe} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
+import {iconConfig} from "./config/iconConfig";
 import {SelectCommanderSolider} from "./selectFormation"
 import {ExecuteResult, FailureResult, SuccessResult} from "./core/executeResult";
 import {Quest} from "./core/quest";
@@ -16,6 +17,7 @@ export class SoloHuntQuest extends Quest {
     new ToWorld(this),
     new ClickSearch(this),
     new SelectSoloEnemy(this),
+    new SelectHuntLevel(this),
     new AttackEnemy(this),
     new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(this),
@@ -40,6 +42,7 @@ export class RallyHuntQuest extends Quest {
     new ToWorld(this),
     new ClickSearch(this),
     new SelectRallyEnemy(this),
+    new SelectHuntLevel(this),
     new AttackEnemy(this),
     new SelectCommanderSolider(this),
     new ClickConfirmBattleBtn(this),
@@ -96,8 +99,15 @@ export class RallyHuntQuest extends Quest {
 
 
 export class SelectSoloEnemy extends Step {
+  private swipeLeft = () => {
+    mySwipe(140,800,500,800,1000,1000)
+  }
+  private swipeRight = () => {
+    mySwipe(600,800,300,800,1000,1000)
+  }
   execute(): ExecuteResult {
     myClick(pointConfig.searchSoloEnemyTab.x, pointConfig.searchSoloEnemyTab.y, 600, "SelectSoloEnemyTab")
+
     // const typeKey = Object.keys(HuntType).find(key => HuntType[key as keyof typeof HuntType] === type);
     let huntType = HuntType[this.quest.getFunctionConfig.soloHunt.type.toString() as keyof typeof HuntType];
     switch (huntType) {
@@ -118,16 +128,26 @@ export class SelectSoloEnemy extends Step {
           }
         }
         break;
-      case HuntType.navy:  //todo workaround
+      case HuntType.left1:
+        this.swipeLeft()
+        myClick(140,800)
         break;
-      case HuntType.army:
+      case HuntType.left2:
+        this.swipeLeft()
+        myClick(370,800)
         break;
-      case HuntType.airForce:
+      case HuntType.left3:
+        this.swipeLeft()
+        myClick(600,800)
         break;
+      case HuntType.right1:
+        this.swipeRight()
+        myClick(600,800)
+        break;
+      case HuntType.right2:
+        this.swipeRight()
+        myClick(370,800)
     }
-    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y)
-    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y)
-    // myClick(pointConfig.searchAttackBtn.x, pointConfig.searchAttackBtn.y)
     return new SuccessResult('SelectSoloEnemy')
   }
 }
@@ -152,14 +172,27 @@ export class SelectRallyEnemy extends Step {
         throw new Error('right not implemented')
       }
 
-    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y)
-    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y);
-
     // myClick(pointConfig.attack1TimeBtn.x, pointConfig.attack1TimeBtn.y+5);
     if(this.quest instanceof RallyHuntQuest) {
       this.quest.actualObject = {type: type, times: 1}
     }
     // (this.quest as RallyHuntQuest).actualObject = {type: type, times: 1}
     return new SuccessResult('SelectRallyEnemy')
+  }
+}
+
+class SelectHuntLevel extends Step {
+  execute(): ExecuteResult {
+    let result = findImage(captureScreen(),fromBase64(iconConfig.highestLevelHunt.base64))
+    if(result == null) {
+      let clickTimes = 0;
+      while(clickTimes < 6 ) {
+        clickPoint(pointConfig.searchLevelPlusIcon)
+        clickTimes ++
+      }
+    }
+    clickPoint(pointConfig.searchConfirmSearchBtn,1000)
+    clickPoint(pointConfig.targetCenter)
+    return new SuccessResult("SelectHuntLevel")
   }
 }
