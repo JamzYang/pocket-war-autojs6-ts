@@ -127,12 +127,6 @@ export class SelectSoloEnemy extends Step {
     }
     myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y)
     myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y)
-
-    if(this.quest.getFunctionConfig.soloHunt.attackType === "5连"){
-      myClick(pointConfig.attack5TimesBtn.x, pointConfig.attack5TimesBtn.y)
-    }else {
-      myClick(pointConfig.attack1TimeBtn.x, pointConfig.attack1TimeBtn.y)
-    }
     // myClick(pointConfig.searchAttackBtn.x, pointConfig.searchAttackBtn.y)
     return new SuccessResult('SelectSoloEnemy')
   }
@@ -159,11 +153,13 @@ export class SelectRallyEnemy extends Step {
       }
 
     myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y)
-    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y)
+    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y);
 
-    myClick(pointConfig.attack1TimeBtn.x, pointConfig.attack1TimeBtn.y+5);
-
-    (this.quest as RallyHuntQuest).actualObject = {type: type, times: 1}
+    // myClick(pointConfig.attack1TimeBtn.x, pointConfig.attack1TimeBtn.y+5);
+    if(this.quest instanceof RallyHuntQuest) {
+      this.quest.actualObject = {type: type, times: 1}
+    }
+    // (this.quest as RallyHuntQuest).actualObject = {type: type, times: 1}
     return new SuccessResult('SelectRallyEnemy')
   }
 }

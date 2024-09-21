@@ -8,7 +8,7 @@ export interface FunctionConfig {
   soloHunt: {
     enabled: boolean,
     type: HuntType,
-    attackType: string, //5连, 单次
+    attackType: string, //["五连", "单杀"];
     level: number,
     times: number,
     formationNum: number

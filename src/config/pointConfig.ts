@@ -61,6 +61,7 @@ export const pointConfig: PointConfig = {
  searchAttackBtn:{x: 360, y: 1115},
  attack5TimesBtn:{x: 228, y: 460},
  attack1TimeBtn:{x:494,y: 460},
+ rallyJuXingBtn:{x:230,y: 1030},
  //========================出征界面========================
  oneClickBattleBtn: {x: 655, y: 1005},
  formationNum1: {x: 325, y: 1075},

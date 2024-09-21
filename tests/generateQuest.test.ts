@@ -228,7 +228,7 @@ describe('generate Quest', () => {
     mockFunctionConfig.getInBus.chuizi.times = 1;
     mockFunctionConfig.soloHunt.enabled = false;
     mockFunctionConfig.soloHunt.type = HuntType.navy;
-    mockFunctionConfig.soloHunt.attackType = "单次";
+    mockFunctionConfig.soloHunt.attackType = "五连";
     mockFunctionConfig.soloHunt.times = 2;
 
     mockFunctionConfig.rallyHunt.enabled = true;
@@ -263,10 +263,10 @@ describe('generate Quest', () => {
       return { matches: [], points: [] };
     });
 
+    //mock 到世界
     const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
     jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
 
-    //mock 到世界
     let ruleConfig = loadRuleConfig()
 
     let quests = run(ruleConfig,characterState, mockFunctionConfig)
@@ -314,5 +314,54 @@ describe('generate Quest', () => {
     let quests2 = run(ruleConfig,characterState, mockFunctionConfig)
     let quest2 = quests2[0]
     expect(quests2.length).toBe(0);
+  });
+
+
+
+
+  it('单刷 五连 点击左边', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
+    characterState.stamina =45;
+    characterState.idleTeams = 1;
+
+    mockFunctionConfig.soloHunt.enabled = true;
+    mockFunctionConfig.soloHunt.type = HuntType.navy;
+    mockFunctionConfig.soloHunt.attackType = "五连";
+    mockFunctionConfig.soloHunt.times = 2;
+
+    // mockFunctionConfig.rallyHunt.enabled = true;
+    // mockFunctionConfig.rallyHunt.chuizi.enabled = true;
+    // mockFunctionConfig.rallyHunt.chuizi.times = 1;
+
+    //mock 到世界
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
+
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    quests[0].execute()
+  });
+
+  it('集结 惧星 点击左边', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+    characterState.stamina =45;
+    characterState.idleTeams = 1;
+
+    mockFunctionConfig.rallyHunt.enabled = true;
+    mockFunctionConfig.rallyHunt.juxing.enabled = true;
+    mockFunctionConfig.rallyHunt.juxing.times = 1;
+
+    //mock 到世界
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
+
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    let ruleConfig = loadRuleConfig()
+    let quests = run(ruleConfig,characterState, mockFunctionConfig)
+    quests[0].execute()
   });
 });
