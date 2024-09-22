@@ -1,7 +1,7 @@
 import {CharacterState} from "../core/characterState";
 import {Quest} from "../core/quest";
 import {FunctionConfig} from "../core/functionConfig";
-import {HuntType} from "../enum";
+import {GatherType, HuntType} from "../enum";
 
 export const characterState: CharacterState = {
   stamina: 100,
@@ -14,7 +14,18 @@ export const functionConfig: FunctionConfig = {
   freeDiamond: false,
   collectCoins: false,
   expedition: false,
-  gatherFood: false,
+  gather: {
+    enabled: false,
+    team1: { enabled: false, formationNum: 0, type:GatherType.Oil },
+    team2: { enabled: false, formationNum: 0, type:GatherType.Food },
+    team3: { enabled: false, formationNum: 0, type:GatherType.Oil },
+    team4: { enabled: false, formationNum: 0, type:GatherType.Food },
+    team5: { enabled: false, formationNum: 0, type:GatherType.Oil },
+    team6: { enabled: false, formationNum: 0, type:GatherType.Oil },
+    team7: { enabled: false, formationNum: 0, type:GatherType.Oil },
+    team8: { enabled: false, formationNum: 0, type:GatherType.Oil },
+  },
+
   soloHunt: {
     enabled: false,
     type: HuntType.byTurn,

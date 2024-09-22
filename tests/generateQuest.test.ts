@@ -2,7 +2,7 @@ import {characterState, functionConfig} from "../src/config/config";
 import {run} from "../src/core/ruleEngine";
 import {OceanTreasureQuest} from "../src/oceanTreasure";
 import {RallyHuntQuest, SoloHuntQuest} from "../src/hunt";
-import {GatherFoodQuest} from "../src/gather";
+import {GatherQuest} from "../src/gather";
 import {CollectCoinsQuest} from "../src/collectCoins";
 import {GetInBusQuest} from "../src/getInBus";
 import {HuntType} from "../src/enum";
@@ -59,12 +59,13 @@ describe('generate Quest', () => {
 
     characterState.stamina = 5;
     characterState.idleTeams = 1;
-    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.gather.enabled = true;
+    mockFunctionConfig.gather.team1.enabled = true;
     mockFunctionConfig.getInBus.enabled = false;
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
     let quests = run(characterState, mockFunctionConfig)
-    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+    expect(quests[0]).toBeInstanceOf(GatherQuest);
   });
 
   it('should generate collect coins action when idle teams are zero and time since last coin collection is more than 1 hour', () => {
@@ -95,7 +96,8 @@ describe('generate Quest', () => {
 
     characterState.stamina =30;
     characterState.idleTeams = 1;
-    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.gather.enabled = true;
+    mockFunctionConfig.gather.team1.enabled = true;
     mockFunctionConfig.getInBus.enabled = true;
     mockFunctionConfig.getInBus.chuizi.enabled= true;
     mockFunctionConfig.getInBus.chuizi.times = 1;
@@ -103,7 +105,7 @@ describe('generate Quest', () => {
 
     let quests = run(characterState, mockFunctionConfig)
     expect(quests[0]).toBeInstanceOf(GetInBusQuest);
-    expect(quests[1]).toBeInstanceOf(GatherFoodQuest);
+    expect(quests[1]).toBeInstanceOf(GatherQuest);
   });
 
   it('should gen nonTeamNeedQuest when idleTeams = 0', () => {
@@ -111,7 +113,7 @@ describe('generate Quest', () => {
 
     characterState.stamina =30;
     characterState.idleTeams = 0;
-    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.gather.enabled = true;
     mockFunctionConfig.getInBus.enabled = true;
     mockFunctionConfig.getInBus.chuizi.enabled= true;
     mockFunctionConfig.getInBus.chuizi.times = 1;
@@ -126,7 +128,7 @@ describe('generate Quest', () => {
 
     characterState.stamina =30;
     characterState.idleTeams = 1;
-    mockFunctionConfig.gatherFood = true;
+    mockFunctionConfig.gather.enabled = true;
     // mockFunctionConfig.getInBus.enabled = true;
     // mockFunctionConfig.getInBus.chuizi.enabled= true;
     // mockFunctionConfig.getInBus.chuizi.times = 1;
@@ -337,6 +339,7 @@ describe('generate Quest', () => {
   });
 
   it('集结 惧星 点击左边', () => {
+    characterState.lastQuests.clear()
     let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
     characterState.stamina =45;
     characterState.idleTeams = 1;

@@ -62,7 +62,7 @@ export class GetInBusQuest extends Quest {
       return;
     }
 
-    if(questResult instanceof FailureResult) {
+    if(! (questResult  instanceof SuccessResult)) {
       return;
     }
 
