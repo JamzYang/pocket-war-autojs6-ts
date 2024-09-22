@@ -26,6 +26,16 @@ export enum EnemyName {
   Null = '无',
 }
 
+export enum GatherType {
+  Oil = '石油',
+  Food = '粮食',
+  MechanicalOil = '机械油',
+  MechanicalFood = '机械粮',
+  Thor = '雷神',
+}
+
+
+
 export function getValueByKey<T>(enumObj: T, key: string): T[keyof T] | undefined {
   return enumObj[key as keyof T];
 }

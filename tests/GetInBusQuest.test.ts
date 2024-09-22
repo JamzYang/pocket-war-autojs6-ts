@@ -2,7 +2,7 @@ import {run} from '../src/core/ruleEngine';
 
 import {characterState, functionConfig} from "../src/config/config";
 import {loadRuleConfig} from "../src/core/condition";
-import {GatherFoodQuest} from "../src/gather";
+import {GatherQuest} from "../src/gather";
 import {GetInBusQuest} from "../src/getInBus";
 
 const configPath = 'src/config.json';
@@ -23,7 +23,7 @@ describe('rally quest', () => {
     // functionConfig.rallyHunt.enabled = true;
     functionConfig.getInBus.enabled = true;
     let quests = run(characterState, functionConfig)
-    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+    expect(quests[0]).toBeInstanceOf(GatherQuest);
   });
 
   it('should generate gather food action when no enemy times greater than 0', () => {
@@ -39,7 +39,7 @@ describe('rally quest', () => {
     functionConfig.getInBus.nanmin.enabled = true;
     functionConfig.getInBus.nanmin.times = -1;
     let quests = run(characterState, functionConfig)
-    expect(quests[0]).toBeInstanceOf(GatherFoodQuest);
+    expect(quests[0]).toBeInstanceOf(GatherQuest);
 
   });
 

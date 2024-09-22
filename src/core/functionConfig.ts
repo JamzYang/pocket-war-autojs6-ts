@@ -1,10 +1,21 @@
-import {HuntType} from "../enum";
+import {GatherType, HuntType} from "../enum";
 
 export interface FunctionConfig {
   freeDiamond: boolean;
   collectCoins: boolean;
   expedition: boolean;
-  gatherFood: boolean;
+  gather: {
+    enabled: boolean,
+    team1: { enabled: boolean, formationNum: number, type: GatherType },
+    team2: { enabled: boolean, formationNum: number, type: GatherType },
+    team3: { enabled: boolean, formationNum: number, type: GatherType },
+    team4: { enabled: boolean, formationNum: number, type: GatherType },
+    team5: { enabled: boolean, formationNum: number, type: GatherType },
+    team6: { enabled: boolean, formationNum: number, type: GatherType },
+    team7: { enabled: boolean, formationNum: number, type: GatherType },
+    team8: { enabled: boolean, formationNum: number, type: GatherType },
+  },
+
   soloHunt: {
     enabled: boolean,
     type: HuntType,

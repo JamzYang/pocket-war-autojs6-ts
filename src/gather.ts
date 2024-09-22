@@ -13,11 +13,14 @@ import {
   ClickFocusPoint,
   SelectSearchLevel,
 } from "./steps";
+import {GatherType, HuntType} from "./enum";
 
 
 
 
-export class GatherFoodQuest extends Quest {
+export class GatherQuest extends Quest {
+  public name: string = "采集";
+  public weight = -1;
   protected steps = [
     new ToWorld(this),
     new ClickSearch(this),
@@ -32,7 +35,19 @@ export class GatherFoodQuest extends Quest {
     // new SelectCommanderSolider(),
     new ClickConfirmBattleBtn(this)
   ]
+
+  protected type: GatherType = GatherType.Food;
+
+  protected gatherTypeMap = ()=> {
+    // super.getFunctionConfig.gather.
+  };
+
+  preExecute(): void {
+  }
 }
+
+
+
 
 
 

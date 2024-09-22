@@ -2,7 +2,7 @@ import {loadFeatureConfig} from "./configLoader"
 import {RuleConfig} from "./ruleEngine";
 import {SoloHuntQuest, RallyHuntQuest} from "../hunt";
 import {CollectCoinsQuest} from "../collectCoins";
-import {GatherFoodQuest} from "../gather";
+import {GatherQuest} from "../gather";
 import {GetInBusQuest} from "../getInBus";
 import {OceanTreasureQuest} from "../oceanTreasure";
 import {ExpeditionQuest} from "../expedition";
@@ -65,14 +65,27 @@ export function loadRuleConfig(functionConfig: FunctionConfig): RuleConfig {
         quest: RallyHuntQuest
       },
 
+        //todo 选建两个
       {
-        name: "Gather Food Rule",
+        name: "Team1GatherQuest Rule",
         conditions: {
           idleTeams: { gt: 0 },
-          gatherFood: {enable: functionConfig.gatherFood},
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team1": { enable: functionConfig.gather.team1.enabled },
         },
-        quest: GatherFoodQuest
+        quest: GatherQuest
       },
+      {
+        name: "Team2GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team2": { enable: functionConfig.gather.team1.enabled },
+        },
+        quest: GatherQuest
+      },
+
+
       {
         name: "Free Diamond Rule",
         conditions: {
