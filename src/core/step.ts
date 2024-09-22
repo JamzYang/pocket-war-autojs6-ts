@@ -61,6 +61,7 @@ export function toWorld(){
 
   if (!isInWorld()) {
     //todo 弹 toast
+    myClick(pointConfig.backBtn.x + iconConfig.backBtn.offSet.x, pointConfig.backBtn.y + iconConfig.backBtn.offSet.y, 400, "backBtn");
     throw new Failure('回到世界失败');
   }
 }

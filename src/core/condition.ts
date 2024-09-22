@@ -32,14 +32,39 @@ export function loadRuleConfig(functionConfig: FunctionConfig): RuleConfig {
         quest: SoloHuntQuest
       },
       {
-        name: "Rally Hunt Rule",
+        name: "Rally Hunt chuizi Rule",
         conditions: {
           stamina: { gt: 30 },
           idleTeams: { gt: 0 },
           rallyHunt: {enable: functionConfig.rallyHunt.enabled},
+          "rallyHunt.chuizi": {enable: functionConfig.rallyHunt.chuizi.enabled},
+          "rallyHunt.chuizi.times": {gt: 0},
         },
         quest: RallyHuntQuest
       },
+      {
+        name: "Rally Hunt juxing Rule",
+        conditions: {
+          stamina: { gt: 30 },
+          idleTeams: { gt: 0 },
+          rallyHunt: {enable: functionConfig.rallyHunt.enabled},
+          "rallyHunt.juxing": {enable: functionConfig.rallyHunt.juxing.enabled},
+          "rallyHunt.juxing.times": {gt: 0},
+        },
+        quest: RallyHuntQuest
+      },
+      {
+        name: "Rally Hunt nanmin Rule",
+        conditions: {
+          stamina: { gt: 30 },
+          idleTeams: { gt: 0 },
+          rallyHunt: {enable: functionConfig.rallyHunt.enabled},
+          "rallyHunt.nanmin": {enable: functionConfig.rallyHunt.nanmin.enabled},
+          "rallyHunt.nanmin.times": {gt: 0},
+        },
+        quest: RallyHuntQuest
+      },
+
       {
         name: "Gather Food Rule",
         conditions: {

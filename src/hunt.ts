@@ -81,9 +81,12 @@ export class RallyHuntQuest extends Quest {
     switch (this.actualObject.type) {
       case HuntType.chuizi:
         this.functionConfig.rallyHunt.chuizi.times -= 1;
+        myLog(`${this.name} ${this.actualObject.type} 剩余执行次数 ${this.functionConfig.rallyHunt.chuizi.times}`)
+
         break;
       case HuntType.juxing:
         this.functionConfig.rallyHunt.juxing.times -= 1;
+        myLog(`${this.name} ${this.actualObject.type} 剩余执行次数 ${this.functionConfig.rallyHunt.juxing.times}`)
         break;
       case HuntType.nanmin:
         this.functionConfig.rallyHunt.nanmin.times -= 1;
@@ -92,7 +95,6 @@ export class RallyHuntQuest extends Quest {
         this.functionConfig.rallyHunt.right.times -= 1;
         break;
     }
-    myLog(`${this.name} ${this.actualObject.type} 剩余执行次数 减-1`)  //todo 待完善
     return new SuccessResult("postExecute RallyHuntQuest");
   }
 }

@@ -1,4 +1,4 @@
-import {captureScreen, clickPoint, myLog} from "./helper/autoHandler";
+import {captureScreen, clickPoint, fromBase64, matchTemplate, myLog, mySleep} from "./helper/autoHandler";
 import {toWorld} from "./core/step"
 
 import {characterState} from "./config/config";

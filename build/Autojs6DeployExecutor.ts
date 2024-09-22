@@ -29,7 +29,8 @@ export class Autojs6DeployExecutor {
         const fileContent = fs.readFileSync(filePath);
         const boundary = `--------------------------${Math.random().toString(36).slice(2)}`;
         const options = {
-          hostname: 'localhost',
+          hostname: 'localhost', //base_url
+          // hostname: '192.168.68.15',
           port: 8080,
           path: '/files/upload',
           method: 'POST',

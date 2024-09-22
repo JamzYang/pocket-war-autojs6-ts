@@ -210,7 +210,6 @@ describe('generate Quest', () => {
 
     characterState.stamina =45;
     characterState.idleTeams = 1;
-    mockFunctionConfig.gatherFood = true;
     mockFunctionConfig.getInBus.enabled = true;
     mockFunctionConfig.getInBus.chuizi.enabled= true;
     mockFunctionConfig.getInBus.chuizi.times = 1;
@@ -224,11 +223,24 @@ describe('generate Quest', () => {
     mockFunctionConfig.rallyHunt.chuizi.times = 1;
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
-    let quests = run(characterState, mockFunctionConfig)
+    //mock 到世界
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
 
-    let conname = quests[0].constructor.name;
-    console.log(conname)
+    (autoHandler.matchTemplate as jest.Mock).mockImplementation((img, template, options) => {
+      let noHeroPic = fromBase64(iconConfig.heroSelectBlank.base64);
+      if (noHeroPic == template) {
+        return { matches: [], points: [] };
+      }
+      return { matches: [], points: [] };
+    });
+
+    let quests = run(characterState, mockFunctionConfig)
+    let executeResult = quests[0].execute();
+    quests[0].postExecute(executeResult);
     expect(quests[0]).toBeInstanceOf(RallyHuntQuest);
+    let quests2 = run(characterState, mockFunctionConfig)
+    expect(quests2[0]).toBeInstanceOf(GetInBusQuest);
   });
 
 
