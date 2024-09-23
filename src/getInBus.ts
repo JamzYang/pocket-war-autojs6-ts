@@ -16,8 +16,6 @@ import {colorConfig} from "./config/colorConfig"
 import {repeatSeconds} from "./config/env.conf";
 import {intervalConfig} from "./config/intervalConfig";
 
-
-
 export class GetInBusQuest extends Quest {
 
   public expectObject(): {name: EnemyName, times: number}[] {
@@ -119,14 +117,15 @@ export class GetInBus extends Step {
         myLog("集结目标: " + JSON.stringify(expectObject))
         if (enemyName && expectObject.find(item => item.name == enemyName)) {
           myClick(point.x + iconConfig.getInBusIcon.offSet.x, point.y + iconConfig.getInBusIcon.offSet.y, 300, "click get in bus icon");
-          (this.quest as GetInBusQuest).actualObject = {name: enemyName, times: 1} //todo 待修改 times应该从配置中递减
+          (this.quest as GetInBusQuest).actualObject = {name: enemyName, times: 1}
           return new SuccessResult('GetInBus success. enemyName=' + enemyName)
         }
       }
     }
     myLog("没有找到空坐位....")
-    mySleep(2000)
-    throw new NeedRepeatFailure('没有找到空坐位',  Number(repeatSeconds().toString() || '50'))
+    // mySleep(2000)
+    // throw new NeedRepeatFailure('没有找到空坐位',  Number(repeatSeconds().toString() || '50'))
+    return new FailureResult('GetInBus fail.')
   }
 }
 

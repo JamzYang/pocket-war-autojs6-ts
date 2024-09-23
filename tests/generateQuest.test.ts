@@ -106,6 +106,42 @@ describe('generate Quest', () => {
     expect(quests[1]).toBeInstanceOf(GatherQuest);
   });
 
+
+  it('should getInBus times be same, when getInBusQuest fail', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
+
+    characterState.stamina =30;
+    characterState.idleTeams = 1;
+    mockFunctionConfig.getInBus.enabled = true;
+    mockFunctionConfig.getInBus.chuizi.enabled= true;
+    mockFunctionConfig.getInBus.chuizi.times = 1;
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    //mock 有车位
+    (autoHandler.matchTemplate as jest.Mock).mockImplementation((img, template, options) => {
+      let havePositions = fromBase64(iconConfig.getInBusIcon.base64);
+      if (havePositions == template) {
+        return { matches: [], points: [{x: 100, y: 100}] };
+      }
+      return { matches: [], points: [] };
+    });
+    //mock 名称
+    (autoHandler.ocrText as jest.Mock).mockReturnValue(["战锤"])
+
+    //mock 到世界
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
+
+
+    let quests = run(characterState, mockFunctionConfig)
+    expect(quests[0]).toBeInstanceOf(GetInBusQuest);
+    let questResult = quests[0].execute()
+    quests[0].postExecute(questResult)
+    expect(mockFunctionConfig.getInBus.chuizi.times).toBe(1)
+    let quests2 = run(characterState, mockFunctionConfig)
+    expect(quests2[0]).toBeInstanceOf(GetInBusQuest);
+  });
+
   it('should gen nonTeamNeedQuest when idleTeams = 0', () => {
     let mockFunctionConfig = JSON.parse(JSON.stringify(functionConfig));
 
@@ -157,10 +193,10 @@ describe('generate Quest', () => {
       return { matches: [], points: [] };
     });
 
+    //mock 到世界
     const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
     jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
 
-    //mock 到世界
 
     let quests = run(characterState, mockFunctionConfig)
 
