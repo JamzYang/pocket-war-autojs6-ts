@@ -29,11 +29,11 @@ jest.mock('../src/helper/autoHandler', () => ({
 
 describe('gather Quest', () => {
   it('gather ', () => {
-    let mockFunctionConfig = JSON.parse(JSON.stringify(UIConfig));
+    let mockFunctionConfig = JSON.parse(JSON.stringify(UIConfig2));
     characterState.idleTeams = 1;
-    mockFunctionConfig.gather.enabled = true;
-    mockFunctionConfig.gather.team1.enabled = true;
-    mockFunctionConfig.gather.team2.enabled = true;
+    // mockFunctionConfig.gather.enabled = true;
+    // mockFunctionConfig.gather.team1.enabled = true;
+    // mockFunctionConfig.gather.team2.enabled = true;
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 

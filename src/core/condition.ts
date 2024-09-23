@@ -80,11 +80,65 @@ export function loadRuleConfig(functionConfig: FunctionConfig): RuleConfig {
         conditions: {
           idleTeams: { gt: 0 },
           gather: {enable: functionConfig.gather.enabled},
-          "gather.team2": { enable: functionConfig.gather.team1.enabled },
+          "gather.team2": { enable: functionConfig.gather.team2.enabled },
+        },
+        quest: GatherQuest
+      },
+      {
+        name: "Team3GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team3": { enable: functionConfig.gather.team3.enabled },
+        },
+        quest: GatherQuest
+      },
+      {
+        name: "Team4GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team4": { enable: functionConfig.gather.team4.enabled },
+        },
+        quest: GatherQuest
+      },
+      {
+        name: "Team5GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team5": { enable: functionConfig.gather.team5.enabled },
+        },
+        quest: GatherQuest
+      },
+      {
+        name: "Team6GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team6": { enable: functionConfig.gather.team6.enabled },
         },
         quest: GatherQuest
       },
 
+      {
+        name: "Team7GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team7": { enable: functionConfig.gather.team7.enabled },
+        },
+        quest: GatherQuest
+      },
+      {
+        name: "Team8GatherQuest Rule",
+        conditions: {
+          idleTeams: { gt: 0 },
+          gather: {enable: functionConfig.gather.enabled},
+          "gather.team8": { enable: functionConfig.gather.team8.enabled },
+        },
+        quest: GatherQuest
+      },
 
       {
         name: "Free Diamond Rule",
