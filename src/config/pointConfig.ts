@@ -38,6 +38,11 @@ export const pointConfig: PointConfig = {
   *搜索界面资源田
   */
  searchResourceTab: {x: 280, y: 575},
+ //搜索 tab页,资源位: 油,田. 敌军: 陆 海 军等
+ searchTabLeftPos: {x: 130, y: 780},
+ searchTabMidPos: {x: 350, y: 780},
+ searchTabRightPos: {x: 600, y: 780},
+
  searchOilPic: {x: 350, y: 780},
  searchGoldMinePic: {x: 130, y: 780},
  searchFarmLandPic: {x: 600, y: 780},

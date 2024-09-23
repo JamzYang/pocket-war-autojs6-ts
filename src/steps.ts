@@ -8,9 +8,9 @@ import {HuntType} from "./enum";
 
 export class SelectSearchLevel extends Step {
   execute(): ExecuteResult {
-    for (let i = 0; i < 5; i++) {
-      myClick(pointConfig.searchLevelPlusIcon.x, pointConfig.searchLevelPlusIcon.y, 50, "SelectSearchLevel")
-    }
+    // for (let i = 0; i < 5; i++) {
+    //   myClick(pointConfig.searchLevelPlusIcon.x, pointConfig.searchLevelPlusIcon.y, 50, "SelectSearchLevel")
+    // }
     return new SuccessResult('SelectSearchLevel');
   }
 }
@@ -23,12 +23,7 @@ export class ClickFocusPoint extends Step {
 }
 
 
-export class ClickMidAttackPoint extends Step {
-  execute(): ExecuteResult {
-    myClick(pointConfig.midAttackPoint.x, pointConfig.midAttackPoint.y, 1000, "ClickMidAttackPoint")
-    return new SuccessResult('ClickFocusPoint');
-  }
-}
+
 
 export class ClickConfirmSearchBtn extends Step {
   execute(): ExecuteResult {

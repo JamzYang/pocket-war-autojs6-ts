@@ -7,15 +7,12 @@ import {RallyHuntQuest} from "../src/hunt";
 
 export class ClickConfirmBattleBtn extends Step {
   execute(): ExecuteResult {
-    let result = findMultiColor(captureScreen(),colorConfig.confirmBattleBtn)
-    if(!result){
-      return new FailureResult("未找到确认战斗按钮")
-    }
+    // let result = findMultiColor(captureScreen(),colorConfig.confirmBattleBtn)
+    // if(!result){
+    //   return new FailureResult("未找到确认战斗按钮")
+    // }
     clickPoint(pointConfig.confirmBattleBtn, 1000)
 
-    if(this.quest instanceof RallyHuntQuest){ //todo 依赖反转
-      // functionConfig.rallyHuntQuest = true;
-    }
     return new SuccessResult('ClickConfirmBattleBtn')
   }
 }

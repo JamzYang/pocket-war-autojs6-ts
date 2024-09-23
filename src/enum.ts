@@ -29,8 +29,8 @@ export enum EnemyName {
 export enum GatherType {
   Oil = '石油',
   Food = '粮食',
-  MechanicalOil = '机械油',
-  MechanicalFood = '机械粮',
+  BuildMechanicalOil = '建机械油',
+  BuildMechanicalFood = '建机械粮',
   Thor = '雷神',
 }
 

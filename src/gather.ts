@@ -1,21 +1,15 @@
-import {captureScreen, findMultiColor, clickPoint, myClick} from "./helper/autoHandler";
+import {captureScreen, clickPoint, findImage, findMultiColor, fromBase64, myClick, mySwipe} from "./helper/autoHandler";
 import {colorConfig} from "./config/colorConfig";
-import {Step, ToWorld, ClickSearch, ClickOneClickBattle} from "./core/step";
+import {ClickOneClickBattle, ClickSearch, Step, ToWorld} from "./core/step";
 import {ClickConfirmBattleBtn} from "../src/clickConfirmBattleBtn";
 
 import {Quest} from "./core/quest"
-import {CharacterState} from "./core/characterState";
-import {FunctionConfig} from "./core/functionConfig";
-import {ExecuteResult,Failure, SuccessResult} from "./core/executeResult";
+import {ExecuteResult, Failure, FailureResult, SuccessResult} from "./core/executeResult";
 import {pointConfig} from "./config/pointConfig";
-import {
-  ClickConfirmSearchBtn,
-  ClickFocusPoint,
-  SelectSearchLevel,
-} from "./steps";
-import {GatherType, HuntType} from "./enum";
-
-
+import {ClickConfirmSearchBtn, ClickFocusPoint, SelectSearchLevel,} from "./steps";
+import {GatherType} from "./enum";
+import {iconConfig} from "./config/iconConfig";
+import {heroIsSelected, selectFormation} from "./helper/stepHelper";
 
 
 export class GatherQuest extends Quest {
@@ -25,43 +19,53 @@ export class GatherQuest extends Quest {
     new ToWorld(this),
     new ClickSearch(this),
     new SelectResourceFieldTab(this),
-    new ClickFarmlandPic(this),
+    new SelectResource(this),
     new SelectSearchLevel(this),
     new ClickConfirmSearchBtn(this),
     new ClickFocusPoint(this),
-    new ClickConfirmGatherBtn(this),
-    new ClickOneClickBattle(this),
-    // new GatherResource(),
-    // new SelectCommanderSolider(),
+    new ClickGatherBtn(this),
+    new SelectGatherTeam(this),
     new ClickConfirmBattleBtn(this)
-  ]
+  ];
 
-  protected type: GatherType = GatherType.Food;
-
-  protected gatherTypeMap = ()=> {
-    // super.getFunctionConfig.gather.
-  };
+  gatherType: GatherType = GatherType.Food;
+  teamNum: string = "";
+  formationNum: number = 0;
 
   preExecute(): void {
+    // const enabledTeams = Object.keys(this.functionConfig.gather)
+    //   .filter(key => key.startsWith('team'))
+    //   .map(key => this.functionConfig.gather[key]);
+    // if (enabledTeams.length > 0) {
+    //   const teamConfig = enabledTeams[0]; // 取第一个enabled的team
+    //   this.gatherType = teamConfig.type;
+    //   this.formationNum = teamConfig.formationNum;
+    //   this.teamIndex = enabledTeams.indexOf(teamConfig); // 更新teamIndex为当前team的索引
+    // }
+
+
+    // 创建一个Map并将team相关属性放入
+    const teamMap = new Map<string, typeof this.functionConfig.gather['team1']>();
+
+    Object.keys(this.functionConfig.gather)
+    .filter(key => key.startsWith('team'))
+    .forEach(key => teamMap.set(key, this.functionConfig.gather[key]));
+
+    teamMap.forEach((teamConfig, key) => {
+      this.gatherType = teamConfig.type;
+      this.formationNum = teamConfig.formationNum;
+      this.teamNum = key; // 更新teamIndex为当前team的索引
+    });
   }
-}
 
-
-
-
-
-
-/**
- * 选中出征对像后, 目标信息界面一般出现在窗口上半部,有没有可能出现在下半部? //todo
- */
-export class ClickConfirmGatherBtn extends Step {
-  execute(): ExecuteResult {
-    let result = findMultiColor(captureScreen(), colorConfig.confirmGatherBtn)
-    if (result == null) {
-      throw new Failure('没有找到确认按钮')
+  postExecute(questResult: ExecuteResult): void {
+    if (questResult instanceof SuccessResult) {
+      // 将相应 team 的 enable 属性赋为 false
+      const teamConfig = this.functionConfig.gather[this.teamNum];
+      if (teamConfig) {
+        teamConfig.enabled = false;
+      }
     }
-    myClick(result.x, result.y, 600, "ClickConfirmGatherBtn")
-    return new SuccessResult('ClickConfirmGatherBtn')
   }
 }
 
@@ -72,9 +76,60 @@ export class SelectResourceFieldTab extends Step {
   }
 }
 
-export class ClickFarmlandPic extends Step {
+export class SelectResource extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.searchFarmLandPic.x, pointConfig.searchFarmLandPic.y, 400, "ClickFarmlandPic")
-    return new SuccessResult('ClickFarmlandPic');
+    let gatherQuest = this.quest as GatherQuest;
+    switch (gatherQuest.gatherType){
+      case GatherType.Food:
+        clickPoint(pointConfig.searchTabRightPos)
+        break;
+      case GatherType.Oil:
+        clickPoint(pointConfig.searchTabMidPos)
+        break;
+      case GatherType.Thor:
+        this.swipeRight()
+        clickPoint(pointConfig.searchTabRightPos)
+        break;
+    }
+    return new SuccessResult('SelectResource');
+  }
+
+
+  private swipeRight = () => {
+    mySwipe(600,800,300,800,1000,1000)
+  }
+}
+
+export class ClickGatherBtn extends Step {
+  execute(): ExecuteResult {
+    let gatherQuest = this.quest as GatherQuest;
+    // if (this.isBuildMechanical(gatherQuest.gatherType)){
+    //
+    // }
+    let result = findImage(
+        captureScreen(),fromBase64(iconConfig.confirmGatherBtn.base64),
+        {threshold:0.8, region:[100,400,600,600]}
+    )
+    if(result) {
+      myClick(result.x, result.y + 30,1000)
+    }else {
+      //todo 没找到采集 的逻辑暂时不写
+    }
+    return new SuccessResult('ClickFocusPoint');
+  }
+
+  private isBuildMechanical = (gatherType: GatherType) =>{
+    return  GatherType.BuildMechanicalFood == gatherType || GatherType.BuildMechanicalOil == gatherType
+  }
+}
+
+export class SelectGatherTeam extends Step{
+  execute(): ExecuteResult {
+    let gatherQuest = this.quest as GatherQuest;
+    selectFormation(gatherQuest.formationNum)
+    if(!heroIsSelected) {
+      throw new FailureResult("没有选择英雄")
+    }
+    return new SuccessResult("SelectGatherTeam")
   }
 }
