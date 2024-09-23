@@ -1,4 +1,13 @@
-import {captureScreen, clickPoint, findImage, findMultiColor, fromBase64, myClick, mySwipe} from "./helper/autoHandler";
+import {
+  captureScreen,
+  clickPoint,
+  findImage,
+  findMultiColor,
+  fromBase64,
+  myClick,
+  myLog,
+  mySwipe
+} from "./helper/autoHandler";
 import {colorConfig} from "./config/colorConfig";
 import {ClickOneClickBattle, ClickSearch, Step, ToWorld} from "./core/step";
 import {ClickConfirmBattleBtn} from "../src/clickConfirmBattleBtn";
@@ -72,7 +81,7 @@ export class GatherQuest extends Quest {
 
 export class SelectResourceFieldTab extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 400, "SelectResourceFieldTab")
+    myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 800, "SelectResourceFieldTab")
     return new SuccessResult('SelectResourceFieldTab')
   }
 }
@@ -80,6 +89,7 @@ export class SelectResourceFieldTab extends Step {
 export class SelectResource extends Step {
   execute(): ExecuteResult {
     let gatherQuest = this.quest as GatherQuest;
+    myLog(`采集类型为${gatherQuest.gatherType}`)
     switch (gatherQuest.gatherType){
       case GatherType.Food:
         clickPoint(pointConfig.searchTabRightPos)
@@ -109,11 +119,13 @@ export class ClickGatherBtn extends Step {
     // }
     let result = findImage(
         captureScreen(),fromBase64(iconConfig.confirmGatherBtn.base64),
-        {threshold:0.8, region:[100,400,600,600]}
+        {threshold:0.7, region:[100,400,600,600]}
     )
     if(result) {
       myClick(result.x, result.y + 30,1000)
     }else {
+      myLog("未找到采集按钮. 点击默认的设置")
+
       //todo 没找到采集 的逻辑暂时不写
     }
     return new SuccessResult('ClickFocusPoint');

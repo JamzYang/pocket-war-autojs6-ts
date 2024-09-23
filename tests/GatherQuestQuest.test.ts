@@ -7,6 +7,7 @@ import {iconConfig} from "../src/config/iconConfig";
 import {SuccessResult} from "../src/core/executeResult";
 import * as stepModule from "../src/core/step";
 import {run} from "../src/core/ruleEngine";
+import {GatherQuest} from "../src/gather";
 jest.mock('../src/core/configLoader', () => ({
   loadFeatureConfig: jest.fn()
 }))
@@ -32,6 +33,7 @@ describe('gather Quest', () => {
     characterState.idleTeams = 1;
     mockFunctionConfig.gather.enabled = true;
     mockFunctionConfig.gather.team1.enabled = true;
+    mockFunctionConfig.gather.team2.enabled = true;
 
     (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
 
@@ -55,7 +57,18 @@ describe('gather Quest', () => {
     quest.preExecute()
     let questResult=  quest.execute()
     quest.postExecute(questResult)
-    expect(mockFunctionConfig.gather.team1.enabled).toBe(false);
+    let gatherQuest = quest as GatherQuest
+    expect(mockFunctionConfig.gather[gatherQuest.teamNum].enabled).toBe(false);
+
+    let quests2 = run(characterState, mockFunctionConfig)
+
+    let quest2 = quests2[0]
+    quest2.preExecute()
+    let questResult2=  quest2.execute()
+    quest2.postExecute(questResult2)
+    let gatherQuest2 = quest as GatherQuest
+    expect(mockFunctionConfig.gather[gatherQuest2.teamNum].enabled).toBe(false);
+
   });
 },);
 
@@ -140,3 +153,5 @@ const UIConfig = {
     }
   }
 };
+
+const UIConfig2 ={"freeDiamond":false,"collectCoins":false,"expedition":false,"soloHunt":{"enabled":false,"type":"左一","attackType":"五连","times":1,"formationNum":"1"},"rallyHunt":{"enabled":false,"chuizi":{"enabled":false,"times":1,"level":0,"formationNum":1},"juxing":{"enabled":false,"times":10,"level":0,"formationNum":1},"right":{"enabled":false,"times":10,"level":0,"formationNum":1},"nanmin":{"enabled":false,"times":10,"formationNum":1},"heijun":{"enabled":false,"formationNum":1}},"gather":{"enabled":true,"team1":{"enabled":false,"formationNum":"1","type":"Food"},"team2":{"enabled":false,"formationNum":"2","type":"Oil"},"team3":{"enabled":false,"formationNum":"3","type":"Oil"},"team4":{"enabled":false,"formationNum":"4","type":"Thor"},"team5":{"enabled":false,"formationNum":0,"type":"石油"},"team6":{"enabled":true,"formationNum":"6","type":"Food"},"team7":{"enabled":true,"formationNum":"7","type":"Oil"},"team8":{"enabled":true,"formationNum":"8","type":"Thor"}},"getInBus":{"enabled":false,"chuizi":{"enabled":false,"times":"50"},"heijun":{"enabled":false,"times":"50"},"nanmin":{"enabled":false,"times":"10"},"juxing":{"enabled":false,"times":"10"},"formationNum":"1"},"events":{"oceanTreasure":{"enabled":false,"detectorNum":"3"}}}

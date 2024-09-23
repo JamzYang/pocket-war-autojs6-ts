@@ -17,7 +17,7 @@ export class SelectSearchLevel extends Step {
 
 export class ClickFocusPoint extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y, 1000, "ClickFocusPoint")
+    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y, 1500, "ClickFocusPoint")
     return new SuccessResult('ClickFocusPoint');
   }
 }
@@ -27,16 +27,11 @@ export class ClickFocusPoint extends Step {
 
 export class ClickConfirmSearchBtn extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y, 500, "ClickConfirmSearchBtn")
+    myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y, 1000, "ClickConfirmSearchBtn")
     return new SuccessResult('ClickConfirmSearchBtn');
   }
 }
 
-export class GatherResource extends Step {
-  execute(): ExecuteResult {
-    throw new Error('Method not implemented.');
-  }
-}
 
 /**
  * 攻击几次, 集结. 对话框
