@@ -41,6 +41,7 @@ function mainRun() {
       return
     }
     let quest = quests[0]
+    quest.preExecute()
     let questResult=  quest.execute()
     quest.postExecute(questResult)
   } catch (e) {

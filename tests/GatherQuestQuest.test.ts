@@ -1,0 +1,142 @@
+import {GatherType, HuntType} from "../src/enum";
+import {characterState, functionConfig} from "../src/config/config";
+import {loadFeatureConfig} from "../src/core/configLoader";
+import * as autoHandler from "../src/helper/autoHandler";
+import {fromBase64} from "../src/helper/autoHandler";
+import {iconConfig} from "../src/config/iconConfig";
+import {SuccessResult} from "../src/core/executeResult";
+import * as stepModule from "../src/core/step";
+import {run} from "../src/core/ruleEngine";
+jest.mock('../src/core/configLoader', () => ({
+  loadFeatureConfig: jest.fn()
+}))
+
+jest.mock('../src/helper/autoHandler', () => ({
+  myLog: jest.fn(), // Creating a mock function for myLog
+  fromBase64: jest.fn().mockReturnValue({ width: 720, height: 1280}),
+  captureScreen: jest.fn().mockReturnValue({ width: 720, height: 1280}),
+  findImage: jest.fn().mockReturnValue({ x: 100, y: 100 }),
+  findMultiColor: jest.fn().mockReturnValue({ x: 100, y: 100 }),
+  myClick: jest.fn().mockReturnValue(true),
+  clickPoint: jest.fn().mockReturnValue(true),
+  mySwipe: jest.fn().mockReturnValue(true),
+  matchTemplate: jest.fn(), // 默认 mock 函数
+  ocrTextFromImg: jest.fn().mockReturnValue([{label:'战锤'}]),
+  ocrText: jest.fn().mockReturnValue(['战锤']),
+  mySleep: jest.fn(),
+}));
+
+describe('gather Quest', () => {
+  it('gather ', () => {
+    let mockFunctionConfig = JSON.parse(JSON.stringify(UIConfig));
+    characterState.idleTeams = 1;
+    mockFunctionConfig.gather.enabled = true;
+    mockFunctionConfig.gather.team1.enabled = true;
+
+    (loadFeatureConfig as jest.Mock).mockReturnValue(mockFunctionConfig);
+
+    //mock 选中英雄
+    (autoHandler.matchTemplate as jest.Mock).mockImplementation((img, template, options) => {
+      let noHeroPic = fromBase64(iconConfig.heroSelectBlank.base64);
+      if (noHeroPic == template) {
+        return { matches: [], points: [] };
+      }
+      return { matches: [], points: [{x: 100, y: 100}] };
+    });
+
+    //mock 到世界
+    const mockToWorldExecute = jest.fn().mockReturnValue(new SuccessResult('Mocked ToWorld'));
+    jest.spyOn(stepModule.ToWorld.prototype, 'execute').mockImplementation(mockToWorldExecute);
+
+
+    let quests = run(characterState, mockFunctionConfig)
+
+    let quest = quests[0]
+    quest.preExecute()
+    let questResult=  quest.execute()
+    quest.postExecute(questResult)
+    expect(mockFunctionConfig.gather.team1.enabled).toBe(false);
+  });
+},);
+
+
+
+const UIConfig = {
+  freeDiamond: false,
+  collectCoins: false,
+  expedition: false,
+  soloHunt: {
+    enabled: false,
+    type: "左一",
+    attackType: "五连",
+    times: 1,
+    formationNum: "1"
+  },
+  rallyHunt: {
+    enabled: false,
+    chuizi: {
+      enabled: false,
+      times: 1,
+      level: 0,
+      formationNum: 1
+    },
+    juxing: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
+    right: {
+      enabled: false,
+      times: 10,
+      level: 0,
+      formationNum: 1
+    },
+    nanmin: {
+      enabled: false,
+      times: 10,
+      formationNum: 1
+    },
+    heijun: {
+      enabled: false,
+      formationNum: 1
+    },
+  },
+  gather: {
+    enabled: false,
+    team1: { enabled: false, formationNum: "1", type:GatherType.Oil },
+    team2: { enabled: false, formationNum: "2", type:GatherType.Food },
+    team3: { enabled: false, formationNum: "3", type:GatherType.Oil },
+    team4: { enabled: false, formationNum: "4", type:GatherType.Food },
+    team5: { enabled: false, formationNum: "0", type:GatherType.Oil },
+    team6: { enabled: false, formationNum: "0", type:GatherType.Oil },
+    team7: { enabled: false, formationNum: "0", type:GatherType.Oil },
+    team8: { enabled: false, formationNum: "0", type:GatherType.Oil },
+  },
+  getInBus: {
+    enabled: false,
+    chuizi: {
+      enabled: false,
+      times: "50"
+    },
+    heijun: {
+      enabled: false,
+      times: "50"
+    },
+    nanmin: {
+      enabled: false,
+      times: "10"
+    },
+    juxing: {
+      enabled: false,
+      times: "10"
+    },
+    formationNum: "1"
+  },
+  events: {
+    oceanTreasure: {
+      enabled: false,
+      detectorNum: "3"
+    }
+  }
+};

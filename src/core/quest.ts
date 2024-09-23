@@ -30,6 +30,7 @@ export class Quest {
   get getFunctionConfig() {
     return this.functionConfig;
   }
+  preExecute(){}
 
   postExecute (questResult: ExecuteResult) {
 

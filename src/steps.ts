@@ -17,7 +17,7 @@ export class SelectSearchLevel extends Step {
 
 export class ClickFocusPoint extends Step {
   execute(): ExecuteResult {
-    myClick(pointConfig.focusPoint.x, pointConfig.focusPoint.y, 1000, "ClickFocusPoint")
+    myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y, 1000, "ClickFocusPoint")
     return new SuccessResult('ClickFocusPoint');
   }
 }

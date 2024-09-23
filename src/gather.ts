@@ -49,6 +49,7 @@ export class GatherQuest extends Quest {
 
     Object.keys(this.functionConfig.gather)
     .filter(key => key.startsWith('team'))
+    .filter(key => this.functionConfig.gather[key].enabled)
     .forEach(key => teamMap.set(key, this.functionConfig.gather[key]));
 
     teamMap.forEach((teamConfig, key) => {
