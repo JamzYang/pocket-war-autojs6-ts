@@ -42,30 +42,16 @@ export class GatherQuest extends Quest {
   formationNum: number = 0;
 
   preExecute(): void {
-    // const enabledTeams = Object.keys(this.functionConfig.gather)
-    //   .filter(key => key.startsWith('team'))
-    //   .map(key => this.functionConfig.gather[key]);
-    // if (enabledTeams.length > 0) {
-    //   const teamConfig = enabledTeams[0]; // 取第一个enabled的team
-    //   this.gatherType = teamConfig.type;
-    //   this.formationNum = teamConfig.formationNum;
-    //   this.teamIndex = enabledTeams.indexOf(teamConfig); // 更新teamIndex为当前team的索引
-    // }
-
-
-    // 创建一个Map并将team相关属性放入
-    const teamMap = new Map<string, typeof this.functionConfig.gather['team1']>();
-
-    Object.keys(this.functionConfig.gather)
-    .filter(key => key.startsWith('team'))
-    .filter(key => this.functionConfig.gather[key].enabled)
-    .forEach(key => teamMap.set(key, this.functionConfig.gather[key]));
-
-    teamMap.forEach((teamConfig, key) => {
-      this.gatherType = teamConfig.type;
-      this.formationNum = teamConfig.formationNum;
-      this.teamNum = key; // 更新teamIndex为当前team的索引
-    });
+    let gatherConfig = this.functionConfig.gather;
+    for (let i = 1; i <= 8; i++) {
+      const teamConfig = gatherConfig[`team${i}`];
+      if (teamConfig.enabled) {
+        this.gatherType = teamConfig.type;
+        this.formationNum = teamConfig.formationNum
+        this.teamNum = `team${i}`;
+        break;
+      }
+    }
   }
 
   postExecute(questResult: ExecuteResult): void {
