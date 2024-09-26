@@ -105,6 +105,10 @@ export function ocrTextFromImgMlkit(img: ImageWrapper | string, region: OmniRegi
   return ocr.mlkit.detect(img,{region:region});
 }
 
+export function readTextFile(path: string): string {
+  return files.read(path,StandardCharsets.UTF_8)
+}
+
 function toOmnRegion(range: number[]): OmniRegion{
   return [range[0],range[1],range[2]-range[0], range[3]-range[1]]
 }

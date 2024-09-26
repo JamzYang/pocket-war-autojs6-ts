@@ -1,0 +1,11 @@
+﻿{
+  "img": "screen",
+  "width": "720",
+  "height": "1280",
+  "firter": [
+    {
+      "name": "模板匹配",
+      "arg": "{'template':['iVBORw0KGgoAAAANSUhEUgAAACsAAA='],'threshold':0.9,'rect':'0,0,1,1','best':true}"
+    }
+  ]
+}
