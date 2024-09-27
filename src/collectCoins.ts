@@ -38,7 +38,7 @@ export class CollectCoinsQuest extends Quest {
 }
 
 export class ToCoinHarvester extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.coinBar.x, pointConfig.coinBar.y, 400, "coinBar")
     mySwipe(560, 700, 580, 500)
     myClick(pointConfig.coinHarvester.x, pointConfig.coinHarvester.y, 800, "coinHarvester")
@@ -48,7 +48,7 @@ export class ToCoinHarvester extends Step {
 
 
 export class ClickCoinPoll extends Step {
-  execute(): ExecuteResult {
+  execute() {
     clickPoint(pointConfig.coinHarvestIcon)
     fastHarvest();
     return new SuccessResult("金币收割成功")

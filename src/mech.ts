@@ -8,7 +8,7 @@ import {clickPoint} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {SelectCommanderSolider} from "./selectFormation";
 import {ClickConfirmBattleBtn} from "./clickConfirmBattleBtn";
-import {ClickFocusPoint, ClickMidAttackPoint} from "./steps";
+import {ClickFocusPoint} from "./steps";
 
 
 export class MechQuest extends Quest {
@@ -26,7 +26,7 @@ export class MechQuest extends Quest {
 }
 
 export class ToMech extends Step {
-  execute(): ExecuteResult {
+  execute() {
     clickPoint(pointConfig.unionIcon)
     clickPoint(pointConfig.unionEventIcon)
     clickPoint(pointConfig.unionEventMechs)
@@ -35,7 +35,7 @@ export class ToMech extends Step {
 }
 
 class CheckMechIsOpen extends Step {
-  execute(): ExecuteResult {
+  execute() {
     if(!this.mechIsOpened()){
       return new SuccessResult('mech has not opened');
     }
@@ -49,7 +49,7 @@ class CheckMechIsOpen extends Step {
 }
 
 class canDonate extends Step {
-  execute(): ExecuteResult {
+  execute() {
     if(this.isDonating()){
       this.quest.addStep(new Donate(this.quest))
     }else if(this.isChallenging()) {
@@ -73,23 +73,23 @@ class canDonate extends Step {
 }
 
 class Donate extends Step {
-  execute(): ExecuteResult {
+  execute() {
     clickPoint(pointConfig.unionMechDonateBtn)
     return new SuccessResult('Donate');
   }
 }
 
 class Challenge extends Step {
-  execute(): ExecuteResult {
+  execute() {
     //挑战btn和捐献btn位置相同
     clickPoint(pointConfig.unionEventIcon)
     return new SuccessResult('Challenge');
   }
 }
 class CanAttack extends Step {
-  execute(): ExecuteResult {
+  execute() {
     if(this.canAttack()){
-      this.quest.addStep(new ClickMidAttackPoint(this.quest))
+      // this.quest.addStep(new ClickMidAttackPoint(this.quest)) todo
       this.quest.addStep(new SelectCommanderSolider(this.quest)) //todo 机甲选队
       this.quest.addStep(new ClickConfirmBattleBtn(this.quest))
     }

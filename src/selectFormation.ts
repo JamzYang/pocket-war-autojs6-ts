@@ -9,7 +9,7 @@ import {HuntType} from "./enum"
 import {heroIsSelected, selectFormation} from "./helper/stepHelper"
 
 export class SelectCommanderSolider extends Step {
-  execute(): ExecuteResult {
+  execute() {
     //根据配置文件,决定选择哪个快捷编队,或是单兵,又或是一键
     if(this.quest instanceof SoloHuntQuest){
       selectFormation(this.quest.getFunctionConfig.soloHunt.formationNum);

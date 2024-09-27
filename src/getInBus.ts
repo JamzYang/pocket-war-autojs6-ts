@@ -85,7 +85,7 @@ export class GetInBusQuest extends Quest {
 
 //跟车页 卡片之间垂直间隔610px,
 export class GetInBus extends Step {
-  execute(): ExecuteResult {
+  execute() {
     //怪物名字 [496,309,684,352] 中心点： 349 272  相比加号中心 x偏移 147， y偏移 37  名字框 高 43 宽 188
     //这个方法有个问题。多点找色只能找到最上面一个
     // let result = findMultiColor(img, colorConfig.rallyJoinInIcon)
@@ -132,7 +132,7 @@ export class GetInBus extends Step {
 }
 
 export class CheckGetInBusSuccess extends Step {
-  execute(): ExecuteResult {
+  execute() {
     let result =  findImage(
         captureScreen(), fromBase64(iconConfig.noticeBar.base64),
         {threshold: 0.7, region: [0, 280, 150, 100]}
@@ -146,7 +146,7 @@ export class CheckGetInBusSuccess extends Step {
 }
 
 export class ToRallyWindow extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.unionIcon.x, pointConfig.unionIcon.y, 400, "ClickUnionIcon")
     myClick(pointConfig.warIcon.x, pointConfig.warIcon.y, 400, "ClickWarIcon")
     let result = findMultiColor(captureScreen(), colorConfig.rallyNoBusWindow)

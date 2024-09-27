@@ -7,18 +7,16 @@ import {RallyHuntQuest, SoloHuntQuest} from "./hunt";
 import {HuntType} from "./enum";
 
 export class SelectSearchLevel extends Step {
-  execute(): ExecuteResult {
+  execute() {
     // for (let i = 0; i < 5; i++) {
     //   myClick(pointConfig.searchLevelPlusIcon.x, pointConfig.searchLevelPlusIcon.y, 50, "SelectSearchLevel")
     // }
-    return new SuccessResult('SelectSearchLevel');
   }
 }
 
 export class ClickFocusPoint extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y, 1500, "ClickFocusPoint")
-    return new SuccessResult('ClickFocusPoint');
   }
 }
 
@@ -26,7 +24,7 @@ export class ClickFocusPoint extends Step {
 
 
 export class ClickConfirmSearchBtn extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.searchConfirmSearchBtn.x, pointConfig.searchConfirmSearchBtn.y, 1000, "ClickConfirmSearchBtn")
     return new SuccessResult('ClickConfirmSearchBtn');
   }
@@ -38,7 +36,7 @@ export class ClickConfirmSearchBtn extends Step {
  */
 export class AttackEnemy extends Step {
   //判断单刷还是集结可以在创建Step时传个变量. 或者根据配置文件也可以,但是 配置中的单刷和集结得互斥
-  execute(): ExecuteResult {
+  execute() {
     //集结/攻击/攻击5次 按钮的左右偏移值
     let offset = 100;
     if(this.quest instanceof SoloHuntQuest) {

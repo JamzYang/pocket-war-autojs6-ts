@@ -66,14 +66,13 @@ export class GatherQuest extends Quest {
 }
 
 export class SelectResourceFieldTab extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.searchResourceTab.x, pointConfig.searchResourceTab.y, 800, "SelectResourceFieldTab")
-    return new SuccessResult('SelectResourceFieldTab')
   }
 }
 
 export class SelectResource extends Step {
-  execute(): ExecuteResult {
+  execute() {
     let gatherQuest = this.quest as GatherQuest;
     myLog(`采集类型为${gatherQuest.gatherType}`)
     switch (gatherQuest.gatherType){
@@ -88,7 +87,6 @@ export class SelectResource extends Step {
         clickPoint(pointConfig.searchTabRightPos)
         break;
     }
-    return new SuccessResult('SelectResource');
   }
 
 
@@ -98,7 +96,7 @@ export class SelectResource extends Step {
 }
 
 export class ClickGatherBtn extends Step {
-  execute(): ExecuteResult {
+  execute() {
     let gatherQuest = this.quest as GatherQuest;
     // if (this.isBuildMechanical(gatherQuest.gatherType)){
     //
@@ -114,7 +112,6 @@ export class ClickGatherBtn extends Step {
 
       //todo 没找到采集 的逻辑暂时不写
     }
-    return new SuccessResult('ClickFocusPoint');
   }
 
   private isBuildMechanical = (gatherType: GatherType) =>{
@@ -123,12 +120,11 @@ export class ClickGatherBtn extends Step {
 }
 
 export class SelectGatherTeam extends Step{
-  execute(): ExecuteResult {
+  execute() {
     let gatherQuest = this.quest as GatherQuest;
     selectFormation(gatherQuest.formationNum)
     if(!heroIsSelected) {
       throw new FailureResult("没有选择英雄")
     }
-    return new SuccessResult("SelectGatherTeam")
   }
 }

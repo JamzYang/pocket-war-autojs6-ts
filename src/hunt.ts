@@ -107,7 +107,8 @@ export class SelectSoloEnemy extends Step {
   private swipeRight = () => {
     mySwipe(600,800,300,800,1000,1000)
   }
-  execute(): ExecuteResult {
+
+  execute() {
     myClick(pointConfig.searchSoloEnemyTab.x, pointConfig.searchSoloEnemyTab.y, 600, "SelectSoloEnemyTab")
 
     // const typeKey = Object.keys(HuntType).find(key => HuntType[key as keyof typeof HuntType] === type);
@@ -157,7 +158,7 @@ export class SelectSoloEnemy extends Step {
 
 export class SelectRallyEnemy extends Step {
 
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.searchRallyEnemyTab.x, pointConfig.searchRallyEnemyTab.y, 600, "SelectSoloEnemyTab")
     let expectObject = (this.quest as RallyHuntQuest).expectObject();
     let type = expectObject[0].type;
@@ -184,7 +185,7 @@ export class SelectRallyEnemy extends Step {
 }
 
 class SelectHuntLevel extends Step {
-  execute(): ExecuteResult {
+  execute() {
     let result = findImage(captureScreen(),fromBase64(iconConfig.highestLevelHunt.base64))
     if(result == null) {
       let clickTimes = 0;

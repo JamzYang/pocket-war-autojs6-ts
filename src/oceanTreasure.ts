@@ -35,7 +35,7 @@ export class OceanTreasureQuest extends Quest {
 }
 
 export class ToOceanTreasure extends Step {
-  execute(): ExecuteResult {
+  execute() {
     mySleep(1000)
     myClick(pointConfig.valueEventsIcon.x, pointConfig.valueEventsIcon.y, 1000, "ClickValueEventsIcon")
     let result
@@ -62,7 +62,7 @@ export class ToOceanTreasure extends Step {
 }
 
 export class RecognizeState extends Step {
-  execute(): ExecuteResult {
+  execute() {
     const {timeStr, seconds, type} = orcOceanTreasureCountDown()
     if (type === '进行中') {
       //当前系统时间 加上 seconds

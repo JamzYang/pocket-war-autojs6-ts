@@ -29,7 +29,7 @@ export class FreeDiamondQuest extends Quest {
 }
 
  class ToWeeklyMemberTab extends Step {
-  execute(): ExecuteResult {
+   execute() {
     clickPoint(pointConfig.packageStoreBtn)
     clickPoint(pointConfig.weeklyMemberTab, 800)
     return new SuccessResult("ToWeeklyMemberTab")
@@ -37,14 +37,14 @@ export class FreeDiamondQuest extends Quest {
 }
 
 class TakeDiamond extends Step {
-  execute(): ExecuteResult {
+  execute() {
     clickPoint(pointConfig.takeDiamondBtn)
     return new SuccessResult("TakeDiamond")
   }
 }
 
 class CheckTimes extends Step {
-  execute(): ExecuteResult {
+  execute() {
     let screen = captureScreen()
     // images.saveImage(screen,`/sdcard/脚本/周卡界面${getFormattedTimeNow()}`,"png",100)
     // images.saveImage(screen, `/sdcard/脚本/${new Date().getTime()}.png`);

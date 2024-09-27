@@ -11,15 +11,14 @@ export abstract class Step {
   constructor(quest: Quest) {
     this.quest = quest;
   }
-  abstract execute(): ExecuteResult;
+  abstract execute();
 }
 
 export class CheckIdleTeamsStep extends Step {
-  execute(): ExecuteResult {
+  execute() {
     if (this.quest.getCharacterState.idleTeams < 1) {
       throw new Failure('没有空闲队伍');
     }
-    return new SuccessResult('空闲队伍检查通过');
   }
 }
 
@@ -28,7 +27,7 @@ export class CheckIdleTeamsStep extends Step {
  * 主界面搜索
  */
 export class ClickSearch extends Step {
-  execute(): ExecuteResult {
+  execute() {
     clickPoint(pointConfig.mainSearchBtn, 400)
     return new SuccessResult('ClickSearch');
   }
@@ -39,7 +38,7 @@ export class ClickSearch extends Step {
 //一键出征
 
 export class ClickOneClickBattle extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.oneClickBattleBtn.x, pointConfig.oneClickBattleBtn.y, 200, "ClickOneClickBattle")
     return new SuccessResult('ClickOneClickBattle')
   }
@@ -47,7 +46,7 @@ export class ClickOneClickBattle extends Step {
 
 
 export class ToWorld extends Step {
-  execute(): ExecuteResult {
+  execute() {
     toWorld()
     return new SuccessResult('已到世界');
   }
@@ -67,7 +66,7 @@ export function toWorld(){
 }
 
 export class ToCity extends Step {
-  execute(): ExecuteResult {
+  execute() {
     handleCloseBtn()
     handleBackButton();
     if (isInWorld()) {

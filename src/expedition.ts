@@ -37,7 +37,7 @@ export class ExpeditionQuest extends Quest {
 }
 
 export class ToExpedition extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.intelligenceIcon.x, pointConfig.intelligenceIcon.y)
     let findTimes = 0;
     let result  = this.findExpeditionIcon()
@@ -66,7 +66,7 @@ export class ToExpedition extends Step {
 }
 
 class FastBattle extends Step {
-  execute(): ExecuteResult {
+  execute() {
     if(this.parseCost() >= 100){
       let closeBtn = hasCloseBtn()
       if (closeBtn != null) {
@@ -98,7 +98,7 @@ class FastBattle extends Step {
 }
 
 class CollectRewards extends Step {
-  execute(): ExecuteResult {
+  execute() {
     myClick(pointConfig.expeditionCollectRewards.x, pointConfig.expeditionCollectRewards.y, 1000)
     myClick(pointConfig.expeditionConfirmCollect.x, pointConfig.expeditionConfirmCollect.y)
     return new SuccessResult("CollectRewards success");

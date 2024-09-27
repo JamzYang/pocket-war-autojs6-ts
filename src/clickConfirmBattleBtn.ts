@@ -6,7 +6,7 @@ import {Step} from "./core/step";
 import {RallyHuntQuest} from "../src/hunt";
 
 export class ClickConfirmBattleBtn extends Step {
-  execute(): ExecuteResult {
+  execute() {
     // let result = findMultiColor(captureScreen(),colorConfig.confirmBattleBtn)
     // if(!result){
     //   return new FailureResult("未找到确认战斗按钮")
