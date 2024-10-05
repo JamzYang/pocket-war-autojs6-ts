@@ -2,7 +2,7 @@
 
 import nodeHttp from 'http';
 import nodePath from 'path';
-import fs from 'fs';
+
 // Autojs6 部署动作
 export declare type Autojs6DeployAction = 'none' | 'both' | 'save' | 'rerun' | 'run';
 
@@ -20,62 +20,25 @@ export class Autojs6DeployExecutor {
 
     // 发送部署命令
     private sendDeployCmd(execCmd: string, sendPath: string, deployName: string): void {
-      process.stdout.write(`开始发送部署命令: ${execCmd}, 路径: ${sendPath}, 部署名称: ${deployName}`);
-      const files = fs.readdirSync(sendPath);
-      const mainFile = files.find(file => file.startsWith('main'));
-
-      if (mainFile) {
-        const filePath = sendPath +'\\' + mainFile;
-        const fileContent = fs.readFileSync(filePath);
-        const boundary = `--------------------------${Math.random().toString(36).slice(2)}`;
-        const options = {
-          hostname: 'localhost', //base_url
-          // hostname: '192.168.68.15',
-          port: 8080,
-          path: '/files/upload',
-          method: 'POST',
-          headers: {
-            'Content-Type': `multipart/form-data; boundary=${boundary}`,
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-            'Accept': '*/*',
-            'Connection': 'keep-alive'
-          }
-        };
-
-        const req = nodeHttp.request(options, (res) => {
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-          res.on('end', () => {
-            process.stdout.write(`响应数据: ${data}`);
-          });
+        const req = nodeHttp.get(`http://127.0.0.1:10347/exec?cmd=${execCmd}&path=${encodeURI(sendPath)}`, (res) => {
+            res.setEncoding('utf8');
+            res.addListener('data', (data) => {
+                console.debug('部署执行器: %s -> 执行命令成功！- data: %s', deployName, data);
+            }).addListener('error', (error) => {
+                console.error('部署执行器: %s -> 执行命令失败！- error: %s', deployName, error);
+            });
         });
-
-        req.on('error', (error) => {
-          process.stderr.write(`上传文件时出错: ${error}`);
+        req.addListener('finish', () => {
+            console.debug('部署执行器: %s -> 发送命令成功! - cmd: %s ; path: %s', deployName, execCmd, sendPath);
         });
-
-        const postData = [
-          `--${boundary}`,
-          `Content-Disposition: form-data; name="file"; filename="${mainFile}"`,
-          'Content-Type: application/javascript',
-          '',
-          fileContent,
-          `--${boundary}--`
-        ].join('\r\n');
-
-        req.write(postData);
-        req.end();
-        process.stdout.write('部署成功');
-      } else {
-        process.stderr.write('未找到main开头的文件');
-      }
+        req.addListener('error', (error) => {
+            console.error('部署执行器: %s -> 发送命令失败！- error: %s', deployName, error);
+        });
     }
 
     // 获取输出目录值
     private getDistPath(deployName: string): string {
-        return `${nodePath.resolve(Autojs6DeployExecutor.DIST_PATH, deployName)}`;
+        return `/${nodePath.resolve(Autojs6DeployExecutor.DIST_PATH, deployName)}`;
     }
 
     // 获取输出主文件值

@@ -1,5 +1,4 @@
 import { Options as TsupOptions } from 'tsup';
-import path from 'path';
 
 import { Autojs6DeployAction, Autojs6DeployExecutor } from './Autojs6DeployExecutor';
 
@@ -139,8 +138,8 @@ export class TsupConfigBuilder {
         if (isOne) {
             entryFiles = [
                 './src/main.ts',
-                // './src/test.ts',
-                // './src/ui.js',
+                './src/test.ts',
+                './src/ui.ts',
             ];
             watchSrcDir = './src/';
             assetsDir = './src/assets/';
@@ -148,24 +147,16 @@ export class TsupConfigBuilder {
         } else {
             entryFiles = [
                 `./src/${projectName}/main.ts`,
-                // `./src/${projectName}/test.ts`,
-                // `./src/${projectName}/ui.js`,
+                `./src/${projectName}/test.ts`,
+                `./src/${projectName}/ui.ts`,
             ];
             watchSrcDir = `./src/${projectName}/`;
             assetsDir = `./src/${projectName}/assets/`;
             ignoreWatchStatics = `./src/${projectName}/statics/`;
         }
-        const randomString = this.generateRandomString(6);
-        const outDir = `dist/${projectName}`;
-        const entryPoints = entryFiles.reduce((acc, file) => {
-            const baseName = path.basename(file, path.extname(file));
-            acc[`${baseName}.${randomString}`] = file;
-            return acc;
-        }, {});
-
         return {
             name: projectName,
-            entry: entryPoints,
+            entry: entryFiles,
             target: 'es5',
             minify: isProd,
             watch: isWatch ? [
@@ -180,7 +171,7 @@ export class TsupConfigBuilder {
             onSuccess: async () => {
                 this.deployExecutor.execDeployProject(deployAction, projectName);
             },
-            outDir,
+            outDir: `dist/${projectName}`,
             define: this.buildDefineObject(isProd, projectName, injectVariable, assetsPrefix),
             external: external,
             noExternal: noExternal,
@@ -235,15 +226,6 @@ export class TsupConfigBuilder {
     // 使用新的配置
     public static withNewConfig(overrideOptions: TsupOptions, external: TsupExternal, noExternal: TsupNoExternal, packageName?: string, uiMatch?: boolean, injectVariable?: Record<string, string>, assetsPrefix?: string): TsupOptions {
         return new TsupConfigBuilder(overrideOptions).buildDefineConfig(external, noExternal, packageName, uiMatch, injectVariable, assetsPrefix);
-    }
-
-    private generateRandomString(length: number): string {
-        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return result;
     }
 
 }
