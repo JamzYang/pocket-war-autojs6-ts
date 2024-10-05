@@ -21,9 +21,8 @@ if (downwardTriangle) {
 }
 //========================== main ========================
 
-while (true) {
-  mainRun()
-}
+let result =  ocr.paddle.recognizeText();
+console.log(result)
 
 
 function mainRun() {

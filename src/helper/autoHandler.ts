@@ -108,3 +108,7 @@ export function ocrTextFromImgMlkit(img: ImageWrapper | string, region: OmniRegi
 function toOmnRegion(range: number[]): OmniRegion{
   return [range[0],range[1],range[2]-range[0], range[3]-range[1]]
 }
+function ocrrrr(img: ImageWrapper | string, region: OmniRegion){
+  ocr.mlkit.detect(img,{region:region})[0].bounds.centerX()
+  
+}
