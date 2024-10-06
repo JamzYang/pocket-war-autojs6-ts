@@ -16,7 +16,7 @@ export const pointConfig: PointConfig = {
  coinHarvester: {x: 220, y: 1040},
  coinHarvestIcon: {x: 360, y: 585},
  unionIcon: {x: 660, y: 856},
- valueEventsIcon: {x: 656, y:254},
+ valueEventsIcon: {x: 656, y:345},
  currentCoordinateBar: {x:120, y:250},
  //军情
  intelligenceIcon: {x: 47, y: 1072},

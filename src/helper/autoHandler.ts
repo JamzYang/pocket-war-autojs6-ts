@@ -69,6 +69,10 @@ export function myLog(msg: string): void {
   log(msg)
 }
 
+export function myToast(msg: string): void {
+  toastLog(msg);
+}
+
 export function myErrorLog(msg: string,data?: any,): void {
   console.error(msg)
 }
@@ -100,9 +104,12 @@ export function ocrTextFromImg(img: ImageWrapper | string, region: OmniRegion): 
 }
 //recognizeText
 
-export function ocrTextFromImgMlkit(img: ImageWrapper | string, region: OmniRegion): org.autojs.autojs.runtime.api.OcrResult[] {
-  // return ocr.paddle.recognizeText(img,region)
-  return ocr.mlkit.detect(img,{region:region});
+export function ocrDetectWithImg(img: ImageWrapper, range: number[]): org.autojs.autojs.runtime.api.OcrResult[] {
+  return ocr.paddle.detect(img,{region:toOmnRegion(range)});
+}
+
+export function ocrDetect(range: number[]): org.autojs.autojs.runtime.api.OcrResult[] {
+  return ocr.paddle.detect(toOmnRegion(range));
 }
 
 function toOmnRegion(range: number[]): OmniRegion{

@@ -1,14 +1,22 @@
 
-import {captureScreen, findImage, fromBase64,myClick, clickPoint, myLog, mySleep, mySwipe} from "./helper/autoHandler";
+import {
+  captureScreen,
+  findImage,
+  fromBase64,
+  myClick,
+  clickPoint,
+  myLog,
+  mySleep,
+  mySwipe,
+  ocrDetect, myToast
+} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {iconConfig} from "./config/iconConfig";
 import * as autoHandler from "./helper/autoHandler";
 import {repeatSeconds} from "./config/env.conf";
 import {intervalConfig} from "./config/intervalConfig";
 import {Quest} from "./core/quest";
-import {Step, ToWorld} from "./core/step";
-import {CharacterState} from "./core/characterState";
-import {FunctionConfig} from "./core/functionConfig";
+import {Step, ToCity, ToWorld} from "./core/step";
 import {ExecuteResult, NeedRepeatFailure, SuccessResult} from "./core/executeResult";
 
 
@@ -27,11 +35,11 @@ export class OceanTreasureQuest extends Quest {
     return intervalConfig.oceanTreasure
   }
   protected steps = [
-    new ToWorld(this),
+    new ToCity(this),
     new ToOceanTreasure(this),
-    new RecognizeState(this)
+    new RecognizeAndPick(this),
+    new Detect(this),
   ]
-
 }
 
 export class ToOceanTreasure extends Step {
@@ -57,26 +65,31 @@ export class ToOceanTreasure extends Step {
     }else {
       throw new Error("未找到深海活动")
     }
-    return new SuccessResult("");
   }
 }
 
-export class RecognizeState extends Step {
+export class RecognizeAndPick extends Step {
   execute() {
     const {timeStr, seconds, type} = orcOceanTreasureCountDown()
-    if (type === '进行中') {
       //当前系统时间 加上 seconds
-      this.quest.nextExecuteTime = new Date().getTime() + seconds * 1000 + 10 * 1000; //加10秒冗余
-      myLog("深海下次收取时间：" + timeStr)
-    } else if (type === '待领取') {
-      clickDetector(this.quest.getFunctionConfig.events.oceanTreasure.detectorNum as number)
-      clickDetector(this.quest.getFunctionConfig.events.oceanTreasure.detectorNum as number)
-      this.quest.nextExecuteTime = new Date().getTime() + 3600 * 1000;
-    } else if (type === '待探测') {
-      clickDetector(this.quest.getFunctionConfig.events.oceanTreasure.detectorNum as number)
-      this.quest.nextExecuteTime = new Date().getTime() + 3600 * 1000;
+      this.quest.nextExecuteTime = new Date().getTime() + seconds * 1000;
+      let nextExecuteTime = new Date(this.quest.nextExecuteTime);
+      let nextExecuteTimeStr = nextExecuteTime.toTimeString().split(' ')[0];
+      myToast("深海下次收取时间：" + nextExecuteTimeStr)
+  }
+}
+
+export class Detect extends Step {
+  execute() {
+    let ocrResults = ocrDetectText();
+    //当前系统时间 加上 seconds
+    if(ocrResults.length >= 1){
+      ocrResults.forEach(item => {
+        if((item.label.includes("测") || item.label.includes("探")) && item.label.length ==2) {
+          myClick(item.bounds.centerX(), item.bounds.centerY())
+        }
+      })
     }
-    return new SuccessResult("oceanTreasure RecognizeState");
   }
 }
 
@@ -94,28 +107,39 @@ function clickDetector(detectorNum: number){
   }
 }
 
-export function orcOceanTreasureCountDown(): { timeStr: string, seconds: number, type: string } {
-  //倒计时文字区域 [88,1031,660,1068] 转成 region: [88,1031,580,37]
-//倒计时区域 [76,1004,665,1098] 转成region   [76,1004,589,94]
-  let text = autoHandler.ocrText([76,1004,665,1098])
-  myLog("倒计时识别结果=>" + JSON.stringify(text))
-  if (text.length >= 1) {
-      if (text.some(item => item.includes("立即") || item.includes("完成"))) {
-        let timeStr = text.find(item => item.includes(":"))
-        if(timeStr){
-          let seconds = timeStringToSeconds(timeStr)
-          return {timeStr: timeStr, seconds: seconds, type: "进行中"}
+export function orcOceanTreasureCountDown(): { timeStr: string, seconds: number, type: TreasureState } {
+  let ocrResults = ocrDetectText();
+  myLog("倒计时识别结果=>" + JSON.stringify(ocrResults))
+  if (ocrResults.length >= 1) {
+      let shortestTimeStr = "";
+      let shortestSeconds = Infinity;
+      ocrResults.forEach(item => {
+        if(item.label.includes("领取")){
+          myClick(item.bounds.centerX(), item.bounds.centerY())
+          myClick(pointConfig.targetCenter.x,pointConfig.targetCenter.y)
         }
-      }
-      if (text.some(item => item.includes("领取"))) {
-        return {timeStr: "", seconds: 0, type: "待领取"}
-      }
-      if (text.some(item => (item.includes("探测")) && item.length == 2)) {
-        return {timeStr: "", seconds: 0, type: "待探测"}
-      }
+      })
+      ocrResults.forEach(item => {
+          if (item.label.includes(":") && (item.label.match(/:/g) || []).length === 2) {
+            const seconds = timeStringToSeconds(item.label);
+            if (seconds < shortestSeconds) {
+              shortestTimeStr = item.label;
+              shortestSeconds = seconds;
+            }
+          }
+      });
+
+      return {
+        timeStr: shortestTimeStr,
+        seconds: shortestSeconds,
+        type: TreasureState.InDetection
+      };
   }
-  mySleep(1000)
   throw new NeedRepeatFailure("深海倒计时识别结果错误", repeatSeconds() * 0.1)
+}
+
+function ocrDetectText(): org.autojs.autojs.runtime.api.OcrResult[]{
+  return autoHandler.ocrDetect([43,980,685,1115])
 }
 
 function timeStringToSeconds(timeString: string): number {
@@ -136,4 +160,10 @@ function timeStringToSeconds(timeString: string): number {
   }
 
   return hours * 3600 + minutes * 60 + seconds;
+}
+//PendingDetection, PendingCollection, InDetection.
+enum TreasureState {
+  PendingDetection = '待探测',
+  PendingCollection = '待领取',
+  InDetection = '探测中',  //图片是立即完成
 }

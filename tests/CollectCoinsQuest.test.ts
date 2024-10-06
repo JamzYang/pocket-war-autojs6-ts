@@ -1,5 +1,5 @@
 import {characterState, functionConfig} from "../src/config/config";
-import {OceanTreasureQuest, RecognizeState, ToOceanTreasure} from "../src/oceanTreasure";
+import {OceanTreasureQuest, RecognizeAndPick, ToOceanTreasure} from "../src/oceanTreasure";
 import * as autoHandler from "../src/helper/autoHandler";
 import {loadRuleConfig} from "../src/core/condition";
 import {run} from "../src/core/ruleEngine";
