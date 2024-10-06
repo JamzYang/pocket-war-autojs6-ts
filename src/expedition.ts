@@ -6,19 +6,23 @@ import {CharacterState} from "./core/characterState";
 import {FunctionConfig} from "./core/functionConfig";
 import {
   clickPoint,
-    myClick,
+  myClick,
   myLog,
   findImage,
   mySwipe,
   captureScreen,
   fromBase64,
   matchTemplate,
-  ocrText
+  ocrText, mySleep
 } from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import {iconConfig} from "./config/iconConfig";
 import {intervalConfig} from "./config/intervalConfig";
 import {hasCloseBtn} from "./helper/finder";
+
+let skipDonghuaBtn = {x:629, y:1100}
+//快速战斗之后的领取 窗口
+let pickUpBtn = {x:367, y:1130}
 
 export class ExpeditionQuest extends Quest {
   protected getInterval(): number {
@@ -67,16 +71,18 @@ export class ToExpedition extends Step {
 
 class FastBattle extends Step {
   execute() {
+    myClick(pointConfig.expeditionFastBattleBtn.x, pointConfig.expeditionFastBattleBtn.y)
+    //花费大于100钻,就不快速收割
     if(this.parseCost() >= 100){
       let closeBtn = hasCloseBtn()
       if (closeBtn != null) {
         myClick(closeBtn.x + 22, closeBtn.y + 22, 400, "closeBtn")
       }
-      return new SuccessResult("FastBattle success");
+      return;
     }
-    myClick(pointConfig.expeditionFastBattleBtn.x, pointConfig.expeditionFastBattleBtn.y)
     myClick(pointConfig.expeditionFreeFastBattleBtn.x, pointConfig.expeditionFreeFastBattleBtn.y)
-    return new SuccessResult("FastBattle success");
+    myClick(skipDonghuaBtn.x,skipDonghuaBtn.y,1500)
+    myClick(pickUpBtn.x,pickUpBtn.y,1500)
   }
 
   private parseCost(): number {
@@ -100,7 +106,6 @@ class FastBattle extends Step {
 class CollectRewards extends Step {
   execute() {
     myClick(pointConfig.expeditionCollectRewards.x, pointConfig.expeditionCollectRewards.y, 1000)
-    myClick(pointConfig.expeditionConfirmCollect.x, pointConfig.expeditionConfirmCollect.y)
-    return new SuccessResult("CollectRewards success");
+    myClick(pointConfig.expeditionConfirmCollect.x, pointConfig.expeditionConfirmCollect.y,1500)
   }
 }

@@ -4,7 +4,6 @@ import {Step, ToCity} from "./core/step";
 import {clickPoint, myClick, myLog, mySleep, myToast, ocrDetect, ocrDetectScreen} from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
 import * as autoHandler from "./helper/autoHandler";
-import {stringify} from "ts-jest";
 
 let confirmForHelpBtn = {x:368, y: 912}
 let closeForHelpWindow = {x:651, y: 299}
@@ -47,6 +46,18 @@ class CheckPick extends Step {
     );
     if(helpAllBtn){
       myClick(helpAllBtn.bounds.centerX(),helpAllBtn.bounds.centerY())
+    }
+
+    //今日帮助是否已完成
+    let helped10Times = ocrResults.find(
+        item => item.label.includes("10/10")
+    );
+    let countDownTime = ocrResults.find(
+        item => (item.label.includes(":") && (item.label.match(/:/g) || []).length === 2)
+    )
+    if(helped10Times && countDownTime){
+      this.quest.getFunctionConfig.unionHelp = false
+      myToast("今日联盟帮助已完成")
     }
 
     let pickBtn = ocrResults.find(

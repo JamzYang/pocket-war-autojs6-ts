@@ -86,7 +86,7 @@ export const pointConfig: PointConfig = {
  //无集结队伍 子窗口
  rallyNoBusWindowCloseBtn: {x: 650, y: 140},
 
- //远程行动 快速战斗
+ //远征行动 快速战斗
  expeditionFastBattleBtn: {x: 605, y: 1187},
  expeditionFreeFastBattleBtn: {x: 360,y: 890},
  expeditionCollectRewards: {x: 212,y: 1065},
