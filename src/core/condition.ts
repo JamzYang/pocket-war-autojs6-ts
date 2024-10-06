@@ -8,6 +8,7 @@ import {OceanTreasureQuest} from "../oceanTreasure";
 import {ExpeditionQuest} from "../expedition";
 import {FreeDiamondQuest} from "../FreeDiamondQuest";
 import {FunctionConfig} from "./functionConfig";
+import {UnionHelpQuest} from "../UnionHelp";
 
 export interface Condition {
   gt?: number;
@@ -162,6 +163,14 @@ export function loadRuleConfig(functionConfig: FunctionConfig): RuleConfig {
         },
         quest: ExpeditionQuest
       },
+      {
+        name: "Union help Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.unionHelp},
+        },
+        quest: UnionHelpQuest
+      },
+
       {
         name: "Get In Bus Rule",
         conditions: {

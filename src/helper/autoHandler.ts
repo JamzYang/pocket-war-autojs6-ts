@@ -109,8 +109,14 @@ export function ocrDetectWithImg(img: ImageWrapper, range: number[]): org.autojs
 }
 
 export function ocrDetect(range: number[]): org.autojs.autojs.runtime.api.OcrResult[] {
+  ocr.paddle.detect()
   return ocr.paddle.detect(toOmnRegion(range));
 }
+
+export function ocrDetectScreen(): org.autojs.autojs.runtime.api.OcrResult[] {
+  return ocr.paddle.detect();
+}
+
 
 function toOmnRegion(range: number[]): OmniRegion{
   return [range[0],range[1],range[2]-range[0], range[3]-range[1]]

@@ -4,6 +4,7 @@ export interface FunctionConfig {
   freeDiamond: boolean;
   collectCoins: boolean;
   expedition: boolean;
+  unionHelp: boolean,
   gather: {
     enabled: boolean,
     team1: { enabled: boolean, formationNum: number, type: GatherType },

@@ -14,6 +14,7 @@ export const functionConfig: FunctionConfig = {
   freeDiamond: false,
   collectCoins: false,
   expedition: false,
+  unionHelp:false,
   gather: {
     enabled: false,
     team1: { enabled: false, formationNum: 0, type:GatherType.Oil },

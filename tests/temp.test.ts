@@ -11,6 +11,7 @@ import { myLog } from '../src/helper/autoHandler';
 import {SoloHuntQuest} from "../src/hunt";
 import {HuntType} from "../src/enum";
 import {FunctionConfig} from "../src/core/functionConfig";
+import * as console from "console";
 
 // Mocking the entire module
 jest.mock('../src/helper/autoHandler', () => ({
@@ -101,3 +102,37 @@ test("遍历时动态添加元素", () =>{
     }
   }
 });
+
+test("找最小数", () =>{
+  let result = [
+    {"label": 151},
+    {"label": 153},
+    {"label": 164},
+    {"label": 156}
+  ]
+  // let smallestNumberResult = result.reduce((min, current) => {
+  //   const currentNumber = parseInt(String(current.label));
+  //   if (!isNaN(currentNumber) && (min === null || currentNumber < parseInt(min.label))) {
+  //     return current;
+  //   }
+  //   return min;
+  // }, null as { label: string } | null);
+
+})
+
+
+test("找最小数22", () => {
+  let result = [
+    {"label": 151},
+    {"label": 153},
+    {"label": 164},
+    {"label": 156}
+  ]
+  let smallestNumberResult = result.reduce<{ label: number } | null>((min, current) => {
+    if (min === null || current.label < min.label) {
+      return current;
+    }
+    return min;
+  }, null);
+  console.log(smallestNumberResult)
+})
