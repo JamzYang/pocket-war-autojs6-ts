@@ -15,6 +15,12 @@ export const functionConfig: FunctionConfig = {
   collectCoins: false,
   expedition: false,
   unionHelp:false,
+  sandTableExercises: false,
+  imperialTreasure: false,
+  wildernessAction: false,
+  islandOperations: false,
+  clearShoppingCart: false,
+  militaryBenefits: false,
   gather: {
     enabled: false,
     team1: { enabled: false, formationNum: 0, type:GatherType.Oil },

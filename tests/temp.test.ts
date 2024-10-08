@@ -136,3 +136,21 @@ test("找最小数22", () => {
   }, null);
   console.log(smallestNumberResult)
 })
+
+
+test("文字匹配", () => {
+  let result = [
+    {"label": "前往"},
+    {"label": "再次挑战自 返回"}
+  ]
+  let againBtn = result.find(
+      item=> item.label.includes("再次挑战")
+  );
+  if(againBtn) {
+    //卡片标题和下面的前往btn 垂直坐标差160
+    console.log(find)
+  }
+
+  let text = "我们q"
+  console.log(text.includes("我们"))
+})

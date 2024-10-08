@@ -1,5 +1,5 @@
 import {characterState, functionConfig} from "../src/config/config";
-import {OceanTreasureQuest, RecognizeAndPick, ToOceanTreasure, orcOceanTreasureCountDown} from "../src/oceanTreasure";
+import {OceanTreasureQuest, RecognizeAndPick, ToOceanTreasure, orcCountDown} from "../src/oceanTreasure";
 import * as autoHandler from "../src/helper/autoHandler";
 import {Step} from "../src/core/step";
 import {myToast} from "../src/helper/autoHandler";
@@ -42,7 +42,7 @@ describe('OceanTreasureQuest', () => {
   })
 
   it("倒计时识别", () => {
-    const {timeStr, seconds, type} = orcOceanTreasureCountDown()
+    const {timeStr, seconds, type} = orcCountDown()
     expect(timeStr).toBe('07:29:53');
     let nextExecuteTime = new Date(new Date().getTime() + seconds * 1000);
     let nextExecuteTimeStr = nextExecuteTime.toTimeString().split(' ')[0];

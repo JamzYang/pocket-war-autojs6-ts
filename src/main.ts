@@ -44,7 +44,7 @@ function mainRun() {
     quest.preExecute()
     let questResult=  quest.execute()
     quest.postExecute(questResult)
-  } catch (e) {
+  } catch (e: any) {
     console.error('An error occurred:', e);
   }
 }

@@ -9,6 +9,12 @@ import {ExpeditionQuest} from "../expedition";
 import {FreeDiamondQuest} from "../FreeDiamondQuest";
 import {FunctionConfig} from "./functionConfig";
 import {UnionHelpQuest} from "../UnionHelp";
+import {SandTableExercisesQuest} from "../SandTableExercisesQuest";
+import {ImperialTreasureQuest} from "../ImperialTreasureQuest";
+import {ClearShoppingCartQuest} from "../ClearShoppingCartQuest";
+import {MilitaryBenefitsQuest} from "../MilitaryBenefitsQuest";
+import {IslandOperationsQuest} from "../IslandOperationsQuest";
+import {WildernessActionQuest} from "../WildernessActionQuest";
 
 export interface Condition {
   gt?: number;
@@ -169,6 +175,48 @@ export function loadRuleConfig(functionConfig: FunctionConfig): RuleConfig {
           collectCoins: {enable: functionConfig.unionHelp},
         },
         quest: UnionHelpQuest
+      },
+      {
+        name: "SandTableExercises Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.sandTableExercises},
+        },
+        quest: SandTableExercisesQuest
+      },
+      {
+        name: "imperialTreasure Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.imperialTreasure},
+        },
+        quest: ImperialTreasureQuest
+      },
+      {
+        name: "wildernessAction Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.wildernessAction},
+        },
+        quest: WildernessActionQuest
+      },
+      {
+        name: "islandOperations Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.islandOperations},
+        },
+        quest: IslandOperationsQuest
+      },
+      {
+        name: "clearShoppingCart Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.clearShoppingCart},
+        },
+        quest: ClearShoppingCartQuest
+      },
+      {
+        name: "militaryBenefits Rule",
+        conditions: {
+          collectCoins: {enable: functionConfig.militaryBenefits},
+        },
+        quest: MilitaryBenefitsQuest
       },
 
       {

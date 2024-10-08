@@ -58,6 +58,21 @@ export function clickPoint(point: Point, time: number = 600): boolean {
   return result;
 }
 
+/**
+ * 往右滑: 如[350, 125], [15, 125],[20, 125] ,最后一个参数是为了消除惯性
+ * @param duration
+ * @param sleepSec
+ * @param points
+ */
+export function myGesture(
+    duration: number = 1000,sleepSec: number = 2000,
+    ...points: [X, Y][]): boolean {
+  // @ts-ignore
+  let result = gesture(duration, points)
+  sleep(sleepSec * 1000)
+  return result
+}
+
 export function mySwipe(sx: number, sy: number, ex: number, ey: number, duration: number = 1000,sleepMillSec: number = 2000): boolean {
   // myLog(`滑动坐标:${sx},${sy}->${ex},${ey}`)
   let result = swipe(sx,sy,ex,ey,duration)
@@ -111,6 +126,10 @@ export function ocrDetectWithImg(img: ImageWrapper, range: number[]): org.autojs
 export function ocrDetect(range: number[]): org.autojs.autojs.runtime.api.OcrResult[] {
   ocr.paddle.detect()
   return ocr.paddle.detect(toOmnRegion(range));
+}
+
+export function ocrTextPosWithScreen(text: string): org.autojs.autojs.runtime.api.OcrResult[] {
+  return ocr.paddle.detect();
 }
 
 export function ocrDetectScreen(): org.autojs.autojs.runtime.api.OcrResult[] {

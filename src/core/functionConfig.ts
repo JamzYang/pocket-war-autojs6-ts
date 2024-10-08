@@ -5,6 +5,12 @@ export interface FunctionConfig {
   collectCoins: boolean;
   expedition: boolean;
   unionHelp: boolean,
+  sandTableExercises: boolean,
+  imperialTreasure: boolean,
+  wildernessAction: boolean,
+  islandOperations: boolean,
+  clearShoppingCart: boolean,
+  militaryBenefits: boolean,
   gather: {
     enabled: boolean,
     team1: { enabled: boolean, formationNum: number, type: GatherType },

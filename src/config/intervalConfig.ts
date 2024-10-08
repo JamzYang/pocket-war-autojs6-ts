@@ -1,4 +1,5 @@
 export const intervalConfig = {
+  twoHour: 60*60*2,
   freeDiamond: 15,
   coin: 60 * 60,
   oceanTreasure: 60 * 5,

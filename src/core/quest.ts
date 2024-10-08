@@ -1,4 +1,4 @@
-import {myLog} from "../helper/autoHandler";
+import {myLog, myToast} from "../helper/autoHandler";
 import {repeatSeconds} from "../config/env.conf";
 import {Step} from "./step";
 import {CharacterState} from "./characterState";
@@ -76,6 +76,8 @@ export class Quest {
         this.nextExecuteTime = tomorrow.getTime()
         this.characterState.lastQuests.set(this.constructor.name, this)
         myLog(`${this.name} 今日已完成`)
+      } else if(e.constructor.name == "JavaException") {
+        myToast(e.message)
       }
       return new FailureResult(`${this.constructor.name} fail. ${e.name}`);
     }
