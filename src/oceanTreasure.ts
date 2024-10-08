@@ -8,6 +8,7 @@ import {
   myLog,
   mySleep,
   mySwipe,
+  myGesture,
   ocrDetect, myToast
 } from "./helper/autoHandler";
 import {pointConfig} from "./config/pointConfig";
@@ -37,8 +38,9 @@ export class OceanTreasureQuest extends Quest {
   protected steps = [
     new ToCity(this),
     new ToOceanTreasure(this),
-    new RecognizeAndPick(this),
+    new Pick(this),
     new Detect(this),
+    new RecognizeCountDown(this),
   ]
 }
 
@@ -56,7 +58,7 @@ export class ToOceanTreasure extends Step {
         break
       }
       myLog("滑动"+i)
-      mySwipe(350, 125, 15, 125)
+      myGesture(1000,2,[350, 125], [15, 125],[20, 125])
     }
     if (result) {
       myClick(result.x + iconConfig.oceanTreasure.offSet.x,
@@ -68,9 +70,22 @@ export class ToOceanTreasure extends Step {
   }
 }
 
-export class RecognizeAndPick extends Step {
+export class Pick extends Step {
   execute() {
-    const {timeStr, seconds, type} = orcOceanTreasureCountDown()
+    let ocrResults = ocrDetectText();
+    ocrResults.forEach(item => {
+      if (item.label.includes("领取")) {
+        myClick(item.bounds.centerX(), item.bounds.centerY())
+        myClick(pointConfig.targetCenter.x, pointConfig.targetCenter.y, 1000)
+      }
+    })
+    }
+}
+
+
+export class RecognizeCountDown extends Step {
+  execute() {
+    const {timeStr, seconds, type} = orcCountDown()
       //当前系统时间 加上 seconds
       this.quest.nextExecuteTime = new Date().getTime() + seconds * 1000;
       let nextExecuteTime = new Date(this.quest.nextExecuteTime);
@@ -83,60 +98,37 @@ export class Detect extends Step {
   execute() {
     let ocrResults = ocrDetectText();
     //当前系统时间 加上 seconds
-    if(ocrResults.length >= 1){
-      ocrResults.forEach(item => {
-        if((item.label.includes("测") || item.label.includes("探")) && item.label.length ==2) {
-          myClick(item.bounds.centerX(), item.bounds.centerY())
-        }
-      })
-    }
+    ocrResults.forEach(item => {
+      if((item.label.includes("测") || item.label.includes("探")) && item.label.length ==2) {
+        myClick(item.bounds.centerX(), item.bounds.centerY(),1000)
+      }
+    })
   }
 }
 
-function clickDetector(detectorNum: number){
-  myClick(points.detector1.x, points.detector1.y)
-  //点一下中间, 关掉收取成功的提示窗
-  myClick(pointConfig.focusPoint.x,pointConfig.focusPoint.y)
-  if(detectorNum > 1){
-    myClick(points.detector2.x, points.detector2.y)
-    myClick(pointConfig.focusPoint.x,pointConfig.focusPoint.y)
-    if(detectorNum > 2){
-      myClick(points.detector3.x, points.detector3.y)
-      myClick(pointConfig.focusPoint.x,pointConfig.focusPoint.y)
-    }
-  }
-}
-
-export function orcOceanTreasureCountDown(): { timeStr: string, seconds: number, type: TreasureState } {
+export function orcCountDown(): { timeStr: string, seconds: number, type: TreasureState } {
   let ocrResults = ocrDetectText();
   myLog("倒计时识别结果=>" + JSON.stringify(ocrResults))
-  if (ocrResults.length >= 1) {
-      let shortestTimeStr = "";
-      let shortestSeconds = Infinity;
-      ocrResults.forEach(item => {
-        if(item.label.includes("领取")){
-          myClick(item.bounds.centerX(), item.bounds.centerY())
-          myClick(pointConfig.targetCenter.x,pointConfig.targetCenter.y)
+  let shortestTimeStr = "";
+  let shortestSeconds = Infinity;
+  ocrResults.forEach(item => {
+      if (item.label.includes(":") && (item.label.match(/:/g) || []).length === 2) {
+        const seconds = timeStringToSeconds(item.label);
+        if (seconds < shortestSeconds) {
+          shortestTimeStr = item.label;
+          shortestSeconds = seconds;
         }
-      })
-      ocrResults.forEach(item => {
-          if (item.label.includes(":") && (item.label.match(/:/g) || []).length === 2) {
-            const seconds = timeStringToSeconds(item.label);
-            if (seconds < shortestSeconds) {
-              shortestTimeStr = item.label;
-              shortestSeconds = seconds;
-            }
-          }
-      });
+      }
+  });
 
-      return {
-        timeStr: shortestTimeStr,
-        seconds: shortestSeconds,
-        type: TreasureState.InDetection
-      };
-  }
-  throw new NeedRepeatFailure("深海倒计时识别结果错误", repeatSeconds() * 0.1)
+  return {
+    timeStr: shortestTimeStr,
+    seconds: shortestSeconds,
+    type: TreasureState.InDetection
+  };
 }
+
+
 
 function ocrDetectText(): org.autojs.autojs.runtime.api.OcrResult[]{
   return autoHandler.ocrDetect([43,980,685,1115])
